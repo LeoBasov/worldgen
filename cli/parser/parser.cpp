@@ -1,8 +1,10 @@
 #include "parser.hpp"
 
+#include "create.hpp"
+
 namespace wg {
 
-Parser::Parser() {}
+Parser::Parser() { map.insert({"create", std::make_shared<Create>()}); }
 
 int Parser::parse_args(std::vector<std::string_view> args, std::ostream& out, std::ostream& err) {
     write_header(out);
