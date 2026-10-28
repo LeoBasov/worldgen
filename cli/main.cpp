@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string_view>
+#include <string>
 #include <vector>
 
 #include "parser/parser.hpp"
@@ -7,7 +7,7 @@
 int main(int argc, char** argv) {
     try {
         wg::Parser parser = wg::Parser();
-        std::vector<std::string_view> args;
+        std::vector<std::string> args;
         args.reserve(static_cast<std::size_t>(argc > 1 ? argc - 1 : 0));
 
         for (int i = 1; i < argc; ++i) {

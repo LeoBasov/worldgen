@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "command.hpp"
 
 namespace wg {
@@ -9,8 +11,8 @@ class Create : public Command {
     Create();
     ~Create() = default;
 
-    virtual int parse(std::vector<std::string_view> args) override;
-    virtual void help(std::ostream& out) override;
+    virtual int parse(std::vector<std::string> args) override;
+    virtual std::string help() override;
 };
 
 }  // namespace wg

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <map>
 #include <memory>
-#include <string_view>
+#include <string>
 #include <vector>
 
 #include "command.hpp"
@@ -15,13 +15,14 @@ class Parser {
     Parser();
     ~Parser() = default;
 
-    int parse_args(std::vector<std::string_view> args, std::ostream& out, std::ostream& err);
+    int parse_args(std::vector<std::string> args, std::ostream& out, std::ostream& err);
 
    private:
     std::map<std::string, std::shared_ptr<Command>> map;
 
     void write_header(std::ostream& out);
     void write_footer(std::ostream& out);
+    void write_help(std::ostream& out);
 };
 
 }  // namespace wg
