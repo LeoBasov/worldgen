@@ -1,6 +1,22 @@
 #include <iostream>
+#include <string_view>
+#include <vector>
 
-int main(){
-    std::cout << "cli app" << std::endl;
-    return 0;
+#include "parser/parser.hpp"
+
+int main(int argc, char** argv) {
+    try {
+        std::vector<std::string_view> args;
+        args.reserve(static_cast<std::size_t>(argc > 1 ? argc - 1 : 0));
+
+        for (int i = 1; i < argc; ++i) {
+            args.emplace_back(argv[i]);
+        }
+
+        return wg::parse_args(args, std::cout, std::cerr);
+
+    } catch (std::exception e) {
+        std::cout << "error: " << e.what() << std::endl;
+        return 3;
+    }
 }
