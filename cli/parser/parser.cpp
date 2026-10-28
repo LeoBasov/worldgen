@@ -4,7 +4,11 @@
 
 namespace wg {
 
-Parser::Parser() { map.insert({"create", std::make_shared<Create>()}); }
+Parser::Parser() {
+    std::shared_ptr<Arena> arena = std::make_shared<Arena>();
+
+    map.insert({"create", std::make_shared<Create>(arena)});
+}
 
 int Parser::parse_args(std::vector<std::string> args, std::ostream& out, std::ostream& err) {
     write_header(out);

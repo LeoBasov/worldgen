@@ -2,7 +2,7 @@
 
 namespace wg {
 
-Create::Create() {}
+Create::Create(std::shared_ptr<Arena> arena) : Command(arena) {}
 
 int Create::parse(std::vector<std::string> args) { return 0; }
 
