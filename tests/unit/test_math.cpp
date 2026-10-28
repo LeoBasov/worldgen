@@ -1,6 +1,6 @@
 #include <doctest/doctest.h>
+#include "math.hpp"
 
 TEST_CASE("add") {
-    CHECK(1 == 1);
-    CHECK(0 == 0);
+    CHECK(add(2, 3) == 5);
 }
