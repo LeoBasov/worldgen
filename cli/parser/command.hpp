@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -13,10 +14,10 @@ class Command {
     Command(std::shared_ptr<Arena> arena);
     ~Command() = default;
 
-    virtual int parse(std::vector<std::string> args) = 0;
+    virtual int parse(std::vector<std::string> args, std::ostream& out, std::ostream& err) = 0;
     virtual std::string help() = 0;
 
-   private:
+   protected:
     std::shared_ptr<Arena> arena_;
 };
 

@@ -17,7 +17,6 @@ class Arena {
 
     void resize(int x, int y);
 
-   private:
     vector<vector<Element>> field;
 };
 

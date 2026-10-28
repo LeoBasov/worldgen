@@ -33,7 +33,7 @@ int Parser::parse_args(std::vector<std::string> args, std::ostream& out, std::os
                 }
 
                 out << std::endl;
-                search->second->parse(params);
+                search->second->parse(params, out, err);
             }
         }
     }
