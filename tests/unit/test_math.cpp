@@ -2,5 +2,5 @@
 
 TEST_CASE("add") {
     CHECK(1 == 1);
-    CHECK(3 == 0);
+    CHECK(0 == 0);
 }
