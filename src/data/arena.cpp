@@ -46,29 +46,20 @@ void Arena::create_rivers(double elev_min, double elev_max, int nseeds) {
             counter++;
 
             while (is_flowing) {
-                const int x = idx % size_y;
-                const int y = idx / size_y;
-                const int idr = x < size_x - 1 ? size_x * y + x + 1 : idx;
-                const int idl = x > 0 ? size_x * y + x - 1 : idx;
-                const int idu = y < size_y - 1 ? size_x * (y + 1) + x : idx;
-                const int idd = y > 0 ? size_x * (y - 1) + x : idx;
-                const double dxr = field.at(idr).elevation - field.at(idx).elevation;
-                const double dxl = field.at(idl).elevation - field.at(idx).elevation;
-                const double dxu = field.at(idu).elevation - field.at(idx).elevation;
-                const double dxd = field.at(idd).elevation - field.at(idx).elevation;
-                std::vector<int> idss{idr, idl, idu, idd};
-                std::vector<double> grads{dxr, dxl, dxu, dxd};
+                const std::vector<int> neighbour_ids = get_neighbour_ids(idx);
+                const std::vector<double> gradients = calc_gradients(idx, neighbour_ids);
+                vector<size_t> grad_ids(gradients.size());
                 int idx_new = -1;
 
-                vector<size_t> idxx(grads.size());
-                iota(idxx.begin(), idxx.end(), 0);
-                stable_sort(idxx.begin(), idxx.end(), [&grads](size_t i1, size_t i2) { return grads[i1] < grads[i2]; });
+                iota(grad_ids.begin(), grad_ids.end(), 0);
+                stable_sort(grad_ids.begin(), grad_ids.end(),
+                            [&gradients](size_t i1, size_t i2) { return gradients[i1] < gradients[i2]; });
 
-                for (int g = 0; g < idss.size(); g++) {
-                    int idxxx = idxx.at(g);
+                for (int g = 0; g < grad_ids.size(); g++) {
+                    const int gidx = grad_ids.at(g);
 
-                    if (grads.at(idxxx) < 0.0 && idss.at(idxxx) != idx) {
-                        idx_new = idss.at(idxxx);
+                    if (gradients.at(gidx) < 0.0 && neighbour_ids.at(gidx) != idx) {
+                        idx_new = neighbour_ids.at(gidx);
                         break;
                     }
                 }
@@ -95,5 +86,27 @@ Element Arena::get_element(int x, int y) const { return field.at(size_x * y + x)
 size_t Arena::get_size_x() const { return size_x; }
 
 size_t Arena::get_size_y() const { return size_y; }
+
+std::vector<int> Arena::get_neighbour_ids(int id) const {
+    const int x = id % size_y;
+    const int y = id / size_y;
+    const int idr = x < size_x - 1 ? size_x * y + x + 1 : id;
+    const int idl = x > 0 ? size_x * y + x - 1 : id;
+    const int idu = y < size_y - 1 ? size_x * (y + 1) + x : id;
+    const int idd = y > 0 ? size_x * (y - 1) + x : id;
+
+    return {idr, idu, idl, idd};
+}
+
+std::vector<double> Arena::calc_gradients(int id, std::vector<int> neighbour_ids) const {
+    std::vector<double> gradients(4);
+
+    gradients.at(0) = field.at(neighbour_ids.at(0)).elevation - field.at(id).elevation;
+    gradients.at(1) = field.at(neighbour_ids.at(1)).elevation - field.at(id).elevation;
+    gradients.at(2) = field.at(neighbour_ids.at(2)).elevation - field.at(id).elevation;
+    gradients.at(3) = field.at(neighbour_ids.at(3)).elevation - field.at(id).elevation;
+
+    return gradients;
+}
 
 }  // namespace wg
