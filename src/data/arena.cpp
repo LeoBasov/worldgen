@@ -7,27 +7,27 @@ namespace wg {
 
 Arena::Arena() {}
 
-void Arena::resize(int x, int y) {
-    size_x = x;
-    size_y = y;
+void Arena::resize(Config::Map map) {
+    size_x = map.size_x;
+    size_y = map.size_y;
     field = std::vector<Element>(size_x * size_y);
 }
 
-void Arena::add_noise(double frequency) {
+void Arena::add_noise(Config::Noise noise) {
     const siv::PerlinNoise::seed_type seed = 123456u;
     const siv::PerlinNoise perlin{seed};
 
     for (int i = 0; i < field.size(); i++) {
         const int x = i % size_y;
         const int y = i / size_y;
-        const double fx = frequency / size_x;
-        const double fy = frequency / size_y;
+        const double fx = noise.frequency / size_x;
+        const double fy = noise.frequency / size_y;
 
         field.at(i).elevation = perlin.octave2D_01((x * fx), (y * fy), 4);
     }
 }
 
-void Arena::create_rivers(double elev_min, double elev_max, int nseeds) {
+void Arena::create_rivers(Config::Hydrography hydrography) {
     std::vector<size_t> ids(field.size());
     std::iota(ids.begin(), ids.end(), 0);  // 0, 1, 2, ..., n-1
     std::mt19937 rng(std::random_device{}());
@@ -39,7 +39,7 @@ void Arena::create_rivers(double elev_min, double elev_max, int nseeds) {
         const double elevation = field.at(id).elevation;
         const bool is_river = field.at(id).is_river;
 
-        if (!is_river && elevation > elev_min && elevation < elev_max) {
+        if (!is_river && elevation > hydrography.min_elevation && elevation < hydrography.max_elevation) {
             bool is_flowing = true;
             int idx = id;
             field.at(id).is_river = true;
@@ -64,7 +64,8 @@ void Arena::create_rivers(double elev_min, double elev_max, int nseeds) {
                     }
                 }
 
-                if (idx_new == -1 || field.at(idx_new).is_river == true) {
+                if (idx_new == -1 || field.at(idx_new).is_river == true ||
+                    field.at(idx_new).elevation <= hydrography.sea_level) {
                     is_flowing = false;
                 } else {
                     idx = idx_new;
@@ -73,7 +74,7 @@ void Arena::create_rivers(double elev_min, double elev_max, int nseeds) {
             }
         }
 
-        if (counter >= nseeds) {
+        if (counter >= hydrography.n_rivers) {
             break;
         }
     }

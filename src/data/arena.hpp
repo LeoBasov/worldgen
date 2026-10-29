@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "config.hpp"
 #include "perlin_noise.hpp"
 
 namespace wg {
@@ -18,9 +19,9 @@ class Arena {
     Arena();
     ~Arena() = default;
 
-    void resize(int x, int y);
-    void add_noise(double frequency = 5.0);
-    void create_rivers(double elev_min, double elev_max, int nseeds);
+    void resize(Config::Map map);
+    void add_noise(Config::Noise noise);
+    void create_rivers(Config::Hydrography hydrography);
     Element& get_element(int x, int y);
     Element get_element(int x, int y) const;
     size_t get_size_x() const;
