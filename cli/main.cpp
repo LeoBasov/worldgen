@@ -2,9 +2,10 @@
 #include <string>
 #include <vector>
 
-#include "parser/parser.hpp"
+// #include "parser/parser.hpp"
+#include "../src/worldgen.hpp"
 
-int main(int argc, char** argv) {
+/*int main(int argc, char** argv) {
     try {
         wg::Parser parser = wg::Parser();
         std::vector<std::string> args;
@@ -20,4 +21,12 @@ int main(int argc, char** argv) {
         std::cout << "error: " << e.what() << std::endl;
         return 3;
     }
+}*/
+
+int main(int argc, char** argv) {
+    wg::Config config;
+    wg::WorldGen worldgen;
+
+    worldgen.create_map();
+    worldgen.export2bmp();
 }
