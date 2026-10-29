@@ -6,7 +6,6 @@ struct Config {
     struct Map {
         int size_x = 256;
         int size_y = 256;
-        double sea_level = 0.3;
     };
 
     struct Noise {
@@ -17,6 +16,7 @@ struct Config {
         int n_rivers = 20;
         double min_elevation = 0.7;
         double max_elevation = 0.9;
+        double sea_level = 0.3;
     };
 
     Map map;

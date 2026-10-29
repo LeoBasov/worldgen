@@ -23,6 +23,20 @@ int Parser::parse_args(std::vector<std::string> args, Config& config, std::ostre
             } else {
                 throw std::runtime_error("wrong number of arguments");
             }
+        } else if (str == "--frequency") {
+            std::vector<std::string> params;
+
+            while (i < (args.size() - 1) && args.at(i + 1).substr(0, 2) != std::string("--")) {
+                str = args.at(++i);
+                params.push_back(args.at(i));
+            }
+
+            if (params.size() == 1) {
+                out << "setting frequency to: " << params.at(0) << std::endl;
+                config.noise.frequency = std::stoi(params.at(0));
+            } else {
+                throw std::runtime_error("wrong number of arguments");
+            }
         }
     }
 
