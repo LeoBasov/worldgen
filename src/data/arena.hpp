@@ -10,6 +10,7 @@ using namespace std;
 
 struct Element {
     double elevation = 0.0;
+    bool is_river = false;
 };
 
 class Arena {
@@ -18,7 +19,8 @@ class Arena {
     ~Arena() = default;
 
     void resize(int x, int y);
-    void add_noise();
+    void add_noise(double frequency = 5.0);
+    void create_rivers(double elev_min, double elev_max, int nseeds);
     Element& get_element(int x, int y);
     Element get_element(int x, int y) const;
     size_t get_size_x() const;

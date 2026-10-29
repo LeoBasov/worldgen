@@ -4,8 +4,12 @@ namespace wg {
 
 Exporter::Exporter(/* args */) {}
 
-std::vector<double> Exporter::calc_rgb(double elevation) const {
+std::vector<double> Exporter::calc_rgb(double elevation, bool is_river) const {
     std::vector<double> rgb = {0.0, 0.0, 0.0};
+
+    if (is_river) {
+        return rgb;
+    }
 
     // 1. Blue to Green
     if (elevation < 0.3) {
@@ -43,7 +47,8 @@ bool Exporter::export2bmp(const Arena& arena) const {
 
     for (std::int32_t y = 0; y < image.height(); ++y) {
         for (std::int32_t x = 0; x < image.width(); ++x) {
-            const std::vector<double> rgb_val = calc_rgb(arena.get_element(x, y).elevation);
+            const std::vector<double> rgb_val =
+                calc_rgb(arena.get_element(x, y).elevation, arena.get_element(x, y).is_river);
             const RGB color(rgb_val.at(0), rgb_val.at(1), rgb_val.at(2));
             image.set(x, y, color);
         }
