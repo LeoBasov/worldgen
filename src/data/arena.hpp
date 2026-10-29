@@ -21,6 +21,7 @@ class Arena {
     void add_noise();
 
     vector<vector<Element>> field;
+    size_t size_x = 0, size_y = 0;
 };
 
 }  // namespace wg

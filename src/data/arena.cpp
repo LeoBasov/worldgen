@@ -5,8 +5,10 @@ namespace wg {
 Arena::Arena() {}
 
 void Arena::resize(int x, int y) {
+    size_x = x;
+    size_y = y;
     field.clear();
-    field.resize(y, vector<Element>(x));
+    field.resize(size_y, vector<Element>(size_x));
 }
 
 void Arena::add_noise() {

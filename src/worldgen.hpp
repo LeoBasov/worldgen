@@ -12,6 +12,7 @@ class WorldGen {
 
     void create_map(unsigned int x, unsigned int y);
     Arena get_arena() const;
+    bool export2png() const;
 
    private:
     Arena arena;

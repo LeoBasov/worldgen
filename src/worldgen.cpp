@@ -11,4 +11,6 @@ void WorldGen::create_map(unsigned int x, unsigned int y) {
 
 Arena WorldGen::get_arena() const { return arena; }
 
+bool WorldGen::export2png() const { return exporter.export2png(arena); }
+
 }  // namespace wg
