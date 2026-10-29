@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../data/arena.hpp"
-#include "png_export.hpp"
+#include "bmp_export.hpp"
 
 namespace wg {
 
@@ -10,7 +10,7 @@ class Exporter {
     Exporter(/* args */);
     ~Exporter() = default;
 
-    bool export2png(const Arena& arena) const;
+    bool export2bmp(const Arena& arena) const;
 
    private:
     /* data */

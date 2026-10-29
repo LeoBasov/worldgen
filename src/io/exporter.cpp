@@ -4,7 +4,7 @@ namespace wg {
 
 Exporter::Exporter(/* args */) {}
 
-bool Exporter::export2png(const Arena& arena) const {
+bool Exporter::export2bmp(const Arena& arena) const {
     Image image{arena.size_x, arena.size_y};
 
     for (std::int32_t y = 0; y < image.height(); ++y) {
@@ -14,7 +14,7 @@ bool Exporter::export2png(const Arena& arena) const {
         }
     }
 
-    return image.saveBMP("elevation");
+    return image.saveBMP("elevation.bmp");
 }
 
 }  // namespace wg
