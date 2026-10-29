@@ -13,7 +13,7 @@ class Exporter {
     bool export2bmp(const Arena& arena) const;
 
    private:
-    /* data */
+    std::vector<double> calc_rgb(double elevation) const;
 };
 
 }  // namespace wg
