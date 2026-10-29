@@ -64,7 +64,7 @@ void Arena::create_rivers(double elev_min, double elev_max, int nseeds) {
                     }
                 }
 
-                if (idx_new == -1) {
+                if (idx_new == -1 || field.at(idx_new).is_river == true) {
                     is_flowing = false;
                 } else {
                     idx = idx_new;
@@ -91,20 +91,31 @@ std::vector<int> Arena::get_neighbour_ids(int id) const {
     const int x = id % size_y;
     const int y = id / size_y;
     const int idr = x < size_x - 1 ? size_x * y + x + 1 : id;
-    const int idl = x > 0 ? size_x * y + x - 1 : id;
+    const int idru = (x < size_x - 1) && (y < size_y - 1) ? size_x * (y + 1) + x + 1 : id;
     const int idu = y < size_y - 1 ? size_x * (y + 1) + x : id;
+    const int idul = (y < size_y - 1) && (x > 0) ? size_x * (y + 1) + x - 1 : id;
+    const int idl = x > 0 ? size_x * y + x - 1 : id;
+    const int idld = (x > 0) && (y > 0) ? size_x * (y - 1) + x - 1 : id;
     const int idd = y > 0 ? size_x * (y - 1) + x : id;
+    const int iddr = (y > 0) && (x < size_x - 1) ? size_x * (y - 1) + x + 1 : id;
 
-    return {idr, idu, idl, idd};
+    return {idr, idru, idu, idul, idl, idld, idd, iddr};
 }
 
 std::vector<double> Arena::calc_gradients(int id, std::vector<int> neighbour_ids) const {
-    std::vector<double> gradients(4);
+    std::vector<double> gradients(8);
 
     gradients.at(0) = field.at(neighbour_ids.at(0)).elevation - field.at(id).elevation;
-    gradients.at(1) = field.at(neighbour_ids.at(1)).elevation - field.at(id).elevation;
+    gradients.at(1) = (field.at(neighbour_ids.at(1)).elevation - field.at(id).elevation) / sqrt(2.0);
+
     gradients.at(2) = field.at(neighbour_ids.at(2)).elevation - field.at(id).elevation;
-    gradients.at(3) = field.at(neighbour_ids.at(3)).elevation - field.at(id).elevation;
+    gradients.at(3) = (field.at(neighbour_ids.at(3)).elevation - field.at(id).elevation) / sqrt(2.0);
+
+    gradients.at(4) = field.at(neighbour_ids.at(4)).elevation - field.at(id).elevation;
+    gradients.at(5) = (field.at(neighbour_ids.at(5)).elevation - field.at(id).elevation) / sqrt(2.0);
+
+    gradients.at(6) = field.at(neighbour_ids.at(6)).elevation - field.at(id).elevation;
+    gradients.at(7) = (field.at(neighbour_ids.at(7)).elevation - field.at(id).elevation) / sqrt(2.0);
 
     return gradients;
 }
