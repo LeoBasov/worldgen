@@ -45,6 +45,14 @@
         { "type": "build", "name": "debug" },
         { "type": "test", "name": "debug" }
       ]
+    },
+    {
+      "name": "release",
+      "steps": [
+        { "type": "configure", "name": "release" },
+        { "type": "build", "name": "release" },
+        { "type": "test", "name": "release" }
+      ]
     }
   ]
 }
