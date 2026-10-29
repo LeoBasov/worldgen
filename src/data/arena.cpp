@@ -64,7 +64,8 @@ void Arena::create_rivers(Config::Hydrography hydrography) {
                     }
                 }
 
-                if (idx_new == -1 || field.at(idx_new).is_river == true) {
+                if (idx_new == -1 || field.at(idx_new).is_river == true ||
+                    field.at(idx_new).elevation <= hydrography.sea_level) {
                     is_flowing = false;
                 } else {
                     idx = idx_new;
