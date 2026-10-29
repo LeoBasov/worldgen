@@ -6,6 +6,9 @@
 #include "parser/parser.hpp"
 
 int main(int argc, char** argv) {
+    std::cout << "worldgen" << std::endl;
+    std::cout << "==============================================================" << std::endl;
+
     try {
         wg::Config config;
         wg::WorldGen worldgen;
@@ -24,10 +27,12 @@ int main(int argc, char** argv) {
         worldgen.create_map();
         worldgen.export2bmp();
     } catch (std::runtime_error e) {
-        std::cout << "error: " << e.what() << std::endl;
+        std::cout << "ERROR: " << e.what() << std::endl;
         return 3;
     } catch (std::exception e) {
-        std::cout << "error: " << e.what() << std::endl;
+        std::cout << "ERROR: " << e.what() << std::endl;
         return 3;
     }
+
+    std::cout << "==============================================================" << std::endl;
 }
