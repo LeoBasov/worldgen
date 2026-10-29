@@ -19,8 +19,13 @@ class Arena {
 
     void resize(int x, int y);
     void add_noise();
+    Element& get_element(int x, int y);
+    Element get_element(int x, int y) const;
+    size_t get_size_x() const;
+    size_t get_size_y() const;
 
-    vector<vector<Element>> field;
+   private:
+    vector<Element> field;
     size_t size_x = 0, size_y = 0;
 };
 

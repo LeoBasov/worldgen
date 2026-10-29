@@ -39,11 +39,11 @@ std::vector<double> Exporter::calc_rgb(double elevation) const {
 }
 
 bool Exporter::export2bmp(const Arena& arena) const {
-    Image image{arena.size_x, arena.size_y};
+    Image image{arena.get_size_x(), arena.get_size_y()};
 
     for (std::int32_t y = 0; y < image.height(); ++y) {
         for (std::int32_t x = 0; x < image.width(); ++x) {
-            const std::vector<double> rgb_val = calc_rgb(arena.field.at(y).at(x).elevation);
+            const std::vector<double> rgb_val = calc_rgb(arena.get_element(x, y).elevation);
             const RGB color(rgb_val.at(0), rgb_val.at(1), rgb_val.at(2));
             image.set(x, y, color);
         }
