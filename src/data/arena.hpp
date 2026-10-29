@@ -12,6 +12,7 @@ using namespace std;
 struct Element {
     double elevation = 0.0;
     bool is_river = false;
+    bool is_lake = false;
 };
 
 class Arena {

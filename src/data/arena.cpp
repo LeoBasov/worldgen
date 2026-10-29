@@ -41,6 +41,7 @@ void Arena::create_rivers(Config::Hydrography hydrography) {
 
         if (!is_river && elevation > hydrography.min_elevation && elevation < hydrography.max_elevation) {
             bool is_flowing = true;
+            bool is_filling = false;
             int idx = id;
             field.at(id).is_river = true;
             counter++;
@@ -64,13 +65,27 @@ void Arena::create_rivers(Config::Hydrography hydrography) {
                     }
                 }
 
-                if (idx_new == -1 || field.at(idx_new).is_river == true ||
-                    field.at(idx_new).elevation <= hydrography.sea_level) {
+                if(idx_new == -1) {
+                    is_flowing = false;
+                    is_filling = true;
+                    field.at(idx).is_river = false;
+                    field.at(idx).is_lake = true;
+                } else if (field.at(idx_new).is_river == true || field.at(idx_new).elevation <= hydrography.sea_level) {
                     is_flowing = false;
                 } else {
                     idx = idx_new;
                     field.at(idx).is_river = true;
                 }
+            }
+
+            while (is_filling) {
+                const std::vector<int> neighbour_ids = get_neighbour_ids(idx);
+
+                for(auto id : neighbour_ids){
+                    field.at(id).is_river = true;
+                }
+
+                is_filling = false;
             }
         }
 
