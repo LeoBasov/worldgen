@@ -10,8 +10,11 @@ class WorldGen {
     WorldGen();
     ~WorldGen() = default;
 
+    void create_map(unsigned int x, unsigned int y);
+    Arena get_arena() const;
+
    private:
-    Arena areana;
+    Arena arena;
     Exporter exporter;
 };
 

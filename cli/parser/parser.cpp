@@ -5,9 +5,9 @@
 namespace wg {
 
 Parser::Parser() {
-    std::shared_ptr<Arena> arena = std::make_shared<Arena>();
+    std::shared_ptr<WorldGen> worldgen = std::make_shared<WorldGen>();
 
-    map.insert({"create", std::make_shared<Create>(arena)});
+    map.insert({"create", std::make_shared<Create>(worldgen)});
 }
 
 int Parser::parse_args(std::vector<std::string> args, std::ostream& out, std::ostream& err) {

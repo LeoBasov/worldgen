@@ -8,7 +8,7 @@ namespace wg {
 
 class Create : public Command {
    public:
-    Create(std::shared_ptr<Arena> arena);
+    Create(std::shared_ptr<WorldGen> worldgen);
     ~Create() = default;
 
     virtual int parse(std::vector<std::string> args, std::ostream& out, std::ostream& err) override;
