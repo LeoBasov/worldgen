@@ -4,14 +4,20 @@ namespace wg {
 
 Exporter::Exporter(/* args */) {}
 
-std::vector<double> Exporter::calc_rgb(double elevation, bool is_river) const {
+std::vector<double> Exporter::calc_rgb(double elevation, bool is_river, bool is_lake, bool is_trapped) const {
     std::vector<double> rgb = {0.0, 0.0, 0.0};
     const double water_level = 0.3;
     const double grassland_level = 0.4;
     const double aridland_level = 0.7;
 
+    if (is_trapped) {
+        return {1, 0, 0};
+    }
+
     if (is_river) {
-        return rgb;
+        return {0, 0, 1};
+    } else if (is_lake) {
+        return {0, 1, 1};
     }
 
     // 0. Water level
@@ -59,7 +65,8 @@ bool Exporter::export2bmp(const Arena& arena) const {
     for (std::int32_t y = 0; y < image.height(); ++y) {
         for (std::int32_t x = 0; x < image.width(); ++x) {
             const std::vector<double> rgb_val =
-                calc_rgb(arena.get_element(x, y).elevation, arena.get_element(x, y).is_river || arena.get_element(x, y).is_lake);
+                calc_rgb(arena.get_element(x, y).elevation, arena.get_element(x, y).is_river,
+                         arena.get_element(x, y).is_lake, arena.get_element(x, y).is_trapped);
             const RGB color(rgb_val.at(0), rgb_val.at(1), rgb_val.at(2));
             image.set(x, y, color);
         }

@@ -13,6 +13,7 @@ struct Element {
     double elevation = 0.0;
     bool is_river = false;
     bool is_lake = false;
+    bool is_trapped = false;
 };
 
 class Arena {
