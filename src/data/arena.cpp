@@ -135,8 +135,13 @@ void Arena::fill_lake(int idx, double sea_level) {
     bool is_filling = true;
 
     while (is_filling) {
-        // get lak boundary
+        // get lake boundary
         std::vector<int> lake_boundary_ids = get_lake_boundary(lake_ids);
+
+        // ToDo: find why he gets stuck here
+        if (lake_boundary_ids.size() == 0) {
+            return;
+        }
 
         // find boundary element with the smallest elevation
         double min_elevation = 1e16;
