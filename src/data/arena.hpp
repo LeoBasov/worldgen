@@ -33,6 +33,9 @@ class Arena {
    private:
     vector<Element> field;
     size_t size_x = 0, size_y = 0;
+
+    void track_river(int idx, double sea_level);
+    void fill_lake(int id);
 };
 
 }  // namespace wg

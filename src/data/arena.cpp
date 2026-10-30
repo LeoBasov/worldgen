@@ -40,53 +40,8 @@ void Arena::create_rivers(Config::Hydrography hydrography) {
         const bool is_river = field.at(id).is_river;
 
         if (!is_river && elevation > hydrography.min_elevation && elevation < hydrography.max_elevation) {
-            bool is_flowing = true;
-            bool is_filling = false;
-            int idx = id;
-            field.at(id).is_river = true;
+            track_river(id, hydrography.sea_level);
             counter++;
-
-            while (is_flowing) {
-                const std::vector<int> neighbour_ids = get_neighbour_ids(idx);
-                const std::vector<double> gradients = calc_gradients(idx, neighbour_ids);
-                vector<size_t> grad_ids(gradients.size());
-                int idx_new = -1;
-
-                iota(grad_ids.begin(), grad_ids.end(), 0);
-                stable_sort(grad_ids.begin(), grad_ids.end(),
-                            [&gradients](size_t i1, size_t i2) { return gradients[i1] < gradients[i2]; });
-
-                for (int g = 0; g < grad_ids.size(); g++) {
-                    const int gidx = grad_ids.at(g);
-
-                    if (gradients.at(gidx) < 0.0 && neighbour_ids.at(gidx) != idx) {
-                        idx_new = neighbour_ids.at(gidx);
-                        break;
-                    }
-                }
-
-                if(idx_new == -1) {
-                    is_flowing = false;
-                    is_filling = true;
-                    field.at(idx).is_river = false;
-                    field.at(idx).is_lake = true;
-                } else if (field.at(idx_new).is_river == true || field.at(idx_new).elevation <= hydrography.sea_level) {
-                    is_flowing = false;
-                } else {
-                    idx = idx_new;
-                    field.at(idx).is_river = true;
-                }
-            }
-
-            while (is_filling) {
-                const std::vector<int> neighbour_ids = get_neighbour_ids(idx);
-
-                for(auto id : neighbour_ids){
-                    field.at(id).is_river = true;
-                }
-
-                is_filling = false;
-            }
         }
 
         if (counter >= hydrography.n_rivers) {
@@ -135,5 +90,46 @@ std::vector<double> Arena::calc_gradients(int id, std::vector<int> neighbour_ids
 
     return gradients;
 }
+
+void Arena::track_river(int idx, double sea_level) {
+    field.at(idx).is_river = true;
+
+    while (true) {
+        const std::vector<int> neighbour_ids = get_neighbour_ids(idx);
+        const std::vector<double> gradients = calc_gradients(idx, neighbour_ids);
+        vector<size_t> grad_ids(gradients.size());
+        int idx_new = -1;
+
+        iota(grad_ids.begin(), grad_ids.end(), 0);
+        stable_sort(grad_ids.begin(), grad_ids.end(),
+                    [&gradients](size_t i1, size_t i2) { return gradients[i1] < gradients[i2]; });
+
+        for (int g = 0; g < grad_ids.size(); g++) {
+            const int gidx = grad_ids.at(g);
+
+            if (gradients.at(gidx) < 0.0 && neighbour_ids.at(gidx) != idx) {
+                idx_new = neighbour_ids.at(gidx);
+                break;
+            }
+        }
+
+        if (idx_new == -1) {
+            field.at(idx).is_river = false;
+            field.at(idx).is_lake = true;
+            break;
+        } else if (field.at(idx_new).is_river == true || field.at(idx_new).elevation <= sea_level) {
+            break;
+        } else {
+            idx = idx_new;
+            field.at(idx).is_river = true;
+        }
+    }
+
+    if (field.at(idx).is_lake) {
+        fill_lake(idx);
+    }
+}
+
+void Arena::fill_lake(int id) {}
 
 }  // namespace wg
