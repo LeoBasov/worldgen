@@ -176,7 +176,7 @@ void Arena::fill_lake(int idx, double sea_level) {
 std::vector<int> Arena::get_lake_boundary(std::vector<int> lake_ids) {
     std::vector<int> lake_bounrady_ids;
 
-    for (auto id : lake_bounrady_ids) {
+    for (auto id : lake_ids) {
         const std::vector<int> neighbour_ids = get_neighbour_ids(id);
 
         for (auto ne_id : neighbour_ids) {
