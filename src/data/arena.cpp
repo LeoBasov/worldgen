@@ -117,7 +117,8 @@ void Arena::track_river(int idx, double sea_level) {
             field.at(idx).is_river = false;
             field.at(idx).is_lake = true;
             break;
-        } else if (field.at(idx_new).is_river == true || field.at(idx_new).elevation <= sea_level) {
+        } else if (field.at(idx_new).is_lake == true || field.at(idx_new).is_river == true ||
+                   field.at(idx_new).elevation <= sea_level) {
             break;
         } else {
             idx = idx_new;
@@ -140,6 +141,10 @@ void Arena::fill_lake(int idx, double sea_level) {
 
         // ToDo: find why he gets stuck here
         if (lake_boundary_ids.size() == 0) {
+            for (auto id : lake_ids) {
+                field.at(id).is_trapped = true;
+            }
+
             return;
         }
 
@@ -155,6 +160,7 @@ void Arena::fill_lake(int idx, double sea_level) {
         }
 
         field.at(min_elev_id).is_lake = true;
+        field.at(min_elev_id).is_river = false;
         lake_ids.push_back(min_elev_id);
 
         // check if it has negative slope towards an non lake cell
