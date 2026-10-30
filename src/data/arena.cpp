@@ -136,20 +136,20 @@ void Arena::fill_lake(int idx, double sea_level) {
 
     while (is_filling) {
         // get lak boundary
-        std::vector<int> lake_bounrady_ids = get_lake_boundary(lake_ids);
+        std::vector<int> lake_boundary_ids = get_lake_boundary(lake_ids);
 
         // find boundary element with the smallest elevation
         double min_elevation = 1e16;
         int min_elev_id = -1;
 
-        for (auto id : lake_bounrady_ids) {
+        for (auto id : lake_boundary_ids) {
             if (field.at(id).elevation < min_elevation) {
                 min_elevation = field.at(id).elevation;
                 min_elev_id = id;
             }
         }
 
-        field.at(min_elev_id).is_lake;
+        field.at(min_elev_id).is_lake = true;
         lake_ids.push_back(min_elev_id);
 
         // check if it has negative slope towards an non lake cell
@@ -164,8 +164,8 @@ void Arena::fill_lake(int idx, double sea_level) {
         for (int g = 0; g < grad_ids.size(); g++) {
             const int gidx = grad_ids.at(g);
 
-            if (gradients.at(gidx) < 0.0 && neighbour_ids.at(gidx) != min_elev_id && !field.at(gidx).is_lake) {
-                track_river(gidx, sea_level);
+            if (gradients.at(gidx) < 0.0 && !field.at(neighbour_ids.at(gidx)).is_lake) {
+                track_river(neighbour_ids.at(gidx), sea_level);
                 is_filling = false;
                 break;
             }
