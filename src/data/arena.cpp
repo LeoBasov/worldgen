@@ -40,38 +40,8 @@ void Arena::create_rivers(Config::Hydrography hydrography) {
         const bool is_river = field.at(id).is_river;
 
         if (!is_river && elevation > hydrography.min_elevation && elevation < hydrography.max_elevation) {
-            bool is_flowing = true;
-            int idx = id;
-            field.at(id).is_river = true;
+            track_river(id, hydrography.sea_level);
             counter++;
-
-            while (is_flowing) {
-                const std::vector<int> neighbour_ids = get_neighbour_ids(idx);
-                const std::vector<double> gradients = calc_gradients(idx, neighbour_ids);
-                vector<size_t> grad_ids(gradients.size());
-                int idx_new = -1;
-
-                iota(grad_ids.begin(), grad_ids.end(), 0);
-                stable_sort(grad_ids.begin(), grad_ids.end(),
-                            [&gradients](size_t i1, size_t i2) { return gradients[i1] < gradients[i2]; });
-
-                for (int g = 0; g < grad_ids.size(); g++) {
-                    const int gidx = grad_ids.at(g);
-
-                    if (gradients.at(gidx) < 0.0 && neighbour_ids.at(gidx) != idx) {
-                        idx_new = neighbour_ids.at(gidx);
-                        break;
-                    }
-                }
-
-                if (idx_new == -1 || field.at(idx_new).is_river == true ||
-                    field.at(idx_new).elevation <= hydrography.sea_level) {
-                    is_flowing = false;
-                } else {
-                    idx = idx_new;
-                    field.at(idx).is_river = true;
-                }
-            }
         }
 
         if (counter >= hydrography.n_rivers) {
@@ -119,6 +89,110 @@ std::vector<double> Arena::calc_gradients(int id, std::vector<int> neighbour_ids
     gradients.at(7) = (field.at(neighbour_ids.at(7)).elevation - field.at(id).elevation) / sqrt(2.0);
 
     return gradients;
+}
+
+void Arena::track_river(int idx, double sea_level) {
+    field.at(idx).is_river = true;
+
+    while (true) {
+        const std::vector<int> neighbour_ids = get_neighbour_ids(idx);
+        const std::vector<double> gradients = calc_gradients(idx, neighbour_ids);
+        vector<size_t> grad_ids(gradients.size());
+        int idx_new = -1;
+
+        iota(grad_ids.begin(), grad_ids.end(), 0);
+        stable_sort(grad_ids.begin(), grad_ids.end(),
+                    [&gradients](size_t i1, size_t i2) { return gradients[i1] < gradients[i2]; });
+
+        for (int g = 0; g < grad_ids.size(); g++) {
+            const int gidx = grad_ids.at(g);
+
+            if (gradients.at(gidx) < 0.0 && neighbour_ids.at(gidx) != idx) {
+                idx_new = neighbour_ids.at(gidx);
+                break;
+            }
+        }
+
+        if (idx_new == -1) {
+            field.at(idx).is_river = false;
+            field.at(idx).is_lake = true;
+            break;
+        } else if (field.at(idx_new).is_river == true || field.at(idx_new).elevation <= sea_level) {
+            break;
+        } else {
+            idx = idx_new;
+            field.at(idx).is_river = true;
+        }
+    }
+
+    if (field.at(idx).is_lake) {
+        fill_lake(idx, sea_level);
+    }
+}
+
+void Arena::fill_lake(int idx, double sea_level) {
+    std::vector<int> lake_ids{idx};
+    bool is_filling = true;
+
+    while (is_filling) {
+        // get lake boundary
+        std::vector<int> lake_boundary_ids = get_lake_boundary(lake_ids);
+
+        // ToDo: find why he gets stuck here
+        if (lake_boundary_ids.size() == 0) {
+            return;
+        }
+
+        // find boundary element with the smallest elevation
+        double min_elevation = 1e16;
+        int min_elev_id = -1;
+
+        for (auto id : lake_boundary_ids) {
+            if (field.at(id).elevation < min_elevation) {
+                min_elevation = field.at(id).elevation;
+                min_elev_id = id;
+            }
+        }
+
+        field.at(min_elev_id).is_lake = true;
+        lake_ids.push_back(min_elev_id);
+
+        // check if it has negative slope towards an non lake cell
+        const std::vector<int> neighbour_ids = get_neighbour_ids(min_elev_id);
+        const std::vector<double> gradients = calc_gradients(min_elev_id, neighbour_ids);
+        vector<size_t> grad_ids(gradients.size());
+
+        iota(grad_ids.begin(), grad_ids.end(), 0);
+        stable_sort(grad_ids.begin(), grad_ids.end(),
+                    [&gradients](size_t i1, size_t i2) { return gradients[i1] < gradients[i2]; });
+
+        for (int g = 0; g < grad_ids.size(); g++) {
+            const int gidx = grad_ids.at(g);
+
+            if (gradients.at(gidx) < 0.0 && !field.at(neighbour_ids.at(gidx)).is_lake) {
+                track_river(neighbour_ids.at(gidx), sea_level);
+                is_filling = false;
+                break;
+            }
+        }
+    }
+}
+
+std::vector<int> Arena::get_lake_boundary(std::vector<int> lake_ids) {
+    std::vector<int> lake_bounrady_ids;
+
+    for (auto id : lake_ids) {
+        const std::vector<int> neighbour_ids = get_neighbour_ids(id);
+
+        for (auto ne_id : neighbour_ids) {
+            if (!field.at(ne_id).is_lake &&
+                std::find(lake_bounrady_ids.begin(), lake_bounrady_ids.end(), ne_id) == lake_bounrady_ids.end()) {
+                lake_bounrady_ids.push_back(ne_id);
+            }
+        }
+    }
+
+    return lake_bounrady_ids;
 }
 
 }  // namespace wg

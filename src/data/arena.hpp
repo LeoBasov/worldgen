@@ -12,6 +12,7 @@ using namespace std;
 struct Element {
     double elevation = 0.0;
     bool is_river = false;
+    bool is_lake = false;
 };
 
 class Arena {
@@ -32,6 +33,10 @@ class Arena {
    private:
     vector<Element> field;
     size_t size_x = 0, size_y = 0;
+
+    void track_river(int idx, double sea_level);
+    void fill_lake(int idx, double sea_level);
+    std::vector<int> get_lake_boundary(std::vector<int> lake_ids);
 };
 
 }  // namespace wg
