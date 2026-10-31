@@ -54,30 +54,12 @@ size_t Arena::get_size_x() const { return field.size_x; }
 
 size_t Arena::get_size_y() const { return field.size_y; }
 
-std::vector<double> Arena::calc_gradients(int id, std::vector<int> neighbour_ids) const {
-    std::vector<double> gradients(8);
-
-    gradients.at(0) = field.elements.at(neighbour_ids.at(0)).elevation - field.elements.at(id).elevation;
-    gradients.at(1) = (field.elements.at(neighbour_ids.at(1)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
-
-    gradients.at(2) = field.elements.at(neighbour_ids.at(2)).elevation - field.elements.at(id).elevation;
-    gradients.at(3) = (field.elements.at(neighbour_ids.at(3)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
-
-    gradients.at(4) = field.elements.at(neighbour_ids.at(4)).elevation - field.elements.at(id).elevation;
-    gradients.at(5) = (field.elements.at(neighbour_ids.at(5)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
-
-    gradients.at(6) = field.elements.at(neighbour_ids.at(6)).elevation - field.elements.at(id).elevation;
-    gradients.at(7) = (field.elements.at(neighbour_ids.at(7)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
-
-    return gradients;
-}
-
 void Arena::track_river(int idx, double sea_level) {
     field.elements.at(idx).is_river = true;
 
     while (true) {
         const std::vector<int> neighbour_ids = get_neighbour_ids(idx, field.size_x, field.size_y);
-        const std::vector<double> gradients = calc_gradients(idx, neighbour_ids);
+        const std::vector<double> gradients = calc_gradients(idx, neighbour_ids, field.elements);
         vector<size_t> grad_ids(gradients.size());
         int idx_new = -1;
 
@@ -146,7 +128,7 @@ void Arena::fill_lake(int idx, double sea_level) {
 
         // check if it has negative slope towards an non lake cell
         const std::vector<int> neighbour_ids = get_neighbour_ids(min_elev_id, field.size_x, field.size_y);
-        const std::vector<double> gradients = calc_gradients(min_elev_id, neighbour_ids);
+        const std::vector<double> gradients = calc_gradients(min_elev_id, neighbour_ids, field.elements);
         vector<size_t> grad_ids(gradients.size());
 
         iota(grad_ids.begin(), grad_ids.end(), 0);
