@@ -29,7 +29,6 @@ class Arena {
 
     void track_river(int idx, double sea_level);
     void fill_lake(int idx, double sea_level);
-    std::vector<int> get_lake_boundary(std::vector<int> lake_ids);
 };
 
 }  // namespace wg

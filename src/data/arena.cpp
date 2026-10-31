@@ -100,7 +100,8 @@ void Arena::fill_lake(int idx, double sea_level) {
 
     while (is_filling) {
         // get lake boundary
-        std::vector<int> lake_boundary_ids = get_lake_boundary(lake_ids);
+        std::vector<int> lake_boundary_ids =
+            get_lake_boundary_ids(lake_ids, field.elements, field.size_x, field.size_y);
 
         // ToDo: find why he gets stuck here
         if (lake_boundary_ids.size() == 0) {
@@ -145,23 +146,6 @@ void Arena::fill_lake(int idx, double sea_level) {
             }
         }
     }
-}
-
-std::vector<int> Arena::get_lake_boundary(std::vector<int> lake_ids) {
-    std::vector<int> lake_bounrady_ids;
-
-    for (auto id : lake_ids) {
-        const std::vector<int> neighbour_ids = get_neighbour_ids(id, field.size_x, field.size_y);
-
-        for (auto ne_id : neighbour_ids) {
-            if (!field.elements.at(ne_id).is_lake &&
-                std::find(lake_bounrady_ids.begin(), lake_bounrady_ids.end(), ne_id) == lake_bounrady_ids.end()) {
-                lake_bounrady_ids.push_back(ne_id);
-            }
-        }
-    }
-
-    return lake_bounrady_ids;
 }
 
 }  // namespace wg
