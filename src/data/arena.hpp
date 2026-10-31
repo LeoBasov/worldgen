@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "arena_algorithms.hpp"
 #include "config.hpp"
 #include "perlin_noise.hpp"
 
@@ -28,7 +29,6 @@ class Arena {
     Element get_element(int x, int y) const;
     size_t get_size_x() const;
     size_t get_size_y() const;
-    std::vector<int> get_neighbour_ids(int id) const;
     std::vector<double> calc_gradients(int id, std::vector<int> neighbour_ids) const;
 
    private:

@@ -58,21 +58,6 @@ size_t Arena::get_size_x() const { return size_x; }
 
 size_t Arena::get_size_y() const { return size_y; }
 
-std::vector<int> Arena::get_neighbour_ids(int id) const {
-    const int x = id % size_y;
-    const int y = id / size_y;
-    const int idr = x < size_x - 1 ? size_x * y + x + 1 : id;
-    const int idru = (x < size_x - 1) && (y < size_y - 1) ? size_x * (y + 1) + x + 1 : id;
-    const int idu = y < size_y - 1 ? size_x * (y + 1) + x : id;
-    const int idul = (y < size_y - 1) && (x > 0) ? size_x * (y + 1) + x - 1 : id;
-    const int idl = x > 0 ? size_x * y + x - 1 : id;
-    const int idld = (x > 0) && (y > 0) ? size_x * (y - 1) + x - 1 : id;
-    const int idd = y > 0 ? size_x * (y - 1) + x : id;
-    const int iddr = (y > 0) && (x < size_x - 1) ? size_x * (y - 1) + x + 1 : id;
-
-    return {idr, idru, idu, idul, idl, idld, idd, iddr};
-}
-
 std::vector<double> Arena::calc_gradients(int id, std::vector<int> neighbour_ids) const {
     std::vector<double> gradients(8);
 
@@ -95,7 +80,7 @@ void Arena::track_river(int idx, double sea_level) {
     field.at(idx).is_river = true;
 
     while (true) {
-        const std::vector<int> neighbour_ids = get_neighbour_ids(idx);
+        const std::vector<int> neighbour_ids = get_neighbour_ids(idx, size_x, size_y);
         const std::vector<double> gradients = calc_gradients(idx, neighbour_ids);
         vector<size_t> grad_ids(gradients.size());
         int idx_new = -1;
@@ -164,7 +149,7 @@ void Arena::fill_lake(int idx, double sea_level) {
         lake_ids.push_back(min_elev_id);
 
         // check if it has negative slope towards an non lake cell
-        const std::vector<int> neighbour_ids = get_neighbour_ids(min_elev_id);
+        const std::vector<int> neighbour_ids = get_neighbour_ids(min_elev_id, size_x, size_y);
         const std::vector<double> gradients = calc_gradients(min_elev_id, neighbour_ids);
         vector<size_t> grad_ids(gradients.size());
 
@@ -188,7 +173,7 @@ std::vector<int> Arena::get_lake_boundary(std::vector<int> lake_ids) {
     std::vector<int> lake_bounrady_ids;
 
     for (auto id : lake_ids) {
-        const std::vector<int> neighbour_ids = get_neighbour_ids(id);
+        const std::vector<int> neighbour_ids = get_neighbour_ids(id, size_x, size_y);
 
         for (auto ne_id : neighbour_ids) {
             if (!field.at(ne_id).is_lake &&
