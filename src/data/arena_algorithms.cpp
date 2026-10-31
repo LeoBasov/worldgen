@@ -23,7 +23,7 @@ std::vector<int> get_neighbour_ids(const int id, const int size_x, const int siz
     return {id_right, id_right_up, id_up, id_up_left, id_left, id_left_dowd, id_down, id_down_right};
 }
 
-std::vector<double> calc_gradients(int id, std::vector<int> neighbour_ids, std::vector<Element> elements) {
+std::vector<double> calc_gradients(int id, std::vector<int> neighbour_ids, const std::vector<Element>& elements) {
     std::vector<double> gradients(8);
 
     gradients.at(0) = elements.at(neighbour_ids.at(0)).elevation - elements.at(id).elevation;
@@ -41,8 +41,8 @@ std::vector<double> calc_gradients(int id, std::vector<int> neighbour_ids, std::
     return gradients;
 }
 
-std::vector<int> get_lake_boundary_ids(std::vector<int> lake_ids, std::vector<Element> elements, const int size_x,
-                                       const int size_y) {
+std::vector<int> get_lake_boundary_ids(std::vector<int> lake_ids, const std::vector<Element>& elements,
+                                       const int size_x, const int size_y) {
     std::vector<int> lake_boundary_ids;
 
     for (auto id : lake_ids) {
