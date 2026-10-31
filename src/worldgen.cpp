@@ -14,6 +14,6 @@ void WorldGen::create_map() {
 
 Arena WorldGen::get_arena() const { return arena; }
 
-bool WorldGen::export2bmp() const { return exporter.export2bmp(arena); }
+bool WorldGen::export2bmp() const { return exporter.export2bmp(arena, config.exports); }
 
 }  // namespace wg
