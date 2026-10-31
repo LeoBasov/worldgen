@@ -13,7 +13,7 @@ std::vector<int> get_neighbour_ids(const int id, const int size_x, const int siz
 
     const int id_right = right_condition ? size_x * y + x + 1 : id;
     const int id_right_up = right_condition && up_condition ? size_x * (y - 1) + x + 1 : id;
-    const int id_up = left_condition ? size_x * (y - 1) + x : id;
+    const int id_up = up_condition ? size_x * (y - 1) + x : id;
     const int id_up_left = up_condition && left_condition ? size_x * (y - 1) + x - 1 : id;
     const int id_left = left_condition ? size_x * y + x - 1 : id;
     const int id_left_dowd = left_condition && down_condition ? size_x * (y + 1) + x - 1 : id;
