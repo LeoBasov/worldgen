@@ -59,7 +59,7 @@ std::vector<double> Exporter::calc_rgb(double elevation, bool is_river, bool is_
     return rgb;
 }
 
-bool Exporter::export2bmp(const Arena& arena) const {
+bool Exporter::export2bmp(const Arena& arena, const Config::Export exports) const {
     Image image{arena.get_size_x(), arena.get_size_y()};
 
     for (std::int32_t y = 0; y < image.height(); ++y) {
@@ -72,7 +72,7 @@ bool Exporter::export2bmp(const Arena& arena) const {
         }
     }
 
-    return image.saveBMP("elevation.bmp");
+    return image.saveBMP(exports.file_name);
 }
 
 }  // namespace wg

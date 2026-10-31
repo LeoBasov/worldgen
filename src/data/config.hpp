@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace wg {
 
 struct Config {
@@ -20,9 +22,14 @@ struct Config {
         double sea_level = 0.3;
     };
 
+    struct Export {
+        std::string file_name = "elevation.bmp";
+    };
+
     Map map;
     Noise noise;
     Hydrography hydrography;
+    Export exports;
 };
 
 }  // namespace wg
