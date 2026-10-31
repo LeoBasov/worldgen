@@ -9,7 +9,7 @@ void WorldGen::set_config(Config _config) { config = _config; }
 void WorldGen::create_map() {
     arena.resize(config.map);
     arena.add_noise(config.noise);
-    arena.create_rivers(config.hydrography);
+    arena.create_rivers(config.hydrography, config.noise);
 }
 
 Arena WorldGen::get_arena() const { return arena; }

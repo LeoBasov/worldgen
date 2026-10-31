@@ -14,7 +14,7 @@ void Arena::resize(Config::Map map) {
 }
 
 void Arena::add_noise(Config::Noise noise) {
-    const siv::PerlinNoise::seed_type seed = 123456u;
+    const siv::PerlinNoise::seed_type seed = noise.seed;
     const siv::PerlinNoise perlin{seed};
 
     for (int i = 0; i < field.size(); i++) {
@@ -27,10 +27,10 @@ void Arena::add_noise(Config::Noise noise) {
     }
 }
 
-void Arena::create_rivers(Config::Hydrography hydrography) {
+void Arena::create_rivers(Config::Hydrography hydrography, Config::Noise noise) {
     std::vector<size_t> ids(field.size());
     std::iota(ids.begin(), ids.end(), 0);  // 0, 1, 2, ..., n-1
-    std::mt19937 rng(std::random_device{}());
+    std::mt19937 rng(noise.seed);
     std::shuffle(ids.begin(), ids.end(), rng);
     int counter = 0;
 

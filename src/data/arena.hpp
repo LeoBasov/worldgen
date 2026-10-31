@@ -23,7 +23,7 @@ class Arena {
 
     void resize(Config::Map map);
     void add_noise(Config::Noise noise);
-    void create_rivers(Config::Hydrography hydrography);
+    void create_rivers(Config::Hydrography hydrography, Config::Noise noise);
     Element& get_element(int x, int y);
     Element get_element(int x, int y) const;
     size_t get_size_x() const;
