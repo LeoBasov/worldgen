@@ -197,19 +197,21 @@ TEST_CASE("track_river") {
     */
 
     /*
-    0----1----2----3
-    |    |    |    |
-    4----5----6----7
-    |    |    |    |
-    8----9----10---11
-    |    |    |    |
-    12---13---14---15
+    0----1----2----3----4
+    |    |    |    |    |
+    5----6----7----8----9
+    |    |    |    |    |
+    10---11---12---13---14
+    |    |    |    |    |
+    15---16---17---18---19
+    |    |    |    |    |
+    20---21---22---23---24
     */
 
     wg::Field field;
-    const int size_x = 4;
-    const int size_y = 4;
-    const int start_id = 3;
+    const int size_x = 5;
+    const int size_y = 5;
+    const int start_id = 4;
     const double sea_level = 2.0;
 
     field.resize(size_x, size_y);
@@ -218,13 +220,38 @@ TEST_CASE("track_river") {
         element.elevation = 10.0;
     }
 
-    field.elements.at(6).elevation = 3.0;
+    field.elements.at(8).elevation = 3.0;
 
-    field.elements.at(5).elevation = 4.0;
-    field.elements.at(9).elevation = 5.0;
-    field.elements.at(10).elevation = 6.0;
+    field.elements.at(7).elevation = 4.0;
+    field.elements.at(12).elevation = 6.0;
+    field.elements.at(13).elevation = 5.0;
 
-    field.elements.at(12).elevation = 1.0;
+    field.elements.at(16).elevation = 3.0;
+    field.elements.at(20).elevation = 1.0;
 
-    // track_river(start_id, sea_level, size_x, size_y, field.elements);
+    track_river(start_id, sea_level, size_x, size_y, field.elements);
+
+    CHECK(field.elements.at(start_id).is_river);
+    CHECK(!field.elements.at(start_id).is_lake);
+    CHECK(!field.elements.at(start_id).is_trapped);
+
+    CHECK(!field.elements.at(7).is_river);
+    CHECK(field.elements.at(7).is_lake);
+    CHECK(!field.elements.at(7).is_trapped);
+
+    CHECK(!field.elements.at(8).is_river);
+    CHECK(field.elements.at(8).is_lake);
+    CHECK(!field.elements.at(8).is_trapped);
+
+    CHECK(!field.elements.at(12).is_river);
+    CHECK(field.elements.at(12).is_lake);
+    CHECK(!field.elements.at(12).is_trapped);
+
+    CHECK(!field.elements.at(13).is_river);
+    CHECK(field.elements.at(13).is_lake);
+    CHECK(!field.elements.at(13).is_trapped);
+
+    CHECK(field.elements.at(16).is_river);
+    CHECK(!field.elements.at(16).is_lake);
+    CHECK(!field.elements.at(16).is_trapped);
 }
