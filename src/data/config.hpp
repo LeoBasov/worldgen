@@ -10,6 +10,7 @@ struct Config {
 
     struct Noise {
         double frequency = 5.0;
+        int seed = 123456789;
     };
 
     struct Hydrography {
