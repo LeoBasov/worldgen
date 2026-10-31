@@ -167,3 +167,44 @@ TEST_CASE("get_lake_boundary") {
     CHECK(found_id7);
     CHECK(found_id8);
 }
+
+TEST_CASE("track_river") {
+    /*
+    +--→ x
+    |
+    ↓
+    y
+    */
+
+    /*
+    0----1----2----3
+    |    |    |    |
+    4----5----6----7
+    |    |    |    |
+    8----9----10---11
+    |    |    |    |
+    12---13---14---15
+    */
+
+    wg::Field field;
+    const int size_x = 4;
+    const int size_y = 4;
+    const int start_id = 3;
+    const double sea_level = 2.0;
+
+    field.resize(size_x, size_y);
+
+    for (auto& element : field.elements) {
+        element.elevation = 10.0;
+    }
+
+    field.elements.at(6).elevation = 3.0;
+
+    field.elements.at(5).elevation = 4.0;
+    field.elements.at(9).elevation = 5.0;
+    field.elements.at(10).elevation = 6.0;
+
+    field.elements.at(12).elevation = 1.0;
+
+    // track_river(start_id, sea_level, size_x, size_y, field.elements);
+}

@@ -59,4 +59,97 @@ std::vector<int> get_lake_boundary_ids(std::vector<int> lake_ids, std::vector<El
     return lake_boundary_ids;
 }
 
+void track_river(int idx, double sea_level, const int size_x, const int size_y, std::vector<Element>& elements) {
+    elements.at(idx).is_river = true;
+
+    while (true) {
+        const std::vector<int> neighbour_ids = get_neighbour_ids(idx, size_x, size_y);
+        const std::vector<double> gradients = calc_gradients(idx, neighbour_ids, elements);
+        std::vector<size_t> grad_ids(gradients.size());
+        int idx_new = -1;
+
+        std::iota(grad_ids.begin(), grad_ids.end(), 0);
+        stable_sort(grad_ids.begin(), grad_ids.end(),
+                    [&gradients](size_t i1, size_t i2) { return gradients[i1] < gradients[i2]; });
+
+        for (int g = 0; g < grad_ids.size(); g++) {
+            const int gidx = grad_ids.at(g);
+
+            if (gradients.at(gidx) < 0.0 && neighbour_ids.at(gidx) != idx) {
+                idx_new = neighbour_ids.at(gidx);
+                break;
+            }
+        }
+
+        if (idx_new == -1) {
+            elements.at(idx).is_river = false;
+            elements.at(idx).is_lake = true;
+            break;
+        } else if (elements.at(idx_new).is_lake == true || elements.at(idx_new).is_river == true ||
+                   elements.at(idx_new).elevation <= sea_level) {
+            break;
+        } else {
+            idx = idx_new;
+            elements.at(idx).is_river = true;
+        }
+    }
+
+    if (elements.at(idx).is_lake) {
+        fill_lake(idx, sea_level, size_x, size_y, elements);
+    }
+}
+
+void fill_lake(int idx, double sea_level, const int size_x, const int size_y, std::vector<Element>& elements) {
+    std::vector<int> lake_ids{idx};
+    bool is_filling = true;
+
+    while (is_filling) {
+        // get lake boundary
+        std::vector<int> lake_boundary_ids = get_lake_boundary_ids(lake_ids, elements, size_x, size_y);
+
+        // ToDo: find why he gets stuck here
+        if (lake_boundary_ids.size() == 0) {
+            for (auto id : lake_ids) {
+                elements.at(id).is_trapped = true;
+            }
+
+            return;
+        }
+
+        // find boundary element with the smallest elevation
+        double min_elevation = 1e16;
+        int min_elev_id = -1;
+
+        for (auto id : lake_boundary_ids) {
+            if (elements.at(id).elevation < min_elevation) {
+                min_elevation = elements.at(id).elevation;
+                min_elev_id = id;
+            }
+        }
+
+        elements.at(min_elev_id).is_lake = true;
+        elements.at(min_elev_id).is_river = false;
+        lake_ids.push_back(min_elev_id);
+
+        // check if it has negative slope towards an non lake cell
+        const std::vector<int> neighbour_ids = get_neighbour_ids(min_elev_id, size_x, size_y);
+        const std::vector<double> gradients = calc_gradients(min_elev_id, neighbour_ids, elements);
+        std::vector<size_t> grad_ids(gradients.size());
+
+        iota(grad_ids.begin(), grad_ids.end(), 0);
+        stable_sort(grad_ids.begin(), grad_ids.end(),
+                    [&gradients](size_t i1, size_t i2) { return gradients[i1] < gradients[i2]; });
+
+        for (int g = 0; g < grad_ids.size(); g++) {
+            const int gidx = grad_ids.at(g);
+
+            if (gradients.at(gidx) < 0.0 && !elements.at(neighbour_ids.at(gidx)).is_lake) {
+                track_river(neighbour_ids.at(gidx), sea_level, size_x, size_y, elements);
+                is_filling = false;
+                break;
+            }
+        }
+    }
+}
+
 }  // namespace wg
