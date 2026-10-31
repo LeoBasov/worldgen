@@ -4,18 +4,12 @@
 
 #include "arena_algorithms.hpp"
 #include "config.hpp"
+#include "field.hpp"
 #include "perlin_noise.hpp"
 
 namespace wg {
 
 using namespace std;
-
-struct Element {
-    double elevation = 0.0;
-    bool is_river = false;
-    bool is_lake = false;
-    bool is_trapped = false;
-};
 
 class Arena {
    public:
@@ -32,8 +26,7 @@ class Arena {
     std::vector<double> calc_gradients(int id, std::vector<int> neighbour_ids) const;
 
    private:
-    vector<Element> field;
-    size_t size_x = 0, size_y = 0;
+    Field field;
 
     void track_river(int idx, double sea_level);
     void fill_lake(int idx, double sea_level);

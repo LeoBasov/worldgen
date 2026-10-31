@@ -16,6 +16,7 @@ struct Field{
     std::vector<Element> elements;
     size_t size_x = 0, size_y = 0;
 
+    void resize(int x, int y);
     Element& get_element(int x, int y);
     Element get_element(int x, int y) const;
 };
