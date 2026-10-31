@@ -21,6 +21,4 @@ struct Field{
     Element get_element(int x, int y) const;
 };
 
-
-    
 } // namespace wg

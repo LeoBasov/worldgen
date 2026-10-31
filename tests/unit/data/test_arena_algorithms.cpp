@@ -60,3 +60,53 @@ TEST_CASE("get_neighbour_ids") {
     CHECK(neighbours_down_right.at(6) == id_down_right);  // down
     CHECK(neighbours_down_right.at(7) == id_down_right);  // down right
 }
+
+TEST_CASE("calc_gradients") {
+    /*
+    +--→ x
+    |
+    ↓
+    y
+    */
+
+    /*
+    3---2---1
+    |   |   |
+    4--idx--0
+    |   |   |
+    5---6---7
+    */
+
+    wg::Field field;
+    const int size_x = 3;
+    const int size_y = 3;
+    const int id = 4;
+
+    field.resize(size_x, size_y);
+
+    field.elements.at(0).elevation = 1.0;
+    field.elements.at(1).elevation = 2.0;
+    field.elements.at(2).elevation = 3.0;
+
+    field.elements.at(3).elevation = 4.0;
+    field.elements.at(4).elevation = 0.0;  // id centered field
+    field.elements.at(5).elevation = 6.0;
+
+    field.elements.at(6).elevation = 7.0;
+    field.elements.at(7).elevation = 8.0;
+    field.elements.at(8).elevation = 9.0;
+
+    const std::vector<int> neighbour_ids = wg::get_neighbour_ids(id, size_x, size_y);
+    const std::vector<double> gradients = wg::calc_gradients(id, neighbour_ids, field.elements);
+
+    CHECK(gradients.size() == 8);
+
+    CHECK(gradients.at(0) == 6.0);                   // right
+    CHECK(gradients.at(1) == 3.0 / std::sqrt(2.0));  // right up
+    CHECK(gradients.at(2) == 2.0);                   // up
+    CHECK(gradients.at(3) == 1.0 / std::sqrt(2.0));  // up left
+    CHECK(gradients.at(4) == 4.0);                   // left
+    CHECK(gradients.at(5) == 7.0 / std::sqrt(2.0));  // left down
+    CHECK(gradients.at(6) == 8.0);                   // down
+    CHECK(gradients.at(7) == 9.0 / std::sqrt(2.0));  // down right
+}
