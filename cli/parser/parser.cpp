@@ -79,7 +79,11 @@ int Parser::parse_args(std::vector<std::string> args, Config& config, std::ostre
                 params.push_back(args.at(i));
             }
 
-            if (params.size() == 1) {
+            if (params.size() == 1 && params.at(0) == "random") {
+                const int seed = std::random_device{}();
+                out << "setting seed type to: " << params.at(0) << ", generated seed: " << seed << std::endl;
+                config.noise.seed = seed;
+            } else if (params.size() == 1) {
                 out << "setting seed to: " << params.at(0) << std::endl;
                 config.noise.seed = std::stoi(params.at(0));
             } else {
