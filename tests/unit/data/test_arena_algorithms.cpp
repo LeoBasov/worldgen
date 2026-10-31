@@ -110,3 +110,60 @@ TEST_CASE("calc_gradients") {
     CHECK(gradients.at(6) == 8.0);                   // down
     CHECK(gradients.at(7) == 9.0 / std::sqrt(2.0));  // down right
 }
+
+TEST_CASE("get_lake_boundary") {
+    /*
+    +--→ x
+    |
+    ↓
+    y
+    */
+
+    /*
+    0---1---2
+    |   |   |
+    3---4---5
+    |   |   |
+    6---7---8
+    */
+
+    wg::Field field;
+    const int size_x = 3;
+    const int size_y = 3;
+    const std::vector<int> lake_ids = {0, 4, 5};
+
+    field.resize(size_x, size_y);
+
+    field.elements.at(0).is_lake = true;
+    field.elements.at(4).is_lake = true;
+    field.elements.at(5).is_lake = true;
+
+    std::vector<int> lake_boundary_ids = wg::get_lake_boundary_ids(lake_ids, field.elements, size_x, size_y);
+
+    CHECK(lake_boundary_ids.size() == 6);
+
+    bool not_found_id0 =
+        std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), lake_ids.at(0)) == lake_boundary_ids.end();
+    bool not_found_id4 =
+        std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), lake_ids.at(1)) == lake_boundary_ids.end();
+    bool not_found_id5 =
+        std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), lake_ids.at(2)) == lake_boundary_ids.end();
+
+    CHECK(not_found_id0);
+    CHECK(not_found_id4);
+    CHECK(not_found_id5);
+
+    bool found_id1 = std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), 1) != lake_boundary_ids.end();
+    bool found_id2 = std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), 2) != lake_boundary_ids.end();
+    bool found_id3 = std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), 3) != lake_boundary_ids.end();
+    bool found_id6 = std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), 6) != lake_boundary_ids.end();
+    bool found_id7 = std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), 7) != lake_boundary_ids.end();
+    bool found_id8 = std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), 8) != lake_boundary_ids.end();
+
+    CHECK(found_id1);
+    CHECK(found_id2);
+    CHECK(found_id3);
+    CHECK(found_id6);
+    CHECK(found_id7);
+    CHECK(found_id8);
+}

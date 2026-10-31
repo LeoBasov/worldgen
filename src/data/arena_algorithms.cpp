@@ -41,4 +41,22 @@ std::vector<double> calc_gradients(int id, std::vector<int> neighbour_ids, std::
     return gradients;
 }
 
+std::vector<int> get_lake_boundary_ids(std::vector<int> lake_ids, std::vector<Element> elements, const int size_x,
+                                       const int size_y) {
+    std::vector<int> lake_boundary_ids;
+
+    for (auto id : lake_ids) {
+        const std::vector<int> neighbour_ids = get_neighbour_ids(id, size_x, size_y);
+
+        for (auto ne_id : neighbour_ids) {
+            if (!elements.at(ne_id).is_lake &&
+                std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), ne_id) == lake_boundary_ids.end()) {
+                lake_boundary_ids.push_back(ne_id);
+            }
+        }
+    }
+
+    return lake_boundary_ids;
+}
+
 }  // namespace wg
