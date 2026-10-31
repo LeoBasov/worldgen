@@ -45,7 +45,10 @@ int Parser::parse_args(std::vector<std::string> args, Config& config, std::ostre
                 params.push_back(args.at(i));
             }
 
-            if (params.size() == 3) {
+            if (params.size() == 1) {
+                out << "setting N rivers to: " << params.at(0) << std::endl;
+                config.hydrography.n_rivers = std::stoi(params.at(0));
+            } else if (params.size() == 3) {
                 out << "setting N rivers to: " << params.at(0) << std::endl;
                 config.hydrography.n_rivers = std::stoi(params.at(0));
 
