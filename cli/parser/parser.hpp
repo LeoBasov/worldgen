@@ -2,6 +2,7 @@
 
 #include <exception>
 #include <iostream>
+#include <random>
 #include <vector>
 
 #include "../../src/data/config.hpp"
