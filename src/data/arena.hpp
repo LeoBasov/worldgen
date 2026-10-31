@@ -26,9 +26,6 @@ class Arena {
 
    private:
     Field field;
-
-    void track_river(int idx, double sea_level);
-    void fill_lake(int idx, double sea_level);
 };
 
 }  // namespace wg
