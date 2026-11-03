@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Check out the code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install dependencies
         run: |
@@ -19,3 +19,35 @@ jobs:
 
       - name: Configure, build and test
         run: cmake --workflow --preset debug
+
+  coverage:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v5
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build doctest-dev
+          pipx install gcovr==8.4
+
+      - name: Configure, build and test with coverage
+        run: cmake --workflow --preset coverage
+
+      - name: Generate coverage report
+        run: |
+          mkdir -p coverage
+          gcovr --root . --filter src/ --filter cli/ \
+                --exclude-throw-branches --exclude-unreachable-branches \
+                --txt \
+                --markdown-summary coverage-summary.md \
+                --html-details coverage/index.html
+          cat coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v6
+        with:
+          name: coverage-report
+          path: coverage/
