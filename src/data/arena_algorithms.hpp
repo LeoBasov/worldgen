@@ -16,5 +16,6 @@ std::vector<int> get_lake_boundary_ids(const std::vector<int>& lake_ids, const s
 void track_river(int idx, double sea_level, const int size_x, const int size_y, std::vector<Element>& elements);
 void fill_lake(int idx, double sea_level, const int size_x, const int size_y, std::vector<Element>& elements);
 std::vector<double> calc_2dgradients(const int size_x, const int size_y, const std::vector<Element>& elements);
+std::vector<double> calc_2dgradients_norms(const std::vector<double>& gradients);
 
 }  // namespace wg

@@ -200,4 +200,15 @@ std::vector<double> calc_2dgradients(const int size_x, const int size_y, const s
     return gradients;
 }
 
+std::vector<double> calc_2dgradients_norms(const std::vector<double>& gradients) {
+    const int length = gradients.size() / 2;
+    std::vector<double> norms(length, 0.0);
+
+    for (int i = 0; i < length; i++) {
+        norms.at(i) = std::sqrt(std::pow(gradients.at(i), 2) + std::pow(gradients.at(length + i), 2));
+    }
+
+    return norms;
+}
+
 }  // namespace wg

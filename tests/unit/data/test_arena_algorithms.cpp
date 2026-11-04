@@ -258,11 +258,11 @@ TEST_CASE("track_river") {
 
 TEST_CASE("calc_2dgradients") {
     /*
-+--→ x
-|
-↓
-y
-*/
+    +--→ x
+    |
+    ↓
+    y
+    */
 
     /*
     0----1----2
@@ -334,4 +334,55 @@ y
     CHECK(grady_12 == 12.0);
     CHECK(gradx_22 == 8.0);
     CHECK(grady_22 == 18.0);
+}
+
+TEST_CASE("calc_2dgradients_norms") {
+    /*
+    +--→ x
+    |
+    ↓
+    y
+    */
+
+    /*
+    0----1----2
+    |    |    |
+    3----4----5
+    |    |    |
+    6----7----8
+    */
+
+    wg::Field field;
+    const int size_x = 3;
+    const int size_y = 3;
+    const int tot = size_x * size_y;
+
+    field.resize(size_x, size_y);
+
+    field.get_element(0, 0).elevation = 1.0;
+    field.get_element(1, 0).elevation = 3.0;
+    field.get_element(2, 0).elevation = 5.0;
+
+    field.get_element(0, 1).elevation = 7.0;
+    field.get_element(1, 1).elevation = 11.0;
+    field.get_element(2, 1).elevation = 13.0;
+
+    field.get_element(0, 2).elevation = 17.0;
+    field.get_element(1, 2).elevation = 23.0;
+    field.get_element(2, 2).elevation = 31.0;
+
+    const std::vector<double> gradients = calc_2dgradients(size_x, size_y, field.elements);
+    std::vector<double> norms = wg::calc_2dgradients_norms(gradients);
+
+    CHECK(norms.at(0) == std::sqrt(4 + 36));
+    CHECK(norms.at(1) == std::sqrt(4 + 8 * 8));
+    CHECK(norms.at(2) == std::sqrt(4 + 8 * 8));
+
+    CHECK(norms.at(3) == std::sqrt(16 + 8 * 8));
+    CHECK(norms.at(4) == std::sqrt(9 + 100));
+    CHECK(norms.at(5) == std::sqrt(4 + 13 * 13));
+
+    CHECK(norms.at(6) == std::sqrt(36 + 100));
+    CHECK(norms.at(7) == std::sqrt(49 + 12 * 12));
+    CHECK(norms.at(8) == std::sqrt(64 + 18 * 18));
 }
