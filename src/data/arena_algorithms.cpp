@@ -23,7 +23,8 @@ std::vector<int> get_neighbour_ids(const int id, const int size_x, const int siz
     return {id_right, id_right_up, id_up, id_up_left, id_left, id_left_dowd, id_down, id_down_right};
 }
 
-std::vector<double> calc_gradients(int id, std::vector<int> neighbour_ids, const std::vector<Element>& elements) {
+std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids,
+                                   const std::vector<Element>& elements) {
     std::vector<double> gradients(8);
 
     gradients.at(0) = elements.at(neighbour_ids.at(0)).elevation - elements.at(id).elevation;
@@ -41,7 +42,7 @@ std::vector<double> calc_gradients(int id, std::vector<int> neighbour_ids, const
     return gradients;
 }
 
-std::vector<int> get_lake_boundary_ids(std::vector<int> lake_ids, const std::vector<Element>& elements,
+std::vector<int> get_lake_boundary_ids(const std::vector<int>& lake_ids, const std::vector<Element>& elements,
                                        const int size_x, const int size_y) {
     std::vector<int> lake_boundary_ids;
 
@@ -150,6 +151,53 @@ void fill_lake(int idx, double sea_level, const int size_x, const int size_y, st
             }
         }
     }
+}
+
+std::vector<double> calc_2dgradients(const int size_x, const int size_y, const std::vector<Element>& elements) {
+    std::vector<double> gradients(size_x * size_y * 2, 0.0);
+
+    for (int x = 0; x < size_x; x++) {
+        for (int y = 0; y < size_y; y++) {
+            const int id = size_x * y + x;
+            const std::vector<int> neighbour_ids = get_neighbour_ids(id, size_x, size_y);
+            const double e_center = elements.at(id).elevation;
+            const double e_right = elements.at(neighbour_ids.at(0)).elevation;
+            const double e_top = elements.at(neighbour_ids.at(2)).elevation;
+            const double e_left = elements.at(neighbour_ids.at(4)).elevation;
+            const double e_buttom = elements.at(neighbour_ids.at(6)).elevation;
+
+            if (x == 0 && y == 0) {
+                gradients.at(id) = (e_right - e_center);
+                gradients.at(size_x * size_y + id) = (e_top - e_center);
+            } else if (x == (size_x - 1) && y == (size_y - 1)) {
+                gradients.at(id) = (e_center - e_left);
+                gradients.at(size_x * size_y + id) = (e_center - e_buttom);
+            } else if (x == (size_x - 1) && y == 0) {
+                gradients.at(id) = (e_center - e_left);
+                gradients.at(size_x * size_y + id) = (e_top - e_center);
+            } else if (x == 0 && y == (size_y - 1)) {
+                gradients.at(id) = (e_right - e_center);
+                gradients.at(size_x * size_y + id) = (e_center - e_buttom);
+            } else if (x == 0) {
+                gradients.at(id) = (e_right - e_center);
+                gradients.at(size_x * size_y + id) = (e_top - e_buttom) * 0.5;
+            } else if (y == 0) {
+                gradients.at(id) = (e_right - e_left) * 0.5;
+                gradients.at(size_x * size_y + id) = (e_top - e_center);
+            } else if (x == (size_x - 1)) {
+                gradients.at(id) = (e_center - e_left);
+                gradients.at(size_x * size_y + id) = (e_top - e_buttom) * 0.5;
+            } else if (y == (size_y - 1)) {
+                gradients.at(id) = (e_right - e_left) * 0.5;
+                gradients.at(size_x * size_y + id) = (e_center - e_buttom);
+            } else {
+                gradients.at(id) = (e_right - e_left) * 0.5;
+                gradients.at(size_x * size_y + id) = (e_top - e_buttom) * 0.5;
+            }
+        }
+    }
+
+    return gradients;
 }
 
 }  // namespace wg
