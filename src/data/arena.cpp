@@ -46,6 +46,24 @@ void Arena::create_rivers(Config::Hydrography hydrography, Config::Noise noise) 
     }
 }
 
+void Arena::calc_attraktivness_factor(Config::Hydrography hydrography) {
+    const std::vector<double> gradients = calc_2dgradients(field.size_x, field.size_y, field.elements);
+    const std::vector<double> nomrs = calc_2dgradients_norms(gradients);
+
+    for (int i = 0; i < field.size_x * field.size_y; i++) {
+        Element& element = field.elements.at(i);
+
+        if (element.elevation < hydrography.sea_level || element.is_river || element.is_lake) {
+            element.attraktivness_factor = 0.0;
+        } else {
+            const double E = element.elevation;
+            const double W = 1.0 / (1.0 + nomrs.at(i));
+            const double G = 0.0;  // ToDo: look for water
+            element.attraktivness_factor = E + W + G;
+        }
+    }
+}
+
 Element& Arena::get_element(int x, int y) { return field.elements.at(field.size_x * y + x); }
 
 Element Arena::get_element(int x, int y) const { return field.elements.at(field.size_x * y + x); }

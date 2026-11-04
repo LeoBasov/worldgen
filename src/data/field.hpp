@@ -6,6 +6,7 @@ namespace wg
 {
 
 struct Element {
+    double attraktivness_factor = 0.0;
     double elevation = 0.0;
     bool is_river = false;
     bool is_lake = false;
