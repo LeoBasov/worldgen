@@ -168,31 +168,31 @@ std::vector<double> calc_2dgradients(const int size_x, const int size_y, const s
 
             if (x == 0 && y == 0) {
                 gradients.at(id) = (e_right - e_center);
-                gradients.at(size_x * size_y + id) = (e_top - e_center);
+                gradients.at(size_x * size_y + id) = (e_buttom - e_center);
             } else if (x == (size_x - 1) && y == (size_y - 1)) {
                 gradients.at(id) = (e_center - e_left);
-                gradients.at(size_x * size_y + id) = (e_center - e_buttom);
+                gradients.at(size_x * size_y + id) = (e_center - e_top);
             } else if (x == (size_x - 1) && y == 0) {
                 gradients.at(id) = (e_center - e_left);
-                gradients.at(size_x * size_y + id) = (e_top - e_center);
+                gradients.at(size_x * size_y + id) = (e_buttom - e_center);
             } else if (x == 0 && y == (size_y - 1)) {
                 gradients.at(id) = (e_right - e_center);
-                gradients.at(size_x * size_y + id) = (e_center - e_buttom);
+                gradients.at(size_x * size_y + id) = (e_center - e_top);
             } else if (x == 0) {
                 gradients.at(id) = (e_right - e_center);
-                gradients.at(size_x * size_y + id) = (e_top - e_buttom) * 0.5;
+                gradients.at(size_x * size_y + id) = (e_buttom - e_top) * 0.5;
             } else if (y == 0) {
                 gradients.at(id) = (e_right - e_left) * 0.5;
-                gradients.at(size_x * size_y + id) = (e_top - e_center);
+                gradients.at(size_x * size_y + id) = (e_buttom - e_center);
             } else if (x == (size_x - 1)) {
                 gradients.at(id) = (e_center - e_left);
-                gradients.at(size_x * size_y + id) = (e_top - e_buttom) * 0.5;
+                gradients.at(size_x * size_y + id) = (e_buttom - e_top) * 0.5;
             } else if (y == (size_y - 1)) {
                 gradients.at(id) = (e_right - e_left) * 0.5;
-                gradients.at(size_x * size_y + id) = (e_center - e_buttom);
+                gradients.at(size_x * size_y + id) = (e_center - e_top);
             } else {
                 gradients.at(id) = (e_right - e_left) * 0.5;
-                gradients.at(size_x * size_y + id) = (e_top - e_buttom) * 0.5;
+                gradients.at(size_x * size_y + id) = (e_buttom - e_top) * 0.5;
             }
         }
     }
