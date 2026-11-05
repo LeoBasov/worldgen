@@ -49,6 +49,19 @@ std::vector<int> Field::get_neighbourhood(const int id, const int size, const Ne
             break;
         }
         case Neighbourhood::MOORE: {
+            const int length = 2 * size + 1;
+            int counter = 0;
+
+            neighbourhood.resize(length * length);
+
+            for (int iy = 0; iy < length; iy++) {
+                for (int ix = 0; ix < length; ix++) {
+                    const int neighbourhood_id = get_element_id(x + ix - size, y + iy - size);
+
+                    neighbourhood.at(counter++) = neighbourhood_id;
+                }
+            }
+
             break;
         }
         default: {
