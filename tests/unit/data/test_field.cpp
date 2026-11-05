@@ -14,6 +14,43 @@ TEST_CASE("resize") {
     CHECK(field.elements.size() == x * y);
 }
 
+TEST_CASE("get_id_coordinates") {
+    wg::Field field;
+    const int x = 3;
+    const int y = 4;
+
+    field.resize(x, y);
+
+    // center elements
+    CHECK(field.get_id_coordinates(0).first == 0);
+    CHECK(field.get_id_coordinates(0).second == 0);
+    CHECK(field.get_id_coordinates(1).first == 1);
+    CHECK(field.get_id_coordinates(1).second == 0);
+    CHECK(field.get_id_coordinates(2).first == 2);
+    CHECK(field.get_id_coordinates(2).second == 0);
+
+    CHECK(field.get_id_coordinates(3).first == 0);
+    CHECK(field.get_id_coordinates(3).second == 1);
+    CHECK(field.get_id_coordinates(4).first == 1);
+    CHECK(field.get_id_coordinates(4).second == 1);
+    CHECK(field.get_id_coordinates(5).first == 2);
+    CHECK(field.get_id_coordinates(5).second == 1);
+
+    CHECK(field.get_id_coordinates(6).first == 0);
+    CHECK(field.get_id_coordinates(6).second == 2);
+    CHECK(field.get_id_coordinates(7).first == 1);
+    CHECK(field.get_id_coordinates(7).second == 2);
+    CHECK(field.get_id_coordinates(8).first == 2);
+    CHECK(field.get_id_coordinates(8).second == 2);
+
+    CHECK(field.get_id_coordinates(9).first == 0);
+    CHECK(field.get_id_coordinates(9).second == 3);
+    CHECK(field.get_id_coordinates(10).first == 1);
+    CHECK(field.get_id_coordinates(10).second == 3);
+    CHECK(field.get_id_coordinates(11).first == 2);
+    CHECK(field.get_id_coordinates(11).second == 3);
+}
+
 TEST_CASE("get_element_id") {
     wg::Field field;
     const int x = 3;

@@ -8,6 +8,14 @@ void Field::resize(int x, int y) {
     elements = std::vector<Element>(size_x * size_y);
 }
 
+std::pair<int, int> Field::get_id_coordinates(const int id) const {
+    if (id < 0 || id > elements.size()) {
+        throw std::domain_error("id out of bounds");
+    }
+
+    return {id % size_x, id / size_x};
+}
+
 int Field::get_element_id(int x, int y) const {
     if (x < 0 || x >= size_x || y < 0 || y >= size_y) {
         return -1;
@@ -30,8 +38,24 @@ Element Field::get_element(int x, int y) const {
 
 std::vector<int> Field::get_neighbourhood(const int id, const int size, const Neighbourhood type) const {
     std::vector<int> neighbourhood;
+    auto [x, y] = get_id_coordinates(id);
 
-    // ToDo
+    if (size < 1) {
+        throw std::domain_error("zero or negative neighbourhood size");
+    }
+
+    switch (type) {
+        case Neighbourhood::NEUMANN: {
+            break;
+        }
+        case Neighbourhood::MOORE: {
+            break;
+        }
+        default: {
+            throw std::domain_error("unrecognized neighbourhood type");
+            break;
+        }
+    }
 
     return neighbourhood;
 }

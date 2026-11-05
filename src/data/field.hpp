@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 #include <vector>
 
 namespace wg
@@ -20,6 +21,7 @@ struct Field{
     size_t size_x = 0, size_y = 0;
 
     void resize(int x, int y);
+    std::pair<int, int> get_id_coordinates(const int id) const;
     int get_element_id(int x, int y) const;
     Element& get_element(int x, int y);
     Element get_element(int x, int y) const;
