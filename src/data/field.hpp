@@ -16,6 +16,7 @@ struct Element {
 
 struct Field{
     enum NeighbourhoodType { NEUMANN, MOORE };
+    enum Property { ELEVATION };
 
     std::vector<Element> elements;
     size_t size_x = 0, size_y = 0;
@@ -26,6 +27,7 @@ struct Field{
     Element& get_element(int x, int y);
     Element get_element(int x, int y) const;
     std::vector<int> get_neighbourhood(const int id, const int size, const NeighbourhoodType type) const;
+    std::vector<double> calc_gradients(const Property property) const;
 };
 
 } // namespace wg

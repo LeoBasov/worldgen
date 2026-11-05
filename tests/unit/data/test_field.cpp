@@ -232,3 +232,83 @@ TEST_CASE("get_neighbourhood_neumann") {
     CHECK(neighbourhood_ids2.at(23) == -1);
     CHECK(neighbourhood_ids2.at(24) == -1);
 }
+
+TEST_CASE("calc_gradients") {
+    /*
+    +--→ x
+    |
+    ↓
+    y
+    */
+
+    /*
+    0----1----2
+    |    |    |
+    3----4----5
+    |    |    |
+    6----7----8
+    */
+
+    wg::Field field;
+    const int size_x = 3;
+    const int size_y = 3;
+    const int tot = size_x * size_y;
+
+    field.resize(size_x, size_y);
+
+    field.get_element(0, 0).elevation = 1.0;
+    field.get_element(1, 0).elevation = 3.0;
+    field.get_element(2, 0).elevation = 5.0;
+
+    field.get_element(0, 1).elevation = 7.0;
+    field.get_element(1, 1).elevation = 11.0;
+    field.get_element(2, 1).elevation = 13.0;
+
+    field.get_element(0, 2).elevation = 17.0;
+    field.get_element(1, 2).elevation = 23.0;
+    field.get_element(2, 2).elevation = 31.0;
+
+    const std::vector<double> gradients = field.calc_gradients(wg::Field::Property::ELEVATION);
+
+    const double gradx_00 = gradients.at(0);
+    const double grady_00 = gradients.at(tot + 0);
+    const double gradx_10 = gradients.at(1);
+    const double grady_10 = gradients.at(tot + 1);
+    const double gradx_20 = gradients.at(2);
+    const double grady_20 = gradients.at(tot + 2);
+
+    const double gradx_01 = gradients.at(3);
+    const double grady_01 = gradients.at(tot + 3);
+    const double gradx_11 = gradients.at(4);
+    const double grady_11 = gradients.at(tot + 4);
+    const double gradx_21 = gradients.at(5);
+    const double grady_21 = gradients.at(tot + 5);
+
+    const double gradx_02 = gradients.at(6);
+    const double grady_02 = gradients.at(tot + 6);
+    const double gradx_12 = gradients.at(7);
+    const double grady_12 = gradients.at(tot + 7);
+    const double gradx_22 = gradients.at(8);
+    const double grady_22 = gradients.at(tot + 8);
+
+    CHECK(gradx_00 == 2.0);
+    CHECK(grady_00 == 6.0);
+    CHECK(gradx_10 == 2.0);
+    CHECK(grady_10 == 8.0);
+    CHECK(gradx_20 == 2.0);
+    CHECK(grady_20 == 8.0);
+
+    CHECK(gradx_01 == 4.0);
+    CHECK(grady_01 == 8.0);
+    CHECK(gradx_11 == 3.0);
+    CHECK(grady_11 == 10.0);
+    CHECK(gradx_21 == 2.0);
+    CHECK(grady_21 == 13.0);
+
+    CHECK(gradx_02 == 6.0);
+    CHECK(grady_02 == 10.0);
+    CHECK(gradx_12 == 7.0);
+    CHECK(grady_12 == 12.0);
+    CHECK(gradx_22 == 8.0);
+    CHECK(grady_22 == 18.0);
+}

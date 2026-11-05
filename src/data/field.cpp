@@ -90,4 +90,63 @@ std::vector<int> Field::get_neighbourhood(const int id, const int size, const Ne
     return neighbourhood;
 }
 
+std::vector<double> Field::calc_gradients(const Property property) const {
+    std::vector<double> gradients(size_x * size_y * 2, 0.0);
+
+    for (int x = 0; x < size_x; x++) {
+        for (int y = 0; y < size_y; y++) {
+            const int id = get_element_id(x, y);
+            const std::vector<int> neighbour_ids = get_neighbourhood(id, 1, NEUMANN);
+            double e_center = 0.0;
+            double e_right = 0.0;
+            double e_top = 0.0;
+            double e_left = 0.0;
+            double e_buttom = 0.0;
+
+            switch (property) {
+                case ELEVATION:
+                    e_center = elements.at(id).elevation;
+                    e_right = neighbour_ids.at(5) >= 0 ? elements.at(neighbour_ids.at(5)).elevation : 0.0;
+                    e_top = neighbour_ids.at(1) >= 0 ? elements.at(neighbour_ids.at(1)).elevation : 0.0;
+                    e_left = neighbour_ids.at(3) >= 0 ? elements.at(neighbour_ids.at(3)).elevation : 0.0;
+                    e_buttom = neighbour_ids.at(7) >= 0 ? elements.at(neighbour_ids.at(7)).elevation : 0.0;
+                    break;
+                default:
+                    break;
+            }
+
+            if (x == 0 && y == 0) {
+                gradients.at(id) = (e_right - e_center);
+                gradients.at(size_x * size_y + id) = (e_buttom - e_center);
+            } else if (x == (size_x - 1) && y == (size_y - 1)) {
+                gradients.at(id) = (e_center - e_left);
+                gradients.at(size_x * size_y + id) = (e_center - e_top);
+            } else if (x == (size_x - 1) && y == 0) {
+                gradients.at(id) = (e_center - e_left);
+                gradients.at(size_x * size_y + id) = (e_buttom - e_center);
+            } else if (x == 0 && y == (size_y - 1)) {
+                gradients.at(id) = (e_right - e_center);
+                gradients.at(size_x * size_y + id) = (e_center - e_top);
+            } else if (x == 0) {
+                gradients.at(id) = (e_right - e_center);
+                gradients.at(size_x * size_y + id) = (e_buttom - e_top) * 0.5;
+            } else if (y == 0) {
+                gradients.at(id) = (e_right - e_left) * 0.5;
+                gradients.at(size_x * size_y + id) = (e_buttom - e_center);
+            } else if (x == (size_x - 1)) {
+                gradients.at(id) = (e_center - e_left);
+                gradients.at(size_x * size_y + id) = (e_buttom - e_top) * 0.5;
+            } else if (y == (size_y - 1)) {
+                gradients.at(id) = (e_right - e_left) * 0.5;
+                gradients.at(size_x * size_y + id) = (e_center - e_top);
+            } else {
+                gradients.at(id) = (e_right - e_left) * 0.5;
+                gradients.at(size_x * size_y + id) = (e_buttom - e_top) * 0.5;
+            }
+        }
+    }
+
+    return gradients;
+}
+
 } // namespace wg
