@@ -45,10 +45,10 @@ std::vector<int> get_lake_boundary_ids(const std::vector<int>& lake_ids, const F
     std::vector<int> lake_boundary_ids;
 
     for (auto id : lake_ids) {
-        const std::vector<int> neighbour_ids = get_neighbour_ids(id, field.size_x, field.size_y);
+        const std::vector<int> neighbour_ids = field.get_neighbourhood(id, 1, Field::NeighbourhoodType::MOORE);
 
         for (auto ne_id : neighbour_ids) {
-            if (!field.elements.at(ne_id).is_lake &&
+            if (ne_id >= 0 && !field.elements.at(ne_id).is_lake &&
                 std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), ne_id) == lake_boundary_ids.end()) {
                 lake_boundary_ids.push_back(ne_id);
             }
