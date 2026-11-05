@@ -9,18 +9,19 @@ void Field::resize(int x, int y) {
 }
 
 void Field::calc_gradients(const Property property) {
-    for (int x = 0; x < size_x; x++) {
-        for (int y = 0; y < size_y; y++) {
+    // y outer / x inner to walk elements in memory order (id = size_x * y + x)
+    for (int y = 0; y < size_y; y++) {
+        for (int x = 0; x < size_x; x++) {
             const int id = get_element_id(x, y);
-            const std::vector<int> neighbour_ids = get_neighbourhood(id, 1, NEUMANN);
 
             switch (property) {
                 case ELEVATION: {
-                    const double e_center = elements.at(id).elevation;
-                    const double e_right = neighbour_ids.at(5) >= 0 ? elements.at(neighbour_ids.at(5)).elevation : 0.0;
-                    const double e_top = neighbour_ids.at(1) >= 0 ? elements.at(neighbour_ids.at(1)).elevation : 0.0;
-                    const double e_left = neighbour_ids.at(3) >= 0 ? elements.at(neighbour_ids.at(3)).elevation : 0.0;
-                    const double e_buttom = neighbour_ids.at(7) >= 0 ? elements.at(neighbour_ids.at(7)).elevation : 0.0;
+                    // direct von Neumann neighbour lookup (out of bounds -> 0.0)
+                    const double e_center = elements[id].elevation;
+                    const double e_right = x + 1 < size_x ? elements[id + 1].elevation : 0.0;
+                    const double e_top = y > 0 ? elements[id - size_x].elevation : 0.0;
+                    const double e_left = x > 0 ? elements[id - 1].elevation : 0.0;
+                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].elevation : 0.0;
 
                     if (x == 0 && y == 0) {
                         elements.at(id).delevation_dx = (e_right - e_center);
@@ -57,6 +58,7 @@ void Field::calc_gradients(const Property property) {
                         elements.at(id).delevation_dx / elements.at(id).elevation_gradient_norm;
                     elements.at(id).delevation_dy_norm =
                         elements.at(id).delevation_dy / elements.at(id).elevation_gradient_norm;
+                    break;
                 }
                 default: {
                     break;
