@@ -291,6 +291,18 @@ TEST_CASE("calc_gradients") {
     const double gradx_22 = field.elements.at(8).delevation_dx;
     const double grady_22 = field.elements.at(8).delevation_dy;
 
+    const double grad_norm_00 = field.elements.at(0).elevation_gradient_norm;
+    const double grad_norm_10 = field.elements.at(1).elevation_gradient_norm;
+    const double grad_norm_20 = field.elements.at(2).elevation_gradient_norm;
+
+    const double grad_norm_01 = field.elements.at(3).elevation_gradient_norm;
+    const double grad_norm_11 = field.elements.at(4).elevation_gradient_norm;
+    const double grad_norm_21 = field.elements.at(5).elevation_gradient_norm;
+
+    const double grad_norm_02 = field.elements.at(6).elevation_gradient_norm;
+    const double grad_norm_12 = field.elements.at(7).elevation_gradient_norm;
+    const double grad_norm_22 = field.elements.at(8).elevation_gradient_norm;
+
     CHECK(gradx_00 == 2.0);
     CHECK(grady_00 == 6.0);
     CHECK(gradx_10 == 2.0);
@@ -311,4 +323,16 @@ TEST_CASE("calc_gradients") {
     CHECK(grady_12 == 12.0);
     CHECK(gradx_22 == 8.0);
     CHECK(grady_22 == 18.0);
+
+    CHECK(grad_norm_00 == std::sqrt(std::pow(gradx_00, 2) + std::pow(grady_00, 2)));
+    CHECK(grad_norm_10 == std::sqrt(std::pow(gradx_10, 2) + std::pow(grady_10, 2)));
+    CHECK(grad_norm_10 == std::sqrt(std::pow(gradx_10, 2) + std::pow(grady_10, 2)));
+
+    CHECK(grad_norm_01 == std::sqrt(std::pow(gradx_01, 2) + std::pow(grady_01, 2)));
+    CHECK(grad_norm_11 == std::sqrt(std::pow(gradx_11, 2) + std::pow(grady_11, 2)));
+    CHECK(grad_norm_11 == std::sqrt(std::pow(gradx_11, 2) + std::pow(grady_11, 2)));
+
+    CHECK(grad_norm_02 == std::sqrt(std::pow(gradx_02, 2) + std::pow(grady_02, 2)));
+    CHECK(grad_norm_12 == std::sqrt(std::pow(gradx_12, 2) + std::pow(grady_12, 2)));
+    CHECK(grad_norm_12 == std::sqrt(std::pow(gradx_12, 2) + std::pow(grady_12, 2)));
 }

@@ -50,6 +50,9 @@ void Field::calc_gradients(const Property property) {
                         elements.at(id).delevation_dx = (e_right - e_left) * 0.5;
                         elements.at(id).delevation_dy = (e_buttom - e_top) * 0.5;
                     }
+
+                    elements.at(id).elevation_gradient_norm = std::sqrt(std::pow(elements.at(id).delevation_dx, 2) +
+                                                                        std::pow(elements.at(id).delevation_dy, 2));
                 }
                 default: {
                     break;
