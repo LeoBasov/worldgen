@@ -48,8 +48,7 @@ void Arena::create_rivers(Config::Hydrography hydrography, Config::Noise noise) 
 }
 
 void Arena::calc_attractiveness_factor(Config::Hydrography hydrography) {
-    field.calc_gradients(Field::Property::ELEVATION);
-
+    // relies on the elevation gradients computed in add_noise (rivers/lakes don't change elevation)
     for (int i = 0; i < field.size_x * field.size_y; i++) {
         Element& element = field.elements.at(i);
 
@@ -68,7 +67,7 @@ void Arena::calc_attractiveness_factor(Config::Hydrography hydrography) {
 
 Element& Arena::get_element(int x, int y) { return field.elements.at(field.size_x * y + x); }
 
-Element Arena::get_element(int x, int y) const { return field.elements.at(field.size_x * y + x); }
+const Element& Arena::get_element(int x, int y) const { return field.elements.at(field.size_x * y + x); }
 
 size_t Arena::get_size_x() const { return field.size_x; }
 
