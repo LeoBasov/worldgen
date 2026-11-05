@@ -7,8 +7,8 @@ namespace wg
 {
 
 struct Element {
-    // attraktivness_factor
-    double attraktivness_factor = 0.0;
+    // attractiveness
+    double attractiveness_factor = 0.0;
 
     // elevation
     double elevation = 0.0;
@@ -23,7 +23,7 @@ struct Element {
 
 struct Field{
     enum NeighbourhoodType { NEUMANN, MOORE };
-    enum Property { ELEVATION };
+    enum Property { ELEVATION, ATTRACTIVENESS };
 
     std::vector<Element> elements;
     size_t size_x = 0, size_y = 0;
