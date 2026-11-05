@@ -15,7 +15,7 @@ struct Element {
 };
 
 struct Field{
-    enum Neighbourhood { NEUMANN, MOORE };
+    enum NeighbourhoodType { NEUMANN, MOORE };
 
     std::vector<Element> elements;
     size_t size_x = 0, size_y = 0;
@@ -25,7 +25,7 @@ struct Field{
     int get_element_id(int x, int y) const;
     Element& get_element(int x, int y);
     Element get_element(int x, int y) const;
-    std::vector<int> get_neighbourhood(const int id, const int size, const Neighbourhood type) const;
+    std::vector<int> get_neighbourhood(const int id, const int size, const NeighbourhoodType type) const;
 };
 
 } // namespace wg

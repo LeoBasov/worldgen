@@ -36,7 +36,7 @@ Element Field::get_element(int x, int y) const {
     return elements.at(element_id);
 }
 
-std::vector<int> Field::get_neighbourhood(const int id, const int size, const Neighbourhood type) const {
+std::vector<int> Field::get_neighbourhood(const int id, const int size, const NeighbourhoodType type) const {
     std::vector<int> neighbourhood;
     const auto [x, y] = get_id_coordinates(id);
 
@@ -45,10 +45,10 @@ std::vector<int> Field::get_neighbourhood(const int id, const int size, const Ne
     }
 
     switch (type) {
-        case Neighbourhood::NEUMANN: {
+        case NeighbourhoodType::NEUMANN: {
             break;
         }
-        case Neighbourhood::MOORE: {
+        case NeighbourhoodType::MOORE: {
             const int length = 2 * size + 1;
             int counter = 0;
 

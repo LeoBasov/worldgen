@@ -115,9 +115,9 @@ TEST_CASE("get_neighbourhood_moore") {
     const int neighbourhood_size1 = 1;
     const int neighbourhood_size2 = 2;
     const std::vector<int> neighbourhood_ids1 =
-        field.get_neighbourhood(id1, neighbourhood_size1, wg::Field::Neighbourhood::MOORE);
+        field.get_neighbourhood(id1, neighbourhood_size1, wg::Field::NeighbourhoodType::MOORE);
     const std::vector<int> neighbourhood_ids2 =
-        field.get_neighbourhood(id2, neighbourhood_size2, wg::Field::Neighbourhood::MOORE);
+        field.get_neighbourhood(id2, neighbourhood_size2, wg::Field::NeighbourhoodType::MOORE);
 
     // check size
     CHECK(neighbourhood_ids1.size() == 9);
