@@ -38,7 +38,7 @@ Element Field::get_element(int x, int y) const {
 
 std::vector<int> Field::get_neighbourhood(const int id, const int size, const Neighbourhood type) const {
     std::vector<int> neighbourhood;
-    auto [x, y] = get_id_coordinates(id);
+    const auto [x, y] = get_id_coordinates(id);
 
     if (size < 1) {
         throw std::domain_error("zero or negative neighbourhood size");
