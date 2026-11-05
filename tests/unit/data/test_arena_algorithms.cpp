@@ -222,6 +222,9 @@ TEST_CASE("track_river") {
 
     field.elements.at(8).elevation = 3.0;
 
+    field.elements.at(3).elevation = 9.0;
+    field.elements.at(9).elevation = 9.0;
+
     field.elements.at(7).elevation = 4.0;
     field.elements.at(12).elevation = 6.0;
     field.elements.at(13).elevation = 5.0;
@@ -229,15 +232,12 @@ TEST_CASE("track_river") {
     field.elements.at(16).elevation = 3.0;
     field.elements.at(20).elevation = 1.0;
 
+    field.calc_gradients(wg::Field::Property::ELEVATION);
     track_river(start_id, sea_level, field);
 
-    CHECK(field.elements.at(start_id).is_river);
-    CHECK(!field.elements.at(start_id).is_lake);
-    CHECK(!field.elements.at(start_id).is_trapped);
-
-    CHECK(!field.elements.at(7).is_river);
-    CHECK(field.elements.at(7).is_lake);
-    CHECK(!field.elements.at(7).is_trapped);
+    CHECK(field.elements.at(4).is_river);
+    CHECK(!field.elements.at(4).is_lake);
+    CHECK(!field.elements.at(4).is_trapped);
 
     CHECK(!field.elements.at(8).is_river);
     CHECK(field.elements.at(8).is_lake);
@@ -247,11 +247,11 @@ TEST_CASE("track_river") {
     CHECK(field.elements.at(12).is_lake);
     CHECK(!field.elements.at(12).is_trapped);
 
-    CHECK(!field.elements.at(13).is_river);
-    CHECK(field.elements.at(13).is_lake);
-    CHECK(!field.elements.at(13).is_trapped);
-
-    CHECK(field.elements.at(16).is_river);
-    CHECK(!field.elements.at(16).is_lake);
+    CHECK(!field.elements.at(16).is_river);
+    CHECK(field.elements.at(16).is_lake);
     CHECK(!field.elements.at(16).is_trapped);
+
+    CHECK(field.elements.at(20).is_river);
+    CHECK(!field.elements.at(20).is_lake);
+    CHECK(!field.elements.at(20).is_trapped);
 }

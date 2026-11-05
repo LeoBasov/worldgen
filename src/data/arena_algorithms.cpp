@@ -60,34 +60,29 @@ std::vector<int> get_lake_boundary_ids(const std::vector<int>& lake_ids, const F
 
 void track_river(int idx, double sea_level, Field& field) {
     field.elements.at(idx).is_river = true;
+    int idx_old = -1;
 
     while (true) {
-        const std::vector<int> neighbour_ids = get_neighbour_ids(idx, field.size_x, field.size_y);
-        const std::vector<double> gradients = calc_gradients(idx, neighbour_ids, field);
-        std::vector<size_t> grad_ids(gradients.size());
-        int idx_new = -1;
-
-        std::iota(grad_ids.begin(), grad_ids.end(), 0);
-        stable_sort(grad_ids.begin(), grad_ids.end(),
-                    [&gradients](size_t i1, size_t i2) { return gradients[i1] < gradients[i2]; });
-
-        for (int g = 0; g < grad_ids.size(); g++) {
-            const int gidx = grad_ids.at(g);
-
-            if (gradients.at(gidx) < 0.0 && neighbour_ids.at(gidx) != idx) {
-                idx_new = neighbour_ids.at(gidx);
-                break;
-            }
-        }
+        const int dx = std::round(field.elements.at(idx).delevation_dx_norm);
+        const int dy = std::round(field.elements.at(idx).delevation_dy_norm);
+        const auto [x, y] = field.get_id_coordinates(idx);
+        const int idx_new = field.get_element_id(x - dx, y - dy);
 
         if (idx_new == -1) {
+            break;
+        } else if (idx_new == idx_old) {
             field.elements.at(idx).is_river = false;
             field.elements.at(idx).is_lake = true;
             break;
         } else if (field.elements.at(idx_new).is_lake == true || field.elements.at(idx_new).is_river == true ||
                    field.elements.at(idx_new).elevation <= sea_level) {
             break;
+        } else if (field.elements.at(idx_new).elevation_gradient_norm < 1e-3) {
+            field.elements.at(idx).is_river = false;
+            field.elements.at(idx).is_lake = true;
+            break;
         } else {
+            idx_old = idx;
             idx = idx_new;
             field.elements.at(idx).is_river = true;
         }
