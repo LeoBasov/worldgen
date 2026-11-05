@@ -20,6 +20,8 @@ void Arena::add_noise(Config::Noise noise) {
 
         field.elements.at(i).elevation = perlin.octave2D_01((x * fx), (y * fy), 4);
     }
+
+    field.calc_gradients(Field::Property::ELEVATION);
 }
 
 void Arena::create_rivers(Config::Hydrography hydrography, Config::Noise noise) {
