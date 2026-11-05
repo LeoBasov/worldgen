@@ -3,8 +3,8 @@
 namespace wg {
 
 std::vector<int> get_neighbour_ids(const int id, const int size_x, const int size_y) {
-    const int x = id % size_y;
-    const int y = id / size_y;
+    const int x = id % size_x;
+    const int y = id / size_x;
 
     const bool right_condition = x < size_x - 1;
     const bool up_condition = y > 0;

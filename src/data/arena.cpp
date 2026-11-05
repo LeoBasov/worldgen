@@ -14,8 +14,7 @@ void Arena::add_noise(Config::Noise noise) {
     const siv::PerlinNoise perlin{seed};
 
     for (int i = 0; i < field.elements.size(); i++) {
-        const int x = i % field.size_y;
-        const int y = i / field.size_y;
+        const auto [x, y] = field.get_id_coordinates(i);
         const double fx = noise.frequency / field.size_x;
         const double fy = noise.frequency / field.size_y;
 
