@@ -2,7 +2,10 @@
 
 #include <algorithm>
 #include <cmath>
+#include <functional>
 #include <numeric>
+#include <queue>
+#include <unordered_set>
 #include <vector>
 
 #include "field.hpp"

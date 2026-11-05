@@ -31,13 +31,13 @@ std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids
 
 std::vector<int> get_lake_boundary_ids(const std::vector<int>& lake_ids, const Field& field) {
     std::vector<int> lake_boundary_ids;
+    std::unordered_set<int> seen;
 
     for (auto id : lake_ids) {
         const std::vector<int> neighbour_ids = field.get_neighbourhood(id, 1, Field::NeighbourhoodType::MOORE);
 
         for (auto ne_id : neighbour_ids) {
-            if (ne_id >= 0 && !field.elements.at(ne_id).is_lake &&
-                std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), ne_id) == lake_boundary_ids.end()) {
+            if (ne_id >= 0 && !field.elements.at(ne_id).is_lake && seen.insert(ne_id).second) {
                 lake_boundary_ids.push_back(ne_id);
             }
         }
@@ -82,15 +82,27 @@ void track_river(int idx, double sea_level, Field& field) {
 }
 
 void fill_lake(int idx, double sea_level, Field& field) {
+    // Priority flood: the lake boundary is kept incrementally in a min-heap ordered by
+    // (elevation, id) instead of being rebuilt after every added cell. Nothing else
+    // modifies is_lake while this lake fills, so heap entries never go stale.
+    using Entry = std::pair<double, int>;
+    std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> boundary;
+    std::unordered_set<int> seen{idx};  // lake cells of this fill + cells already pushed
     std::vector<int> lake_ids{idx};
-    bool is_filling = true;
 
-    while (is_filling) {
-        // get lake boundary
-        std::vector<int> lake_boundary_ids = get_lake_boundary_ids(lake_ids, field);
+    const auto push_boundary = [&](const std::vector<int>& neighbour_ids) {
+        for (auto ne_id : neighbour_ids) {
+            if (ne_id >= 0 && !field.elements.at(ne_id).is_lake && seen.insert(ne_id).second) {
+                boundary.emplace(field.elements.at(ne_id).elevation, ne_id);
+            }
+        }
+    };
 
+    push_boundary(field.get_neighbourhood(idx, 1, Field::NeighbourhoodType::MOORE));
+
+    while (true) {
         // ToDo: find why he gets stuck here
-        if (lake_boundary_ids.size() == 0) {
+        if (boundary.empty()) {
             for (auto id : lake_ids) {
                 field.elements.at(id).is_trapped = true;
             }
@@ -98,23 +110,18 @@ void fill_lake(int idx, double sea_level, Field& field) {
             return;
         }
 
-        // find boundary element with the smallest elevation
-        double min_elevation = 1e16;
-        int min_elev_id = -1;
-
-        for (auto id : lake_boundary_ids) {
-            if (field.elements.at(id).elevation < min_elevation) {
-                min_elevation = field.elements.at(id).elevation;
-                min_elev_id = id;
-            }
-        }
+        // boundary element with the smallest elevation
+        const int min_elev_id = boundary.top().second;
+        boundary.pop();
 
         field.elements.at(min_elev_id).is_lake = true;
         field.elements.at(min_elev_id).is_river = false;
         lake_ids.push_back(min_elev_id);
 
-        // check if it has negative slope towards an non lake cell
         const std::vector<int> neighbour_ids = field.get_neighbourhood(min_elev_id, 1, Field::NeighbourhoodType::MOORE);
+        push_boundary(neighbour_ids);
+
+        // check if it has negative slope towards an non lake cell
         const std::vector<double> gradients = calc_gradients(min_elev_id, neighbour_ids, field);
         std::vector<size_t> grad_ids(gradients.size());
 
@@ -127,8 +134,7 @@ void fill_lake(int idx, double sea_level, Field& field) {
 
             if (gradients.at(gidx) < 0.0 && !field.elements.at(neighbour_ids.at(gidx)).is_lake) {
                 track_river(neighbour_ids.at(gidx), sea_level, field);
-                is_filling = false;
-                break;
+                return;
             }
         }
     }
