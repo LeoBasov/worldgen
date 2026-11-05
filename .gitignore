@@ -72,3 +72,6 @@ Testing/
 
 # code coverage
 coverage
+
+# profiling output (gmon.out is covered by *.out)
+profile/
