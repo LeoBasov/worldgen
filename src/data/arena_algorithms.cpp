@@ -23,34 +23,32 @@ std::vector<int> get_neighbour_ids(const int id, const int size_x, const int siz
     return {id_right, id_right_up, id_up, id_up_left, id_left, id_left_dowd, id_down, id_down_right};
 }
 
-std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids,
-                                   const std::vector<Element>& elements) {
+std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids, const Field& field) {
     std::vector<double> gradients(8);
 
-    gradients.at(0) = elements.at(neighbour_ids.at(0)).elevation - elements.at(id).elevation;
-    gradients.at(1) = (elements.at(neighbour_ids.at(1)).elevation - elements.at(id).elevation) / sqrt(2.0);
+    gradients.at(0) = field.elements.at(neighbour_ids.at(0)).elevation - field.elements.at(id).elevation;
+    gradients.at(1) = (field.elements.at(neighbour_ids.at(1)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
 
-    gradients.at(2) = elements.at(neighbour_ids.at(2)).elevation - elements.at(id).elevation;
-    gradients.at(3) = (elements.at(neighbour_ids.at(3)).elevation - elements.at(id).elevation) / sqrt(2.0);
+    gradients.at(2) = field.elements.at(neighbour_ids.at(2)).elevation - field.elements.at(id).elevation;
+    gradients.at(3) = (field.elements.at(neighbour_ids.at(3)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
 
-    gradients.at(4) = elements.at(neighbour_ids.at(4)).elevation - elements.at(id).elevation;
-    gradients.at(5) = (elements.at(neighbour_ids.at(5)).elevation - elements.at(id).elevation) / sqrt(2.0);
+    gradients.at(4) = field.elements.at(neighbour_ids.at(4)).elevation - field.elements.at(id).elevation;
+    gradients.at(5) = (field.elements.at(neighbour_ids.at(5)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
 
-    gradients.at(6) = elements.at(neighbour_ids.at(6)).elevation - elements.at(id).elevation;
-    gradients.at(7) = (elements.at(neighbour_ids.at(7)).elevation - elements.at(id).elevation) / sqrt(2.0);
+    gradients.at(6) = field.elements.at(neighbour_ids.at(6)).elevation - field.elements.at(id).elevation;
+    gradients.at(7) = (field.elements.at(neighbour_ids.at(7)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
 
     return gradients;
 }
 
-std::vector<int> get_lake_boundary_ids(const std::vector<int>& lake_ids, const std::vector<Element>& elements,
-                                       const int size_x, const int size_y) {
+std::vector<int> get_lake_boundary_ids(const std::vector<int>& lake_ids, const Field& field) {
     std::vector<int> lake_boundary_ids;
 
     for (auto id : lake_ids) {
-        const std::vector<int> neighbour_ids = get_neighbour_ids(id, size_x, size_y);
+        const std::vector<int> neighbour_ids = get_neighbour_ids(id, field.size_x, field.size_y);
 
         for (auto ne_id : neighbour_ids) {
-            if (!elements.at(ne_id).is_lake &&
+            if (!field.elements.at(ne_id).is_lake &&
                 std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), ne_id) == lake_boundary_ids.end()) {
                 lake_boundary_ids.push_back(ne_id);
             }
@@ -60,12 +58,12 @@ std::vector<int> get_lake_boundary_ids(const std::vector<int>& lake_ids, const s
     return lake_boundary_ids;
 }
 
-void track_river(int idx, double sea_level, const int size_x, const int size_y, std::vector<Element>& elements) {
-    elements.at(idx).is_river = true;
+void track_river(int idx, double sea_level, Field& field) {
+    field.elements.at(idx).is_river = true;
 
     while (true) {
-        const std::vector<int> neighbour_ids = get_neighbour_ids(idx, size_x, size_y);
-        const std::vector<double> gradients = calc_gradients(idx, neighbour_ids, elements);
+        const std::vector<int> neighbour_ids = get_neighbour_ids(idx, field.size_x, field.size_y);
+        const std::vector<double> gradients = calc_gradients(idx, neighbour_ids, field);
         std::vector<size_t> grad_ids(gradients.size());
         int idx_new = -1;
 
@@ -83,35 +81,35 @@ void track_river(int idx, double sea_level, const int size_x, const int size_y, 
         }
 
         if (idx_new == -1) {
-            elements.at(idx).is_river = false;
-            elements.at(idx).is_lake = true;
+            field.elements.at(idx).is_river = false;
+            field.elements.at(idx).is_lake = true;
             break;
-        } else if (elements.at(idx_new).is_lake == true || elements.at(idx_new).is_river == true ||
-                   elements.at(idx_new).elevation <= sea_level) {
+        } else if (field.elements.at(idx_new).is_lake == true || field.elements.at(idx_new).is_river == true ||
+                   field.elements.at(idx_new).elevation <= sea_level) {
             break;
         } else {
             idx = idx_new;
-            elements.at(idx).is_river = true;
+            field.elements.at(idx).is_river = true;
         }
     }
 
-    if (elements.at(idx).is_lake) {
-        fill_lake(idx, sea_level, size_x, size_y, elements);
+    if (field.elements.at(idx).is_lake) {
+        fill_lake(idx, sea_level, field);
     }
 }
 
-void fill_lake(int idx, double sea_level, const int size_x, const int size_y, std::vector<Element>& elements) {
+void fill_lake(int idx, double sea_level, Field& field) {
     std::vector<int> lake_ids{idx};
     bool is_filling = true;
 
     while (is_filling) {
         // get lake boundary
-        std::vector<int> lake_boundary_ids = get_lake_boundary_ids(lake_ids, elements, size_x, size_y);
+        std::vector<int> lake_boundary_ids = get_lake_boundary_ids(lake_ids, field);
 
         // ToDo: find why he gets stuck here
         if (lake_boundary_ids.size() == 0) {
             for (auto id : lake_ids) {
-                elements.at(id).is_trapped = true;
+                field.elements.at(id).is_trapped = true;
             }
 
             return;
@@ -122,19 +120,19 @@ void fill_lake(int idx, double sea_level, const int size_x, const int size_y, st
         int min_elev_id = -1;
 
         for (auto id : lake_boundary_ids) {
-            if (elements.at(id).elevation < min_elevation) {
-                min_elevation = elements.at(id).elevation;
+            if (field.elements.at(id).elevation < min_elevation) {
+                min_elevation = field.elements.at(id).elevation;
                 min_elev_id = id;
             }
         }
 
-        elements.at(min_elev_id).is_lake = true;
-        elements.at(min_elev_id).is_river = false;
+        field.elements.at(min_elev_id).is_lake = true;
+        field.elements.at(min_elev_id).is_river = false;
         lake_ids.push_back(min_elev_id);
 
         // check if it has negative slope towards an non lake cell
-        const std::vector<int> neighbour_ids = get_neighbour_ids(min_elev_id, size_x, size_y);
-        const std::vector<double> gradients = calc_gradients(min_elev_id, neighbour_ids, elements);
+        const std::vector<int> neighbour_ids = get_neighbour_ids(min_elev_id, field.size_x, field.size_y);
+        const std::vector<double> gradients = calc_gradients(min_elev_id, neighbour_ids, field);
         std::vector<size_t> grad_ids(gradients.size());
 
         iota(grad_ids.begin(), grad_ids.end(), 0);
@@ -144,8 +142,8 @@ void fill_lake(int idx, double sea_level, const int size_x, const int size_y, st
         for (int g = 0; g < grad_ids.size(); g++) {
             const int gidx = grad_ids.at(g);
 
-            if (gradients.at(gidx) < 0.0 && !elements.at(neighbour_ids.at(gidx)).is_lake) {
-                track_river(neighbour_ids.at(gidx), sea_level, size_x, size_y, elements);
+            if (gradients.at(gidx) < 0.0 && !field.elements.at(neighbour_ids.at(gidx)).is_lake) {
+                track_river(neighbour_ids.at(gidx), sea_level, field);
                 is_filling = false;
                 break;
             }

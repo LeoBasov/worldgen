@@ -35,7 +35,7 @@ void Arena::create_rivers(Config::Hydrography hydrography, Config::Noise noise) 
         const bool is_river = field.elements.at(id).is_river;
 
         if (!is_river && elevation > hydrography.min_elevation && elevation < hydrography.max_elevation) {
-            track_river(id, hydrography.sea_level, field.size_x, field.size_y, field.elements);
+            track_river(id, hydrography.sea_level, field);
             counter++;
         }
 

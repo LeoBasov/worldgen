@@ -117,7 +117,7 @@ TEST_CASE("calc_gradients") {
     field.elements.at(8).elevation = 9.0;
 
     const std::vector<int> neighbour_ids = wg::get_neighbour_ids(id, size_x, size_y);
-    const std::vector<double> gradients = wg::calc_gradients(id, neighbour_ids, field.elements);
+    const std::vector<double> gradients = wg::calc_gradients(id, neighbour_ids, field);
 
     CHECK(gradients.size() == 8);
 
@@ -158,7 +158,7 @@ TEST_CASE("get_lake_boundary") {
     field.elements.at(4).is_lake = true;
     field.elements.at(5).is_lake = true;
 
-    std::vector<int> lake_boundary_ids = wg::get_lake_boundary_ids(lake_ids, field.elements, size_x, size_y);
+    std::vector<int> lake_boundary_ids = wg::get_lake_boundary_ids(lake_ids, field);
 
     CHECK(lake_boundary_ids.size() == 6);
 
@@ -229,7 +229,7 @@ TEST_CASE("track_river") {
     field.elements.at(16).elevation = 3.0;
     field.elements.at(20).elevation = 1.0;
 
-    track_river(start_id, sea_level, size_x, size_y, field.elements);
+    track_river(start_id, sea_level, field);
 
     CHECK(field.elements.at(start_id).is_river);
     CHECK(!field.elements.at(start_id).is_lake);
