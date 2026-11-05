@@ -53,6 +53,10 @@ void Field::calc_gradients(const Property property) {
 
                     elements.at(id).elevation_gradient_norm = std::sqrt(std::pow(elements.at(id).delevation_dx, 2) +
                                                                         std::pow(elements.at(id).delevation_dy, 2));
+                    elements.at(id).delevation_dx_norm =
+                        elements.at(id).delevation_dx / elements.at(id).elevation_gradient_norm;
+                    elements.at(id).delevation_dy_norm =
+                        elements.at(id).delevation_dy / elements.at(id).elevation_gradient_norm;
                 }
                 default: {
                     break;

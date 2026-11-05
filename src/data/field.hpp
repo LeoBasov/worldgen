@@ -15,6 +15,8 @@ struct Element {
     double elevation = 0.0;
     double delevation_dx = 0.0;
     double delevation_dy = 0.0;
+    double delevation_dx_norm = 0.0;
+    double delevation_dy_norm = 0.0;
     double elevation_gradient_norm = 0.0;
 
     // state flags
