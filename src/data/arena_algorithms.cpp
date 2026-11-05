@@ -2,41 +2,29 @@
 
 namespace wg {
 
-std::vector<int> get_neighbour_ids(const int id, const int size_x, const int size_y) {
-    const int x = id % size_x;
-    const int y = id / size_x;
-
-    const bool right_condition = x < size_x - 1;
-    const bool up_condition = y > 0;
-    const bool left_condition = x > 0;
-    const bool down_condition = y < size_y - 1;
-
-    const int id_right = right_condition ? size_x * y + x + 1 : id;
-    const int id_right_up = right_condition && up_condition ? size_x * (y - 1) + x + 1 : id;
-    const int id_up = up_condition ? size_x * (y - 1) + x : id;
-    const int id_up_left = up_condition && left_condition ? size_x * (y - 1) + x - 1 : id;
-    const int id_left = left_condition ? size_x * y + x - 1 : id;
-    const int id_left_dowd = left_condition && down_condition ? size_x * (y + 1) + x - 1 : id;
-    const int id_down = down_condition ? size_x * (y + 1) + x : id;
-    const int id_down_right = down_condition && right_condition ? size_x * (y + 1) + x + 1 : id;
-
-    return {id_right, id_right_up, id_up, id_up_left, id_left, id_left_dowd, id_down, id_down_right};
-}
-
 std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids, const Field& field) {
-    std::vector<double> gradients(8);
+    std::vector<double> gradients(9);
+    const double id_elevation = field.elements.at(id).elevation;
 
-    gradients.at(0) = field.elements.at(neighbour_ids.at(0)).elevation - field.elements.at(id).elevation;
-    gradients.at(1) = (field.elements.at(neighbour_ids.at(1)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
+    gradients.at(0) =
+        neighbour_ids.at(0) != -1 ? (field.elements.at(neighbour_ids.at(0)).elevation - id_elevation) / sqrt(2.0) : 0.0;
+    gradients.at(1) =
+        neighbour_ids.at(1) != -1 ? (field.elements.at(neighbour_ids.at(1)).elevation - id_elevation) : 0.0;
+    gradients.at(2) =
+        neighbour_ids.at(2) != -1 ? (field.elements.at(neighbour_ids.at(2)).elevation - id_elevation) / sqrt(2.0) : 0.0;
 
-    gradients.at(2) = field.elements.at(neighbour_ids.at(2)).elevation - field.elements.at(id).elevation;
-    gradients.at(3) = (field.elements.at(neighbour_ids.at(3)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
+    gradients.at(3) =
+        neighbour_ids.at(3) != -1 ? (field.elements.at(neighbour_ids.at(3)).elevation - id_elevation) : 0.0;
+    gradients.at(4) = 0.0;
+    gradients.at(5) =
+        neighbour_ids.at(5) != -1 ? (field.elements.at(neighbour_ids.at(5)).elevation - id_elevation) : 0.0;
 
-    gradients.at(4) = field.elements.at(neighbour_ids.at(4)).elevation - field.elements.at(id).elevation;
-    gradients.at(5) = (field.elements.at(neighbour_ids.at(5)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
-
-    gradients.at(6) = field.elements.at(neighbour_ids.at(6)).elevation - field.elements.at(id).elevation;
-    gradients.at(7) = (field.elements.at(neighbour_ids.at(7)).elevation - field.elements.at(id).elevation) / sqrt(2.0);
+    gradients.at(6) =
+        neighbour_ids.at(6) != -1 ? (field.elements.at(neighbour_ids.at(6)).elevation - id_elevation) / sqrt(2.0) : 0.0;
+    gradients.at(7) =
+        neighbour_ids.at(7) != -1 ? (field.elements.at(neighbour_ids.at(7)).elevation - id_elevation) : 0.0;
+    gradients.at(8) =
+        neighbour_ids.at(8) != -1 ? (field.elements.at(neighbour_ids.at(8)).elevation - id_elevation) / sqrt(2.0) : 0.0;
 
     return gradients;
 }
@@ -126,7 +114,7 @@ void fill_lake(int idx, double sea_level, Field& field) {
         lake_ids.push_back(min_elev_id);
 
         // check if it has negative slope towards an non lake cell
-        const std::vector<int> neighbour_ids = get_neighbour_ids(min_elev_id, field.size_x, field.size_y);
+        const std::vector<int> neighbour_ids = field.get_neighbourhood(min_elev_id, 1, Field::NeighbourhoodType::MOORE);
         const std::vector<double> gradients = calc_gradients(min_elev_id, neighbour_ids, field);
         std::vector<size_t> grad_ids(gradients.size());
 

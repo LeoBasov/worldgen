@@ -2,85 +2,6 @@
 
 #include "data/arena_algorithms.hpp"
 
-TEST_CASE("get_neighbour_ids") {
-    /*
-    +--→ x
-    |
-    ↓
-    y
-    */
-
-    /* ids
-    0---1---2
-    |   |   |
-    3---4---5
-    |   |   |
-    6---7---8
-    */
-
-    /* neighbourhood
-    3---2---1
-    |   |   |
-    4--idx--0
-    |   |   |
-    5---6---7
-    */
-
-    const int size_x = 3;
-    const int size_y = 3;
-
-    const int id_top_left = 0;
-    const int id_center = 4;
-    const int id_down_right = 8;
-    const int id_right_top = 2;
-
-    const std::vector<int> neighbours_topleft = wg::get_neighbour_ids(id_top_left, size_x, size_y);
-    const std::vector<int> neighbours_center = wg::get_neighbour_ids(id_center, size_x, size_y);
-    const std::vector<int> neighbours_down_right = wg::get_neighbour_ids(id_down_right, size_x, size_y);
-    const std::vector<int> neighbours_right_top = wg::get_neighbour_ids(id_right_top, size_x, size_y);
-
-    CHECK(neighbours_topleft.size() == 8);
-    CHECK(neighbours_center.size() == 8);
-    CHECK(neighbours_down_right.size() == 8);
-    CHECK(neighbours_right_top.size() == 8);
-
-    CHECK(neighbours_topleft.at(0) == 1);            // right
-    CHECK(neighbours_topleft.at(1) == id_top_left);  // right up
-    CHECK(neighbours_topleft.at(2) == id_top_left);  // up
-    CHECK(neighbours_topleft.at(3) == id_top_left);  // up left
-    CHECK(neighbours_topleft.at(4) == id_top_left);  // left
-    CHECK(neighbours_topleft.at(5) == id_top_left);  // left down
-    CHECK(neighbours_topleft.at(6) == 3);            // down
-    CHECK(neighbours_topleft.at(7) == 4);            // down right
-
-    CHECK(neighbours_center.at(0) == 5);  // right
-    CHECK(neighbours_center.at(1) == 2);  // right up
-    CHECK(neighbours_center.at(2) == 1);  // up
-    CHECK(neighbours_center.at(3) == 0);  // up left
-    CHECK(neighbours_center.at(4) == 3);  // left
-    CHECK(neighbours_center.at(5) == 6);  // left down
-    CHECK(neighbours_center.at(6) == 7);  // down
-    CHECK(neighbours_center.at(7) == 8);  // down right
-
-    CHECK(neighbours_down_right.at(0) == id_down_right);  // right
-    CHECK(neighbours_down_right.at(1) == id_down_right);  // right up
-    CHECK(neighbours_down_right.at(2) == 5);              // up
-    CHECK(neighbours_down_right.at(3) == 4);              // up left
-    CHECK(neighbours_down_right.at(4) == 7);              // left
-    CHECK(neighbours_down_right.at(5) == id_down_right);  // left down
-    CHECK(neighbours_down_right.at(6) == id_down_right);  // down
-    CHECK(neighbours_down_right.at(7) == id_down_right);  // down right
-
-    CHECK(neighbours_right_top.at(0) == id_right_top);  // right
-    CHECK(neighbours_right_top.at(1) == id_right_top);  // right up
-    CHECK(neighbours_right_top.at(2) == id_right_top);  // up
-    CHECK(neighbours_right_top.at(3) == id_right_top);  // up left
-    CHECK(neighbours_right_top.at(4) == 1);             // left
-    CHECK(neighbours_right_top.at(5) == 4);             // left down
-    CHECK(neighbours_right_top.at(6) == 5);             // down
-    CHECK(neighbours_right_top.at(7) == id_right_top);  // down right
-}
-
 TEST_CASE("calc_gradients") {
     /*
     +--→ x
@@ -90,11 +11,11 @@ TEST_CASE("calc_gradients") {
     */
 
     /*
-    3---2---1
+    0---1---2
     |   |   |
-    4--idx--0
+    3---4---5
     |   |   |
-    5---6---7
+    6---7---8
     */
 
     wg::Field field;
@@ -116,19 +37,22 @@ TEST_CASE("calc_gradients") {
     field.elements.at(7).elevation = 8.0;
     field.elements.at(8).elevation = 9.0;
 
-    const std::vector<int> neighbour_ids = wg::get_neighbour_ids(id, size_x, size_y);
+    const std::vector<int> neighbour_ids = field.get_neighbourhood(id, 1, wg::Field::NeighbourhoodType::MOORE);
     const std::vector<double> gradients = wg::calc_gradients(id, neighbour_ids, field);
 
-    CHECK(gradients.size() == 8);
+    CHECK(gradients.size() == 9);
 
-    CHECK(gradients.at(0) == 6.0);                   // right
-    CHECK(gradients.at(1) == 3.0 / std::sqrt(2.0));  // right up
-    CHECK(gradients.at(2) == 2.0);                   // up
-    CHECK(gradients.at(3) == 1.0 / std::sqrt(2.0));  // up left
-    CHECK(gradients.at(4) == 4.0);                   // left
-    CHECK(gradients.at(5) == 7.0 / std::sqrt(2.0));  // left down
-    CHECK(gradients.at(6) == 8.0);                   // down
-    CHECK(gradients.at(7) == 9.0 / std::sqrt(2.0));  // down right
+    CHECK(gradients.at(0) == 1.0 / std::sqrt(2.0));
+    CHECK(gradients.at(1) == 2.0);
+    CHECK(gradients.at(2) == 3.0 / std::sqrt(2.0));
+
+    CHECK(gradients.at(3) == 4.0);
+    CHECK(gradients.at(4) == 0.0);
+    CHECK(gradients.at(5) == 6.0);
+
+    CHECK(gradients.at(6) == 7.0 / std::sqrt(2.0));
+    CHECK(gradients.at(7) == 8.0);
+    CHECK(gradients.at(8) == 9.0 / std::sqrt(2.0));
 }
 
 TEST_CASE("get_lake_boundary") {
