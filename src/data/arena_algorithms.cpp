@@ -29,23 +29,6 @@ std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids
     return gradients;
 }
 
-std::vector<int> get_lake_boundary_ids(const std::vector<int>& lake_ids, const Field& field) {
-    std::vector<int> lake_boundary_ids;
-    std::unordered_set<int> seen;
-
-    for (auto id : lake_ids) {
-        const std::vector<int> neighbour_ids = field.get_neighbourhood(id, 1, Field::NeighbourhoodType::MOORE);
-
-        for (auto ne_id : neighbour_ids) {
-            if (ne_id >= 0 && !field.elements.at(ne_id).is_lake && seen.insert(ne_id).second) {
-                lake_boundary_ids.push_back(ne_id);
-            }
-        }
-    }
-
-    return lake_boundary_ids;
-}
-
 void track_river(int idx, double sea_level, Field& field) {
     field.elements.at(idx).is_river = true;
     int idx_old = -1;
