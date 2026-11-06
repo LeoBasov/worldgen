@@ -10,6 +10,7 @@ void WorldGen::create_map() {
     arena.resize(config.map);
     arena.add_noise(config.noise);
     arena.create_rivers(config.hydrography, config.noise);
+    arena.calc_attractiveness_factor(config.hydrography);
 }
 
 Arena WorldGen::get_arena() const { return arena; }

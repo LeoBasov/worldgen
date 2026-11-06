@@ -2,138 +2,110 @@
 
 namespace wg {
 
-std::vector<int> get_neighbour_ids(const int id, const int size_x, const int size_y) {
-    const int x = id % size_y;
-    const int y = id / size_y;
+std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids, const Field& field) {
+    std::vector<double> gradients(9);
+    const double id_elevation = field.elements.at(id).elevation;
 
-    const bool right_condition = x < size_x - 1;
-    const bool up_condition = y > 0;
-    const bool left_condition = x > 0;
-    const bool down_condition = y < size_y - 1;
+    gradients.at(0) =
+        neighbour_ids.at(0) != -1 ? (field.elements.at(neighbour_ids.at(0)).elevation - id_elevation) / sqrt(2.0) : 0.0;
+    gradients.at(1) =
+        neighbour_ids.at(1) != -1 ? (field.elements.at(neighbour_ids.at(1)).elevation - id_elevation) : 0.0;
+    gradients.at(2) =
+        neighbour_ids.at(2) != -1 ? (field.elements.at(neighbour_ids.at(2)).elevation - id_elevation) / sqrt(2.0) : 0.0;
 
-    const int id_right = right_condition ? size_x * y + x + 1 : id;
-    const int id_right_up = right_condition && up_condition ? size_x * (y - 1) + x + 1 : id;
-    const int id_up = up_condition ? size_x * (y - 1) + x : id;
-    const int id_up_left = up_condition && left_condition ? size_x * (y - 1) + x - 1 : id;
-    const int id_left = left_condition ? size_x * y + x - 1 : id;
-    const int id_left_dowd = left_condition && down_condition ? size_x * (y + 1) + x - 1 : id;
-    const int id_down = down_condition ? size_x * (y + 1) + x : id;
-    const int id_down_right = down_condition && right_condition ? size_x * (y + 1) + x + 1 : id;
+    gradients.at(3) =
+        neighbour_ids.at(3) != -1 ? (field.elements.at(neighbour_ids.at(3)).elevation - id_elevation) : 0.0;
+    gradients.at(4) = 0.0;
+    gradients.at(5) =
+        neighbour_ids.at(5) != -1 ? (field.elements.at(neighbour_ids.at(5)).elevation - id_elevation) : 0.0;
 
-    return {id_right, id_right_up, id_up, id_up_left, id_left, id_left_dowd, id_down, id_down_right};
-}
-
-std::vector<double> calc_gradients(int id, std::vector<int> neighbour_ids, const std::vector<Element>& elements) {
-    std::vector<double> gradients(8);
-
-    gradients.at(0) = elements.at(neighbour_ids.at(0)).elevation - elements.at(id).elevation;
-    gradients.at(1) = (elements.at(neighbour_ids.at(1)).elevation - elements.at(id).elevation) / sqrt(2.0);
-
-    gradients.at(2) = elements.at(neighbour_ids.at(2)).elevation - elements.at(id).elevation;
-    gradients.at(3) = (elements.at(neighbour_ids.at(3)).elevation - elements.at(id).elevation) / sqrt(2.0);
-
-    gradients.at(4) = elements.at(neighbour_ids.at(4)).elevation - elements.at(id).elevation;
-    gradients.at(5) = (elements.at(neighbour_ids.at(5)).elevation - elements.at(id).elevation) / sqrt(2.0);
-
-    gradients.at(6) = elements.at(neighbour_ids.at(6)).elevation - elements.at(id).elevation;
-    gradients.at(7) = (elements.at(neighbour_ids.at(7)).elevation - elements.at(id).elevation) / sqrt(2.0);
+    gradients.at(6) =
+        neighbour_ids.at(6) != -1 ? (field.elements.at(neighbour_ids.at(6)).elevation - id_elevation) / sqrt(2.0) : 0.0;
+    gradients.at(7) =
+        neighbour_ids.at(7) != -1 ? (field.elements.at(neighbour_ids.at(7)).elevation - id_elevation) : 0.0;
+    gradients.at(8) =
+        neighbour_ids.at(8) != -1 ? (field.elements.at(neighbour_ids.at(8)).elevation - id_elevation) / sqrt(2.0) : 0.0;
 
     return gradients;
 }
 
-std::vector<int> get_lake_boundary_ids(std::vector<int> lake_ids, const std::vector<Element>& elements,
-                                       const int size_x, const int size_y) {
-    std::vector<int> lake_boundary_ids;
-
-    for (auto id : lake_ids) {
-        const std::vector<int> neighbour_ids = get_neighbour_ids(id, size_x, size_y);
-
-        for (auto ne_id : neighbour_ids) {
-            if (!elements.at(ne_id).is_lake &&
-                std::find(lake_boundary_ids.begin(), lake_boundary_ids.end(), ne_id) == lake_boundary_ids.end()) {
-                lake_boundary_ids.push_back(ne_id);
-            }
-        }
-    }
-
-    return lake_boundary_ids;
-}
-
-void track_river(int idx, double sea_level, const int size_x, const int size_y, std::vector<Element>& elements) {
-    elements.at(idx).is_river = true;
+void track_river(int idx, double sea_level, Field& field) {
+    field.elements.at(idx).is_river = true;
+    int idx_old = -1;
 
     while (true) {
-        const std::vector<int> neighbour_ids = get_neighbour_ids(idx, size_x, size_y);
-        const std::vector<double> gradients = calc_gradients(idx, neighbour_ids, elements);
-        std::vector<size_t> grad_ids(gradients.size());
-        int idx_new = -1;
-
-        std::iota(grad_ids.begin(), grad_ids.end(), 0);
-        stable_sort(grad_ids.begin(), grad_ids.end(),
-                    [&gradients](size_t i1, size_t i2) { return gradients[i1] < gradients[i2]; });
-
-        for (int g = 0; g < grad_ids.size(); g++) {
-            const int gidx = grad_ids.at(g);
-
-            if (gradients.at(gidx) < 0.0 && neighbour_ids.at(gidx) != idx) {
-                idx_new = neighbour_ids.at(gidx);
-                break;
-            }
-        }
+        const int dx = std::round(field.elements.at(idx).delevation_dx_norm);
+        const int dy = std::round(field.elements.at(idx).delevation_dy_norm);
+        const auto [x, y] = field.get_id_coordinates(idx);
+        const int idx_new = field.get_element_id(x - dx, y - dy);
 
         if (idx_new == -1) {
-            elements.at(idx).is_river = false;
-            elements.at(idx).is_lake = true;
             break;
-        } else if (elements.at(idx_new).is_lake == true || elements.at(idx_new).is_river == true ||
-                   elements.at(idx_new).elevation <= sea_level) {
+        } else if (idx_new == idx_old) {
+            field.elements.at(idx).is_river = false;
+            field.elements.at(idx).is_lake = true;
+            break;
+        } else if (field.elements.at(idx_new).is_lake == true || field.elements.at(idx_new).is_river == true ||
+                   field.elements.at(idx_new).elevation <= sea_level) {
+            break;
+        } else if (field.elements.at(idx_new).elevation_gradient_norm < 1e-3) {
+            field.elements.at(idx).is_river = false;
+            field.elements.at(idx).is_lake = true;
             break;
         } else {
+            idx_old = idx;
             idx = idx_new;
-            elements.at(idx).is_river = true;
+            field.elements.at(idx).is_river = true;
         }
     }
 
-    if (elements.at(idx).is_lake) {
-        fill_lake(idx, sea_level, size_x, size_y, elements);
+    if (field.elements.at(idx).is_lake) {
+        fill_lake(idx, sea_level, field);
     }
 }
 
-void fill_lake(int idx, double sea_level, const int size_x, const int size_y, std::vector<Element>& elements) {
+void fill_lake(int idx, double sea_level, Field& field) {
+    // Priority flood: the lake boundary is kept incrementally in a min-heap ordered by
+    // (elevation, id) instead of being rebuilt after every added cell. Nothing else
+    // modifies is_lake while this lake fills, so heap entries never go stale.
+    using Entry = std::pair<double, int>;
+    std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> boundary;
+    std::unordered_set<int> seen{idx};  // lake cells of this fill + cells already pushed
     std::vector<int> lake_ids{idx};
-    bool is_filling = true;
 
-    while (is_filling) {
-        // get lake boundary
-        std::vector<int> lake_boundary_ids = get_lake_boundary_ids(lake_ids, elements, size_x, size_y);
+    const auto push_boundary = [&](const std::vector<int>& neighbour_ids) {
+        for (auto ne_id : neighbour_ids) {
+            if (ne_id >= 0 && !field.elements.at(ne_id).is_lake && seen.insert(ne_id).second) {
+                boundary.emplace(field.elements.at(ne_id).elevation, ne_id);
+            }
+        }
+    };
 
+    push_boundary(field.get_neighbourhood(idx, 1, Field::NeighbourhoodType::MOORE));
+
+    while (true) {
         // ToDo: find why he gets stuck here
-        if (lake_boundary_ids.size() == 0) {
+        if (boundary.empty()) {
             for (auto id : lake_ids) {
-                elements.at(id).is_trapped = true;
+                field.elements.at(id).is_trapped = true;
             }
 
             return;
         }
 
-        // find boundary element with the smallest elevation
-        double min_elevation = 1e16;
-        int min_elev_id = -1;
+        // boundary element with the smallest elevation
+        const int min_elev_id = boundary.top().second;
+        boundary.pop();
 
-        for (auto id : lake_boundary_ids) {
-            if (elements.at(id).elevation < min_elevation) {
-                min_elevation = elements.at(id).elevation;
-                min_elev_id = id;
-            }
-        }
-
-        elements.at(min_elev_id).is_lake = true;
-        elements.at(min_elev_id).is_river = false;
+        field.elements.at(min_elev_id).is_lake = true;
+        field.elements.at(min_elev_id).is_river = false;
         lake_ids.push_back(min_elev_id);
 
+        const std::vector<int> neighbour_ids = field.get_neighbourhood(min_elev_id, 1, Field::NeighbourhoodType::MOORE);
+        push_boundary(neighbour_ids);
+
         // check if it has negative slope towards an non lake cell
-        const std::vector<int> neighbour_ids = get_neighbour_ids(min_elev_id, size_x, size_y);
-        const std::vector<double> gradients = calc_gradients(min_elev_id, neighbour_ids, elements);
+        const std::vector<double> gradients = calc_gradients(min_elev_id, neighbour_ids, field);
         std::vector<size_t> grad_ids(gradients.size());
 
         iota(grad_ids.begin(), grad_ids.end(), 0);
@@ -143,10 +115,9 @@ void fill_lake(int idx, double sea_level, const int size_x, const int size_y, st
         for (int g = 0; g < grad_ids.size(); g++) {
             const int gidx = grad_ids.at(g);
 
-            if (gradients.at(gidx) < 0.0 && !elements.at(neighbour_ids.at(gidx)).is_lake) {
-                track_river(neighbour_ids.at(gidx), sea_level, size_x, size_y, elements);
-                is_filling = false;
-                break;
+            if (gradients.at(gidx) < 0.0 && !field.elements.at(neighbour_ids.at(gidx)).is_lake) {
+                track_river(neighbour_ids.at(gidx), sea_level, field);
+                return;
             }
         }
     }

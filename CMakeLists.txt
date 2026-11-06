@@ -8,6 +8,12 @@ if(WORLDGEN_COVERAGE)
   add_link_options(--coverage)
 endif()
 
+option(WORLDGEN_PROFILING "Instrument build for gprof profiling (GCC)" OFF)
+if(WORLDGEN_PROFILING)
+  add_compile_options(-pg -g -fno-omit-frame-pointer -fno-inline-functions)
+  add_link_options(-pg)
+endif()
+
 find_package(doctest REQUIRED)
 
 enable_testing()

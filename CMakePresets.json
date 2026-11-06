@@ -27,12 +27,21 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "WORLDGEN_COVERAGE": "ON"
       }
+    },
+    {
+      "name": "profile",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "WORLDGEN_PROFILING": "ON"
+      }
     }
   ],
   "buildPresets": [
     { "name": "debug", "configurePreset": "debug" },
     { "name": "release", "configurePreset": "release" },
-    { "name": "coverage", "configurePreset": "coverage" }
+    { "name": "coverage", "configurePreset": "coverage" },
+    { "name": "profile", "configurePreset": "profile" }
   ],
   "testPresets": [
     {
@@ -48,6 +57,11 @@
     {
       "name": "coverage",
       "configurePreset": "coverage",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "profile",
+      "configurePreset": "profile",
       "output": { "outputOnFailure": true }
     }
   ],
@@ -74,6 +88,14 @@
         { "type": "configure", "name": "coverage" },
         { "type": "build", "name": "coverage" },
         { "type": "test", "name": "coverage" }
+      ]
+    },
+    {
+      "name": "profile",
+      "steps": [
+        { "type": "configure", "name": "profile" },
+        { "type": "build", "name": "profile" },
+        { "type": "test", "name": "profile" }
       ]
     }
   ]
