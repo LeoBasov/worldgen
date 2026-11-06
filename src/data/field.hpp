@@ -18,6 +18,10 @@ struct Element {
     double attractiveness_factor = 0.0;
     double dattractiveness_factor_dx = 0.0;
     double dattractiveness_factor_dy = 0.0;
+    double dattractiveness_factor_dxx = 0.0;
+    double dattractiveness_factor_dxy = 0.0;
+    double dattractiveness_factor_dyx = 0.0;
+    double dattractiveness_factor_dyy = 0.0;
     double attractiveness_factor_gradient_norm = 0.0;
 
     // elevation
@@ -36,7 +40,7 @@ struct Element {
 
 struct Field{
     enum NeighbourhoodType { NEUMANN, MOORE };
-    enum Property { ELEVATION, ATTRACTIVENESS, DENSITY };
+    enum Property { ELEVATION, ATTRACTIVENESS, ATTRACTIVENESS_GRAD_X, ATTRACTIVENESS_GRAD_Y, DENSITY };
 
     std::vector<Element> elements;
     size_t size_x = 0, size_y = 0;

@@ -93,6 +93,36 @@ void Field::calc_gradients(const Property property) {
                         std::sqrt(std::pow(grad.first, 2) + std::pow(grad.second, 2));
                     break;
                 }
+                case ATTRACTIVENESS_GRAD_X: {
+                    // direct von Neumann neighbour lookup (out of bounds -> 0.0)
+                    const double e_center = elements[id].dattractiveness_factor_dx;
+                    const double e_right = x + 1 < size_x ? elements[id + 1].dattractiveness_factor_dx : 0.0;
+                    const double e_top = y > 0 ? elements[id - size_x].dattractiveness_factor_dx : 0.0;
+                    const double e_left = x > 0 ? elements[id - 1].dattractiveness_factor_dx : 0.0;
+                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].dattractiveness_factor_dx : 0.0;
+
+                    const std::pair<double, double> grad =
+                        calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
+
+                    elements.at(id).dattractiveness_factor_dxx = grad.first;
+                    elements.at(id).dattractiveness_factor_dxy = grad.second;
+                    break;
+                }
+                case ATTRACTIVENESS_GRAD_Y: {
+                    // direct von Neumann neighbour lookup (out of bounds -> 0.0)
+                    const double e_center = elements[id].dattractiveness_factor_dy;
+                    const double e_right = x + 1 < size_x ? elements[id + 1].dattractiveness_factor_dy : 0.0;
+                    const double e_top = y > 0 ? elements[id - size_x].dattractiveness_factor_dy : 0.0;
+                    const double e_left = x > 0 ? elements[id - 1].dattractiveness_factor_dy : 0.0;
+                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].dattractiveness_factor_dy : 0.0;
+
+                    const std::pair<double, double> grad =
+                        calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
+
+                    elements.at(id).dattractiveness_factor_dyx = grad.first;
+                    elements.at(id).dattractiveness_factor_dyy = grad.second;
+                    break;
+                }
                 case DENSITY: {
                     // direct von Neumann neighbour lookup (out of bounds -> 0.0)
                     const double e_center = elements[id].density;
