@@ -10,6 +10,9 @@ namespace wg
 struct Element {
     // attractiveness
     double attractiveness_factor = 0.0;
+    double dattractiveness_factor_dx = 0.0;
+    double dattractiveness_factor_dy = 0.0;
+    double attractiveness_factor_gradient_norm = 0.0;
 
     // elevation
     double elevation = 0.0;

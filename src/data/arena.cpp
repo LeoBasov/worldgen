@@ -63,6 +63,8 @@ void Arena::calc_attractiveness_factor(Config::Hydrography hydrography) {
             element.attractiveness_factor = 0.5 * E + 0.5 * W + G;
         }
     }
+
+    field.calc_gradients(Field::Property::ATTRACTIVENESS);
 }
 
 Element& Arena::get_element(int x, int y) { return field.elements.at(field.size_x * y + x); }

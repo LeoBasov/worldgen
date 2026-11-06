@@ -60,6 +60,48 @@ void Field::calc_gradients(const Property property) {
                         elements.at(id).delevation_dy / elements.at(id).elevation_gradient_norm;
                     break;
                 }
+                case ATTRACTIVENESS: {
+                    // direct von Neumann neighbour lookup (out of bounds -> 0.0)
+                    const double e_center = elements[id].attractiveness_factor;
+                    const double e_right = x + 1 < size_x ? elements[id + 1].attractiveness_factor : 0.0;
+                    const double e_top = y > 0 ? elements[id - size_x].attractiveness_factor : 0.0;
+                    const double e_left = x > 0 ? elements[id - 1].attractiveness_factor : 0.0;
+                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].attractiveness_factor : 0.0;
+
+                    if (x == 0 && y == 0) {
+                        elements.at(id).dattractiveness_factor_dx = (e_right - e_center);
+                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_center);
+                    } else if (x == (size_x - 1) && y == (size_y - 1)) {
+                        elements.at(id).dattractiveness_factor_dx = (e_center - e_left);
+                        elements.at(id).dattractiveness_factor_dy = (e_center - e_top);
+                    } else if (x == (size_x - 1) && y == 0) {
+                        elements.at(id).dattractiveness_factor_dx = (e_center - e_left);
+                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_center);
+                    } else if (x == 0 && y == (size_y - 1)) {
+                        elements.at(id).dattractiveness_factor_dx = (e_right - e_center);
+                        elements.at(id).dattractiveness_factor_dy = (e_center - e_top);
+                    } else if (x == 0) {
+                        elements.at(id).dattractiveness_factor_dx = (e_right - e_center);
+                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_top) * 0.5;
+                    } else if (y == 0) {
+                        elements.at(id).dattractiveness_factor_dx = (e_right - e_left) * 0.5;
+                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_center);
+                    } else if (x == (size_x - 1)) {
+                        elements.at(id).dattractiveness_factor_dx = (e_center - e_left);
+                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_top) * 0.5;
+                    } else if (y == (size_y - 1)) {
+                        elements.at(id).dattractiveness_factor_dx = (e_right - e_left) * 0.5;
+                        elements.at(id).dattractiveness_factor_dy = (e_center - e_top);
+                    } else {
+                        elements.at(id).dattractiveness_factor_dx = (e_right - e_left) * 0.5;
+                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_top) * 0.5;
+                    }
+
+                    elements.at(id).attractiveness_factor_gradient_norm =
+                        std::sqrt(std::pow(elements.at(id).dattractiveness_factor_dx, 2) +
+                                  std::pow(elements.at(id).dattractiveness_factor_dy, 2));
+                    break;
+                }
                 default: {
                     break;
                 }
