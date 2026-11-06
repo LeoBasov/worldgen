@@ -8,11 +8,51 @@ void Field::resize(int x, int y) {
     elements = std::vector<Element>(size_x * size_y);
 }
 
+std::pair<double, double> Field::calc_gradients_new(const int x, const int y, const double e_right, const double e_top,
+                                                    const double e_left, const double e_buttom,
+                                                    const double e_center) const {
+    std::pair<double, double> grad = {0.0, 0.0};
+
+    if (x == 0 && y == 0) {
+        grad.first = (e_right - e_center);
+        grad.second = (e_buttom - e_center);
+    } else if (x == (size_x - 1) && y == (size_y - 1)) {
+        grad.first = (e_center - e_left);
+        grad.second = (e_center - e_top);
+    } else if (x == (size_x - 1) && y == 0) {
+        grad.first = (e_center - e_left);
+        grad.second = (e_buttom - e_center);
+    } else if (x == 0 && y == (size_y - 1)) {
+        grad.first = (e_right - e_center);
+        grad.second = (e_center - e_top);
+    } else if (x == 0) {
+        grad.first = (e_right - e_center);
+        grad.second = (e_buttom - e_top) * 0.5;
+    } else if (y == 0) {
+        grad.first = (e_right - e_left) * 0.5;
+        grad.second = (e_buttom - e_center);
+    } else if (x == (size_x - 1)) {
+        grad.first = (e_center - e_left);
+        grad.second = (e_buttom - e_top) * 0.5;
+    } else if (y == (size_y - 1)) {
+        grad.first = (e_right - e_left) * 0.5;
+        grad.second = (e_center - e_top);
+    } else {
+        grad.first = (e_right - e_left) * 0.5;
+        grad.second = (e_buttom - e_top) * 0.5;
+    }
+
+    return grad;
+}
+
 void Field::calc_gradients(const Property property) {
     // y outer / x inner to walk elements in memory order (id = size_x * y + x)
     for (int y = 0; y < size_y; y++) {
         for (int x = 0; x < size_x; x++) {
             const int id = get_element_id(x, y);
+            Element& element = elements.at(id);
+            double& grad_x = element.delevation_dx;
+            double& grad_y = element.delevation_dx;
 
             switch (property) {
                 case ELEVATION: {
@@ -23,41 +63,16 @@ void Field::calc_gradients(const Property property) {
                     const double e_left = x > 0 ? elements[id - 1].elevation : 0.0;
                     const double e_buttom = y + 1 < size_y ? elements[id + size_x].elevation : 0.0;
 
-                    if (x == 0 && y == 0) {
-                        elements.at(id).delevation_dx = (e_right - e_center);
-                        elements.at(id).delevation_dy = (e_buttom - e_center);
-                    } else if (x == (size_x - 1) && y == (size_y - 1)) {
-                        elements.at(id).delevation_dx = (e_center - e_left);
-                        elements.at(id).delevation_dy = (e_center - e_top);
-                    } else if (x == (size_x - 1) && y == 0) {
-                        elements.at(id).delevation_dx = (e_center - e_left);
-                        elements.at(id).delevation_dy = (e_buttom - e_center);
-                    } else if (x == 0 && y == (size_y - 1)) {
-                        elements.at(id).delevation_dx = (e_right - e_center);
-                        elements.at(id).delevation_dy = (e_center - e_top);
-                    } else if (x == 0) {
-                        elements.at(id).delevation_dx = (e_right - e_center);
-                        elements.at(id).delevation_dy = (e_buttom - e_top) * 0.5;
-                    } else if (y == 0) {
-                        elements.at(id).delevation_dx = (e_right - e_left) * 0.5;
-                        elements.at(id).delevation_dy = (e_buttom - e_center);
-                    } else if (x == (size_x - 1)) {
-                        elements.at(id).delevation_dx = (e_center - e_left);
-                        elements.at(id).delevation_dy = (e_buttom - e_top) * 0.5;
-                    } else if (y == (size_y - 1)) {
-                        elements.at(id).delevation_dx = (e_right - e_left) * 0.5;
-                        elements.at(id).delevation_dy = (e_center - e_top);
-                    } else {
-                        elements.at(id).delevation_dx = (e_right - e_left) * 0.5;
-                        elements.at(id).delevation_dy = (e_buttom - e_top) * 0.5;
-                    }
+                    const std::pair<double, double> grad =
+                        calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
 
-                    elements.at(id).elevation_gradient_norm = std::sqrt(std::pow(elements.at(id).delevation_dx, 2) +
-                                                                        std::pow(elements.at(id).delevation_dy, 2));
-                    elements.at(id).delevation_dx_norm =
-                        elements.at(id).delevation_dx / elements.at(id).elevation_gradient_norm;
-                    elements.at(id).delevation_dy_norm =
-                        elements.at(id).delevation_dy / elements.at(id).elevation_gradient_norm;
+                    elements.at(id).delevation_dx = grad.first;
+                    elements.at(id).delevation_dy = grad.second;
+
+                    elements.at(id).elevation_gradient_norm =
+                        std::sqrt(std::pow(grad.first, 2) + std::pow(grad.second, 2));
+                    elements.at(id).delevation_dx_norm = grad.first / elements.at(id).elevation_gradient_norm;
+                    elements.at(id).delevation_dy_norm = grad.second / elements.at(id).elevation_gradient_norm;
                     break;
                 }
                 case ATTRACTIVENESS: {
@@ -68,38 +83,14 @@ void Field::calc_gradients(const Property property) {
                     const double e_left = x > 0 ? elements[id - 1].attractiveness_factor : 0.0;
                     const double e_buttom = y + 1 < size_y ? elements[id + size_x].attractiveness_factor : 0.0;
 
-                    if (x == 0 && y == 0) {
-                        elements.at(id).dattractiveness_factor_dx = (e_right - e_center);
-                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_center);
-                    } else if (x == (size_x - 1) && y == (size_y - 1)) {
-                        elements.at(id).dattractiveness_factor_dx = (e_center - e_left);
-                        elements.at(id).dattractiveness_factor_dy = (e_center - e_top);
-                    } else if (x == (size_x - 1) && y == 0) {
-                        elements.at(id).dattractiveness_factor_dx = (e_center - e_left);
-                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_center);
-                    } else if (x == 0 && y == (size_y - 1)) {
-                        elements.at(id).dattractiveness_factor_dx = (e_right - e_center);
-                        elements.at(id).dattractiveness_factor_dy = (e_center - e_top);
-                    } else if (x == 0) {
-                        elements.at(id).dattractiveness_factor_dx = (e_right - e_center);
-                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_top) * 0.5;
-                    } else if (y == 0) {
-                        elements.at(id).dattractiveness_factor_dx = (e_right - e_left) * 0.5;
-                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_center);
-                    } else if (x == (size_x - 1)) {
-                        elements.at(id).dattractiveness_factor_dx = (e_center - e_left);
-                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_top) * 0.5;
-                    } else if (y == (size_y - 1)) {
-                        elements.at(id).dattractiveness_factor_dx = (e_right - e_left) * 0.5;
-                        elements.at(id).dattractiveness_factor_dy = (e_center - e_top);
-                    } else {
-                        elements.at(id).dattractiveness_factor_dx = (e_right - e_left) * 0.5;
-                        elements.at(id).dattractiveness_factor_dy = (e_buttom - e_top) * 0.5;
-                    }
+                    const std::pair<double, double> grad =
+                        calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
+
+                    elements.at(id).dattractiveness_factor_dx = grad.first;
+                    elements.at(id).dattractiveness_factor_dy = grad.second;
 
                     elements.at(id).attractiveness_factor_gradient_norm =
-                        std::sqrt(std::pow(elements.at(id).dattractiveness_factor_dx, 2) +
-                                  std::pow(elements.at(id).dattractiveness_factor_dy, 2));
+                        std::sqrt(std::pow(grad.first, 2) + std::pow(grad.second, 2));
                     break;
                 }
                 default: {

@@ -37,6 +37,9 @@ struct Field{
 
     void resize(int x, int y);
     void calc_gradients(const Property property);
+    std::pair<double, double> calc_gradients_new(const int x, const int y, const double e_right, const double e_top,
+                                                 const double e_left, const double e_buttom,
+                                                 const double e_center) const;
 
     std::pair<int, int> get_id_coordinates(const int id) const;
     int get_element_id(int x, int y) const;
