@@ -9,6 +9,12 @@ namespace wg
 
 struct Element {
     // attractiveness
+    double density = 0.0;
+    double ddensity_dx = 0.0;
+    double ddensity_dy = 0.0;
+    double density_gradient_norm = 0.0;
+
+    // attractiveness
     double attractiveness_factor = 0.0;
     double dattractiveness_factor_dx = 0.0;
     double dattractiveness_factor_dy = 0.0;
@@ -30,7 +36,7 @@ struct Element {
 
 struct Field{
     enum NeighbourhoodType { NEUMANN, MOORE };
-    enum Property { ELEVATION, ATTRACTIVENESS };
+    enum Property { ELEVATION, ATTRACTIVENESS, DENSITY };
 
     std::vector<Element> elements;
     size_t size_x = 0, size_y = 0;
