@@ -326,15 +326,15 @@ TEST_CASE("calc_gradients_elevation") {
 
     CHECK(grad_norm_00 == std::sqrt(std::pow(gradx_00, 2) + std::pow(grady_00, 2)));
     CHECK(grad_norm_10 == std::sqrt(std::pow(gradx_10, 2) + std::pow(grady_10, 2)));
-    CHECK(grad_norm_10 == std::sqrt(std::pow(gradx_10, 2) + std::pow(grady_10, 2)));
+    CHECK(grad_norm_20 == std::sqrt(std::pow(gradx_20, 2) + std::pow(grady_20, 2)));
 
     CHECK(grad_norm_01 == std::sqrt(std::pow(gradx_01, 2) + std::pow(grady_01, 2)));
     CHECK(grad_norm_11 == std::sqrt(std::pow(gradx_11, 2) + std::pow(grady_11, 2)));
-    CHECK(grad_norm_11 == std::sqrt(std::pow(gradx_11, 2) + std::pow(grady_11, 2)));
+    CHECK(grad_norm_21 == std::sqrt(std::pow(gradx_21, 2) + std::pow(grady_21, 2)));
 
     CHECK(grad_norm_02 == std::sqrt(std::pow(gradx_02, 2) + std::pow(grady_02, 2)));
     CHECK(grad_norm_12 == std::sqrt(std::pow(gradx_12, 2) + std::pow(grady_12, 2)));
-    CHECK(grad_norm_12 == std::sqrt(std::pow(gradx_12, 2) + std::pow(grady_12, 2)));
+    CHECK(grad_norm_22 == std::sqrt(std::pow(gradx_22, 2) + std::pow(grady_22, 2)));
 }
 
 TEST_CASE("calc_gradients_attractiveness") {
@@ -430,13 +430,13 @@ TEST_CASE("calc_gradients_attractiveness") {
 
     CHECK(grad_norm_00 == std::sqrt(std::pow(gradx_00, 2) + std::pow(grady_00, 2)));
     CHECK(grad_norm_10 == std::sqrt(std::pow(gradx_10, 2) + std::pow(grady_10, 2)));
-    CHECK(grad_norm_10 == std::sqrt(std::pow(gradx_10, 2) + std::pow(grady_10, 2)));
+    CHECK(grad_norm_20 == std::sqrt(std::pow(gradx_20, 2) + std::pow(grady_20, 2)));
 
     CHECK(grad_norm_01 == std::sqrt(std::pow(gradx_01, 2) + std::pow(grady_01, 2)));
     CHECK(grad_norm_11 == std::sqrt(std::pow(gradx_11, 2) + std::pow(grady_11, 2)));
-    CHECK(grad_norm_11 == std::sqrt(std::pow(gradx_11, 2) + std::pow(grady_11, 2)));
+    CHECK(grad_norm_21 == std::sqrt(std::pow(gradx_21, 2) + std::pow(grady_21, 2)));
 
     CHECK(grad_norm_02 == std::sqrt(std::pow(gradx_02, 2) + std::pow(grady_02, 2)));
     CHECK(grad_norm_12 == std::sqrt(std::pow(gradx_12, 2) + std::pow(grady_12, 2)));
-    CHECK(grad_norm_12 == std::sqrt(std::pow(gradx_12, 2) + std::pow(grady_12, 2)));
+    CHECK(grad_norm_22 == std::sqrt(std::pow(gradx_22, 2) + std::pow(grady_22, 2)));
 }
