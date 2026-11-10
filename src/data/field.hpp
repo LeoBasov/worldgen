@@ -4,8 +4,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace wg
-{
+namespace wg {
 
 struct Element {
     // attractiveness
@@ -15,14 +14,14 @@ struct Element {
     double grad_rho_norm = 0.0;
 
     // attractiveness
-    double attractiveness_factor = 0.0;
-    double dattractiveness_factor_dx = 0.0;
-    double dattractiveness_factor_dy = 0.0;
-    double dattractiveness_factor_dxx = 0.0;
-    double dattractiveness_factor_dxy = 0.0;
-    double dattractiveness_factor_dyx = 0.0;
-    double dattractiveness_factor_dyy = 0.0;
-    double attractiveness_factor_gradient_norm = 0.0;
+    double attract = 0.0;
+    double dattract_dx = 0.0;
+    double dattract_dy = 0.0;
+    double dattract_dxdx = 0.0;
+    double dattract_dxdy = 0.0;
+    double dattract_dydx = 0.0;
+    double dattract_dydy = 0.0;
+    double grad_attract_norm = 0.0;
 
     // height
     double height = 0.0;
@@ -58,4 +57,4 @@ struct Field{
     std::vector<int> get_neighbourhood(const int id, const int size, const NeighbourhoodType type) const;
 };
 
-} // namespace wg
+}  // namespace wg

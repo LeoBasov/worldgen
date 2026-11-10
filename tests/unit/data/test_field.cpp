@@ -360,52 +360,52 @@ TEST_CASE("calc_gradients_attractiveness") {
 
     field.resize(size_x, size_y);
 
-    field.get_element(0, 0).attractiveness_factor = 1.0;
-    field.get_element(1, 0).attractiveness_factor = 3.0;
-    field.get_element(2, 0).attractiveness_factor = 5.0;
+    field.get_element(0, 0).attract = 1.0;
+    field.get_element(1, 0).attract = 3.0;
+    field.get_element(2, 0).attract = 5.0;
 
-    field.get_element(0, 1).attractiveness_factor = 7.0;
-    field.get_element(1, 1).attractiveness_factor = 11.0;
-    field.get_element(2, 1).attractiveness_factor = 13.0;
+    field.get_element(0, 1).attract = 7.0;
+    field.get_element(1, 1).attract = 11.0;
+    field.get_element(2, 1).attract = 13.0;
 
-    field.get_element(0, 2).attractiveness_factor = 17.0;
-    field.get_element(1, 2).attractiveness_factor = 23.0;
-    field.get_element(2, 2).attractiveness_factor = 31.0;
+    field.get_element(0, 2).attract = 17.0;
+    field.get_element(1, 2).attract = 23.0;
+    field.get_element(2, 2).attract = 31.0;
 
     field.calc_gradients(wg::Field::Property::ATTRACTIVENESS);
 
-    const double gradx_00 = field.elements.at(0).dattractiveness_factor_dx;
-    const double grady_00 = field.elements.at(0).dattractiveness_factor_dy;
-    const double gradx_10 = field.elements.at(1).dattractiveness_factor_dx;
-    const double grady_10 = field.elements.at(1).dattractiveness_factor_dy;
-    const double gradx_20 = field.elements.at(2).dattractiveness_factor_dx;
-    const double grady_20 = field.elements.at(2).dattractiveness_factor_dy;
+    const double gradx_00 = field.elements.at(0).dattract_dx;
+    const double grady_00 = field.elements.at(0).dattract_dy;
+    const double gradx_10 = field.elements.at(1).dattract_dx;
+    const double grady_10 = field.elements.at(1).dattract_dy;
+    const double gradx_20 = field.elements.at(2).dattract_dx;
+    const double grady_20 = field.elements.at(2).dattract_dy;
 
-    const double gradx_01 = field.elements.at(3).dattractiveness_factor_dx;
-    const double grady_01 = field.elements.at(3).dattractiveness_factor_dy;
-    const double gradx_11 = field.elements.at(4).dattractiveness_factor_dx;
-    const double grady_11 = field.elements.at(4).dattractiveness_factor_dy;
-    const double gradx_21 = field.elements.at(5).dattractiveness_factor_dx;
-    const double grady_21 = field.elements.at(5).dattractiveness_factor_dy;
+    const double gradx_01 = field.elements.at(3).dattract_dx;
+    const double grady_01 = field.elements.at(3).dattract_dy;
+    const double gradx_11 = field.elements.at(4).dattract_dx;
+    const double grady_11 = field.elements.at(4).dattract_dy;
+    const double gradx_21 = field.elements.at(5).dattract_dx;
+    const double grady_21 = field.elements.at(5).dattract_dy;
 
-    const double gradx_02 = field.elements.at(6).dattractiveness_factor_dx;
-    const double grady_02 = field.elements.at(6).dattractiveness_factor_dy;
-    const double gradx_12 = field.elements.at(7).dattractiveness_factor_dx;
-    const double grady_12 = field.elements.at(7).dattractiveness_factor_dy;
-    const double gradx_22 = field.elements.at(8).dattractiveness_factor_dx;
-    const double grady_22 = field.elements.at(8).dattractiveness_factor_dy;
+    const double gradx_02 = field.elements.at(6).dattract_dx;
+    const double grady_02 = field.elements.at(6).dattract_dy;
+    const double gradx_12 = field.elements.at(7).dattract_dx;
+    const double grady_12 = field.elements.at(7).dattract_dy;
+    const double gradx_22 = field.elements.at(8).dattract_dx;
+    const double grady_22 = field.elements.at(8).dattract_dy;
 
-    const double grad_norm_00 = field.elements.at(0).attractiveness_factor_gradient_norm;
-    const double grad_norm_10 = field.elements.at(1).attractiveness_factor_gradient_norm;
-    const double grad_norm_20 = field.elements.at(2).attractiveness_factor_gradient_norm;
+    const double grad_norm_00 = field.elements.at(0).grad_attract_norm;
+    const double grad_norm_10 = field.elements.at(1).grad_attract_norm;
+    const double grad_norm_20 = field.elements.at(2).grad_attract_norm;
 
-    const double grad_norm_01 = field.elements.at(3).attractiveness_factor_gradient_norm;
-    const double grad_norm_11 = field.elements.at(4).attractiveness_factor_gradient_norm;
-    const double grad_norm_21 = field.elements.at(5).attractiveness_factor_gradient_norm;
+    const double grad_norm_01 = field.elements.at(3).grad_attract_norm;
+    const double grad_norm_11 = field.elements.at(4).grad_attract_norm;
+    const double grad_norm_21 = field.elements.at(5).grad_attract_norm;
 
-    const double grad_norm_02 = field.elements.at(6).attractiveness_factor_gradient_norm;
-    const double grad_norm_12 = field.elements.at(7).attractiveness_factor_gradient_norm;
-    const double grad_norm_22 = field.elements.at(8).attractiveness_factor_gradient_norm;
+    const double grad_norm_02 = field.elements.at(6).grad_attract_norm;
+    const double grad_norm_12 = field.elements.at(7).grad_attract_norm;
+    const double grad_norm_22 = field.elements.at(8).grad_attract_norm;
 
     CHECK(gradx_00 == 2.0);
     CHECK(grady_00 == 6.0);

@@ -53,14 +53,14 @@ void Arena::calc_attractiveness_factor(Config::Hydrography hydrography) {
         Element& element = field.elements.at(i);
 
         if (element.height < hydrography.sea_level || element.is_river || element.is_lake) {
-            element.attractiveness_factor = 0.0;
+            element.attract = 0.0;
         } else {
             const double grad_norm =
                 std::sqrt(std::pow(field.elements.at(i).dheight_dx, 2) + std::pow(field.elements.at(i).dheight_dy, 2));
             const double E = 1.0 - element.height;
             const double W = 1.0 / (1.0 + grad_norm);
             const double G = 0.0;  // ToDo: look for water
-            element.attractiveness_factor = 0.5 * E + 0.5 * W + G;
+            element.attract = 0.5 * E + 0.5 * W + G;
         }
     }
 
