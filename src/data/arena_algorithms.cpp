@@ -4,27 +4,23 @@ namespace wg {
 
 std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids, const Field& field) {
     std::vector<double> gradients(9);
-    const double id_elevation = field.elements.at(id).elevation;
+    const double id_elevation = field.elements.at(id).height;
 
     gradients.at(0) =
-        neighbour_ids.at(0) != -1 ? (field.elements.at(neighbour_ids.at(0)).elevation - id_elevation) / sqrt(2.0) : 0.0;
-    gradients.at(1) =
-        neighbour_ids.at(1) != -1 ? (field.elements.at(neighbour_ids.at(1)).elevation - id_elevation) : 0.0;
+        neighbour_ids.at(0) != -1 ? (field.elements.at(neighbour_ids.at(0)).height - id_elevation) / sqrt(2.0) : 0.0;
+    gradients.at(1) = neighbour_ids.at(1) != -1 ? (field.elements.at(neighbour_ids.at(1)).height - id_elevation) : 0.0;
     gradients.at(2) =
-        neighbour_ids.at(2) != -1 ? (field.elements.at(neighbour_ids.at(2)).elevation - id_elevation) / sqrt(2.0) : 0.0;
+        neighbour_ids.at(2) != -1 ? (field.elements.at(neighbour_ids.at(2)).height - id_elevation) / sqrt(2.0) : 0.0;
 
-    gradients.at(3) =
-        neighbour_ids.at(3) != -1 ? (field.elements.at(neighbour_ids.at(3)).elevation - id_elevation) : 0.0;
+    gradients.at(3) = neighbour_ids.at(3) != -1 ? (field.elements.at(neighbour_ids.at(3)).height - id_elevation) : 0.0;
     gradients.at(4) = 0.0;
-    gradients.at(5) =
-        neighbour_ids.at(5) != -1 ? (field.elements.at(neighbour_ids.at(5)).elevation - id_elevation) : 0.0;
+    gradients.at(5) = neighbour_ids.at(5) != -1 ? (field.elements.at(neighbour_ids.at(5)).height - id_elevation) : 0.0;
 
     gradients.at(6) =
-        neighbour_ids.at(6) != -1 ? (field.elements.at(neighbour_ids.at(6)).elevation - id_elevation) / sqrt(2.0) : 0.0;
-    gradients.at(7) =
-        neighbour_ids.at(7) != -1 ? (field.elements.at(neighbour_ids.at(7)).elevation - id_elevation) : 0.0;
+        neighbour_ids.at(6) != -1 ? (field.elements.at(neighbour_ids.at(6)).height - id_elevation) / sqrt(2.0) : 0.0;
+    gradients.at(7) = neighbour_ids.at(7) != -1 ? (field.elements.at(neighbour_ids.at(7)).height - id_elevation) : 0.0;
     gradients.at(8) =
-        neighbour_ids.at(8) != -1 ? (field.elements.at(neighbour_ids.at(8)).elevation - id_elevation) / sqrt(2.0) : 0.0;
+        neighbour_ids.at(8) != -1 ? (field.elements.at(neighbour_ids.at(8)).height - id_elevation) / sqrt(2.0) : 0.0;
 
     return gradients;
 }
@@ -46,7 +42,7 @@ void track_river(int idx, double sea_level, Field& field) {
             field.elements.at(idx).is_lake = true;
             break;
         } else if (field.elements.at(idx_new).is_lake == true || field.elements.at(idx_new).is_river == true ||
-                   field.elements.at(idx_new).elevation <= sea_level) {
+                   field.elements.at(idx_new).height <= sea_level) {
             break;
         } else if (field.elements.at(idx_new).elevation_gradient_norm < 1e-3) {
             field.elements.at(idx).is_river = false;
@@ -76,7 +72,7 @@ void fill_lake(int idx, double sea_level, Field& field) {
     const auto push_boundary = [&](const std::vector<int>& neighbour_ids) {
         for (auto ne_id : neighbour_ids) {
             if (ne_id >= 0 && !field.elements.at(ne_id).is_lake && seen.insert(ne_id).second) {
-                boundary.emplace(field.elements.at(ne_id).elevation, ne_id);
+                boundary.emplace(field.elements.at(ne_id).height, ne_id);
             }
         }
     };

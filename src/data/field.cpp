@@ -57,11 +57,11 @@ void Field::calc_gradients(const Property property) {
             switch (property) {
                 case ELEVATION: {
                     // direct von Neumann neighbour lookup (out of bounds -> 0.0)
-                    const double e_center = elements[id].elevation;
-                    const double e_right = x + 1 < size_x ? elements[id + 1].elevation : 0.0;
-                    const double e_top = y > 0 ? elements[id - size_x].elevation : 0.0;
-                    const double e_left = x > 0 ? elements[id - 1].elevation : 0.0;
-                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].elevation : 0.0;
+                    const double e_center = elements[id].height;
+                    const double e_right = x + 1 < size_x ? elements[id + 1].height : 0.0;
+                    const double e_top = y > 0 ? elements[id - size_x].height : 0.0;
+                    const double e_left = x > 0 ? elements[id - 1].height : 0.0;
+                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].height : 0.0;
 
                     const std::pair<double, double> grad =
                         calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
@@ -125,20 +125,19 @@ void Field::calc_gradients(const Property property) {
                 }
                 case DENSITY: {
                     // direct von Neumann neighbour lookup (out of bounds -> 0.0)
-                    const double e_center = elements[id].density;
-                    const double e_right = x + 1 < size_x ? elements[id + 1].density : 0.0;
-                    const double e_top = y > 0 ? elements[id - size_x].density : 0.0;
-                    const double e_left = x > 0 ? elements[id - 1].density : 0.0;
-                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].density : 0.0;
+                    const double e_center = elements[id].rho;
+                    const double e_right = x + 1 < size_x ? elements[id + 1].rho : 0.0;
+                    const double e_top = y > 0 ? elements[id - size_x].rho : 0.0;
+                    const double e_left = x > 0 ? elements[id - 1].rho : 0.0;
+                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].rho : 0.0;
 
                     const std::pair<double, double> grad =
                         calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
 
-                    elements.at(id).ddensity_dx = grad.first;
-                    elements.at(id).ddensity_dy = grad.second;
+                    elements.at(id).drho_dx = grad.first;
+                    elements.at(id).drho_dy = grad.second;
 
-                    elements.at(id).density_gradient_norm =
-                        std::sqrt(std::pow(grad.first, 2) + std::pow(grad.second, 2));
+                    elements.at(id).grad_rho_norm = std::sqrt(std::pow(grad.first, 2) + std::pow(grad.second, 2));
                     break;
                 }
                 default: {

@@ -25,17 +25,17 @@ TEST_CASE("calc_gradients") {
 
     field.resize(size_x, size_y);
 
-    field.elements.at(0).elevation = 1.0;
-    field.elements.at(1).elevation = 2.0;
-    field.elements.at(2).elevation = 3.0;
+    field.elements.at(0).height = 1.0;
+    field.elements.at(1).height = 2.0;
+    field.elements.at(2).height = 3.0;
 
-    field.elements.at(3).elevation = 4.0;
-    field.elements.at(4).elevation = 0.0;  // id centered field
-    field.elements.at(5).elevation = 6.0;
+    field.elements.at(3).height = 4.0;
+    field.elements.at(4).height = 0.0;  // id centered field
+    field.elements.at(5).height = 6.0;
 
-    field.elements.at(6).elevation = 7.0;
-    field.elements.at(7).elevation = 8.0;
-    field.elements.at(8).elevation = 9.0;
+    field.elements.at(6).height = 7.0;
+    field.elements.at(7).height = 8.0;
+    field.elements.at(8).height = 9.0;
 
     const std::vector<int> neighbour_ids = field.get_neighbourhood(id, 1, wg::Field::NeighbourhoodType::MOORE);
     const std::vector<double> gradients = wg::calc_gradients(id, neighbour_ids, field);
@@ -84,20 +84,20 @@ TEST_CASE("track_river") {
     field.resize(size_x, size_y);
 
     for (auto& element : field.elements) {
-        element.elevation = 10.0;
+        element.height = 10.0;
     }
 
-    field.elements.at(8).elevation = 3.0;
+    field.elements.at(8).height = 3.0;
 
-    field.elements.at(3).elevation = 9.0;
-    field.elements.at(9).elevation = 9.0;
+    field.elements.at(3).height = 9.0;
+    field.elements.at(9).height = 9.0;
 
-    field.elements.at(7).elevation = 4.0;
-    field.elements.at(12).elevation = 6.0;
-    field.elements.at(13).elevation = 5.0;
+    field.elements.at(7).height = 4.0;
+    field.elements.at(12).height = 6.0;
+    field.elements.at(13).height = 5.0;
 
-    field.elements.at(16).elevation = 3.0;
-    field.elements.at(20).elevation = 1.0;
+    field.elements.at(16).height = 3.0;
+    field.elements.at(20).height = 1.0;
 
     field.calc_gradients(wg::Field::Property::ELEVATION);
     track_river(start_id, sea_level, field);

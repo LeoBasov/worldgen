@@ -95,12 +95,12 @@ TEST_CASE("get_element") {
 
     for (int ix = 0; ix < x; ix++) {
         for (int iy = 0; iy < y; iy++) {
-            field.get_element(1, 3).elevation = counter++;
+            field.get_element(1, 3).height = counter++;
         }
     }
 
-    CHECK(field.get_element(1, 3).elevation == field.elements.at(x * 3 + 1).elevation);
-    CHECK(field.get_element(2, 6).elevation == field.elements.at(x * 6 + 2).elevation);
+    CHECK(field.get_element(1, 3).height == field.elements.at(x * 3 + 1).height);
+    CHECK(field.get_element(2, 6).height == field.elements.at(x * 6 + 2).height);
 }
 
 TEST_CASE("get_neighbourhood_moore") {
@@ -256,17 +256,17 @@ TEST_CASE("calc_gradients_elevation") {
 
     field.resize(size_x, size_y);
 
-    field.get_element(0, 0).elevation = 1.0;
-    field.get_element(1, 0).elevation = 3.0;
-    field.get_element(2, 0).elevation = 5.0;
+    field.get_element(0, 0).height = 1.0;
+    field.get_element(1, 0).height = 3.0;
+    field.get_element(2, 0).height = 5.0;
 
-    field.get_element(0, 1).elevation = 7.0;
-    field.get_element(1, 1).elevation = 11.0;
-    field.get_element(2, 1).elevation = 13.0;
+    field.get_element(0, 1).height = 7.0;
+    field.get_element(1, 1).height = 11.0;
+    field.get_element(2, 1).height = 13.0;
 
-    field.get_element(0, 2).elevation = 17.0;
-    field.get_element(1, 2).elevation = 23.0;
-    field.get_element(2, 2).elevation = 31.0;
+    field.get_element(0, 2).height = 17.0;
+    field.get_element(1, 2).height = 23.0;
+    field.get_element(2, 2).height = 31.0;
 
     field.calc_gradients(wg::Field::Property::ELEVATION);
 

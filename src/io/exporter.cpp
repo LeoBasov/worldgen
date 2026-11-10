@@ -4,7 +4,7 @@ namespace wg {
 
 Exporter::Exporter(/* args */) {}
 
-std::vector<double> Exporter::calc_rgb(double elevation, bool is_river, bool is_lake, bool is_trapped) const {
+std::vector<double> Exporter::calc_rgb(double height, bool is_river, bool is_lake, bool is_trapped) const {
     std::vector<double> rgb = {0.0, 0.0, 0.0};
     const double water_level = 0.3;
     const double grassland_level = 0.4;
@@ -21,7 +21,7 @@ std::vector<double> Exporter::calc_rgb(double elevation, bool is_river, bool is_
     }
 
     // 0. Water level
-    if(elevation < water_level){
+    if (height < water_level) {
         double r = 0.10;
         double g = 0.30;
         double b = 0.70;
@@ -29,8 +29,8 @@ std::vector<double> Exporter::calc_rgb(double elevation, bool is_river, bool is_
         rgb = {r, g, b};
     }
     // 1. Blue to Green
-    else if (elevation < grassland_level) {
-        double t = (elevation - water_level) / (grassland_level - water_level);
+    else if (height < grassland_level) {
+        double t = (height - water_level) / (grassland_level - water_level);
         double r = 0.10 * (1 - t) + 0.20 * t;
         double g = 0.30 * (1 - t) + 0.60 * t;
         double b = 0.70 * (1 - t) + 0.20 * t;
@@ -38,8 +38,8 @@ std::vector<double> Exporter::calc_rgb(double elevation, bool is_river, bool is_
         rgb = {r, g, b};
     }
     // 2. Green to Brown
-    else if (elevation < aridland_level) {
-        double t = (elevation - grassland_level) / (aridland_level - grassland_level);
+    else if (height < aridland_level) {
+        double t = (height - grassland_level) / (aridland_level - grassland_level);
         double r = 0.20 * (1 - t) + 0.55 * t;
         double g = 0.60 * (1 - t) + 0.40 * t;
         double b = 0.20 * (1 - t) + 0.25 * t;
@@ -48,7 +48,7 @@ std::vector<double> Exporter::calc_rgb(double elevation, bool is_river, bool is_
     }
     // 3. Brown to White
     else {
-        double t = (elevation - aridland_level) / (1.0 - aridland_level);
+        double t = (height - aridland_level) / (1.0 - aridland_level);
         double r = 0.55 * (1 - t) + 1.00 * t;
         double g = 0.40 * (1 - t) + 1.00 * t;
         double b = 0.25 * (1 - t) + 1.00 * t;
@@ -66,7 +66,7 @@ bool Exporter::export2bmp(const Arena& arena, const Config::Export exports) cons
         for (std::int32_t x = 0; x < image.width(); ++x) {
             const Element& element = arena.get_element(x, y);
             const std::vector<double> rgb_val =
-                calc_rgb(element.elevation, element.is_river, element.is_lake, element.is_trapped);
+                calc_rgb(element.height, element.is_river, element.is_lake, element.is_trapped);
             const RGB color(rgb_val.at(0), rgb_val.at(1), rgb_val.at(2));
             image.set(x, y, color);
         }
