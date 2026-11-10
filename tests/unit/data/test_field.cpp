@@ -95,12 +95,12 @@ TEST_CASE("get_element") {
 
     for (int ix = 0; ix < x; ix++) {
         for (int iy = 0; iy < y; iy++) {
-            field.get_element(1, 3).elevation = counter++;
+            field.get_element(1, 3).height = counter++;
         }
     }
 
-    CHECK(field.get_element(1, 3).elevation == field.elements.at(x * 3 + 1).elevation);
-    CHECK(field.get_element(2, 6).elevation == field.elements.at(x * 6 + 2).elevation);
+    CHECK(field.get_element(1, 3).height == field.elements.at(x * 3 + 1).height);
+    CHECK(field.get_element(2, 6).height == field.elements.at(x * 6 + 2).height);
 }
 
 TEST_CASE("get_neighbourhood_moore") {
@@ -233,7 +233,7 @@ TEST_CASE("get_neighbourhood_neumann") {
     CHECK(neighbourhood_ids2.at(24) == -1);
 }
 
-TEST_CASE("calc_gradients") {
+TEST_CASE("calc_gradients_elevation") {
     /*
     +--→ x
     |
@@ -256,52 +256,52 @@ TEST_CASE("calc_gradients") {
 
     field.resize(size_x, size_y);
 
-    field.get_element(0, 0).elevation = 1.0;
-    field.get_element(1, 0).elevation = 3.0;
-    field.get_element(2, 0).elevation = 5.0;
+    field.get_element(0, 0).height = 1.0;
+    field.get_element(1, 0).height = 3.0;
+    field.get_element(2, 0).height = 5.0;
 
-    field.get_element(0, 1).elevation = 7.0;
-    field.get_element(1, 1).elevation = 11.0;
-    field.get_element(2, 1).elevation = 13.0;
+    field.get_element(0, 1).height = 7.0;
+    field.get_element(1, 1).height = 11.0;
+    field.get_element(2, 1).height = 13.0;
 
-    field.get_element(0, 2).elevation = 17.0;
-    field.get_element(1, 2).elevation = 23.0;
-    field.get_element(2, 2).elevation = 31.0;
+    field.get_element(0, 2).height = 17.0;
+    field.get_element(1, 2).height = 23.0;
+    field.get_element(2, 2).height = 31.0;
 
-    field.calc_gradients(wg::Field::Property::ELEVATION);
+    field.calc_gradients(wg::Field::Property::HEIGHT);
 
-    const double gradx_00 = field.elements.at(0).delevation_dx;
-    const double grady_00 = field.elements.at(0).delevation_dy;
-    const double gradx_10 = field.elements.at(1).delevation_dx;
-    const double grady_10 = field.elements.at(1).delevation_dy;
-    const double gradx_20 = field.elements.at(2).delevation_dx;
-    const double grady_20 = field.elements.at(2).delevation_dy;
+    const double gradx_00 = field.elements.at(0).dheight_dx;
+    const double grady_00 = field.elements.at(0).dheight_dy;
+    const double gradx_10 = field.elements.at(1).dheight_dx;
+    const double grady_10 = field.elements.at(1).dheight_dy;
+    const double gradx_20 = field.elements.at(2).dheight_dx;
+    const double grady_20 = field.elements.at(2).dheight_dy;
 
-    const double gradx_01 = field.elements.at(3).delevation_dx;
-    const double grady_01 = field.elements.at(3).delevation_dy;
-    const double gradx_11 = field.elements.at(4).delevation_dx;
-    const double grady_11 = field.elements.at(4).delevation_dy;
-    const double gradx_21 = field.elements.at(5).delevation_dx;
-    const double grady_21 = field.elements.at(5).delevation_dy;
+    const double gradx_01 = field.elements.at(3).dheight_dx;
+    const double grady_01 = field.elements.at(3).dheight_dy;
+    const double gradx_11 = field.elements.at(4).dheight_dx;
+    const double grady_11 = field.elements.at(4).dheight_dy;
+    const double gradx_21 = field.elements.at(5).dheight_dx;
+    const double grady_21 = field.elements.at(5).dheight_dy;
 
-    const double gradx_02 = field.elements.at(6).delevation_dx;
-    const double grady_02 = field.elements.at(6).delevation_dy;
-    const double gradx_12 = field.elements.at(7).delevation_dx;
-    const double grady_12 = field.elements.at(7).delevation_dy;
-    const double gradx_22 = field.elements.at(8).delevation_dx;
-    const double grady_22 = field.elements.at(8).delevation_dy;
+    const double gradx_02 = field.elements.at(6).dheight_dx;
+    const double grady_02 = field.elements.at(6).dheight_dy;
+    const double gradx_12 = field.elements.at(7).dheight_dx;
+    const double grady_12 = field.elements.at(7).dheight_dy;
+    const double gradx_22 = field.elements.at(8).dheight_dx;
+    const double grady_22 = field.elements.at(8).dheight_dy;
 
-    const double grad_norm_00 = field.elements.at(0).elevation_gradient_norm;
-    const double grad_norm_10 = field.elements.at(1).elevation_gradient_norm;
-    const double grad_norm_20 = field.elements.at(2).elevation_gradient_norm;
+    const double grad_norm_00 = field.elements.at(0).grad_height_norm;
+    const double grad_norm_10 = field.elements.at(1).grad_height_norm;
+    const double grad_norm_20 = field.elements.at(2).grad_height_norm;
 
-    const double grad_norm_01 = field.elements.at(3).elevation_gradient_norm;
-    const double grad_norm_11 = field.elements.at(4).elevation_gradient_norm;
-    const double grad_norm_21 = field.elements.at(5).elevation_gradient_norm;
+    const double grad_norm_01 = field.elements.at(3).grad_height_norm;
+    const double grad_norm_11 = field.elements.at(4).grad_height_norm;
+    const double grad_norm_21 = field.elements.at(5).grad_height_norm;
 
-    const double grad_norm_02 = field.elements.at(6).elevation_gradient_norm;
-    const double grad_norm_12 = field.elements.at(7).elevation_gradient_norm;
-    const double grad_norm_22 = field.elements.at(8).elevation_gradient_norm;
+    const double grad_norm_02 = field.elements.at(6).grad_height_norm;
+    const double grad_norm_12 = field.elements.at(7).grad_height_norm;
+    const double grad_norm_22 = field.elements.at(8).grad_height_norm;
 
     CHECK(gradx_00 == 2.0);
     CHECK(grady_00 == 6.0);
@@ -326,13 +326,117 @@ TEST_CASE("calc_gradients") {
 
     CHECK(grad_norm_00 == std::sqrt(std::pow(gradx_00, 2) + std::pow(grady_00, 2)));
     CHECK(grad_norm_10 == std::sqrt(std::pow(gradx_10, 2) + std::pow(grady_10, 2)));
-    CHECK(grad_norm_10 == std::sqrt(std::pow(gradx_10, 2) + std::pow(grady_10, 2)));
+    CHECK(grad_norm_20 == std::sqrt(std::pow(gradx_20, 2) + std::pow(grady_20, 2)));
 
     CHECK(grad_norm_01 == std::sqrt(std::pow(gradx_01, 2) + std::pow(grady_01, 2)));
     CHECK(grad_norm_11 == std::sqrt(std::pow(gradx_11, 2) + std::pow(grady_11, 2)));
-    CHECK(grad_norm_11 == std::sqrt(std::pow(gradx_11, 2) + std::pow(grady_11, 2)));
+    CHECK(grad_norm_21 == std::sqrt(std::pow(gradx_21, 2) + std::pow(grady_21, 2)));
 
     CHECK(grad_norm_02 == std::sqrt(std::pow(gradx_02, 2) + std::pow(grady_02, 2)));
     CHECK(grad_norm_12 == std::sqrt(std::pow(gradx_12, 2) + std::pow(grady_12, 2)));
+    CHECK(grad_norm_22 == std::sqrt(std::pow(gradx_22, 2) + std::pow(grady_22, 2)));
+}
+
+TEST_CASE("calc_gradients_attractiveness") {
+    /*
+    +--→ x
+    |
+    ↓
+    y
+    */
+
+    /*
+    0----1----2
+    |    |    |
+    3----4----5
+    |    |    |
+    6----7----8
+    */
+
+    wg::Field field;
+    const int size_x = 3;
+    const int size_y = 3;
+    const int tot = size_x * size_y;
+
+    field.resize(size_x, size_y);
+
+    field.get_element(0, 0).attract = 1.0;
+    field.get_element(1, 0).attract = 3.0;
+    field.get_element(2, 0).attract = 5.0;
+
+    field.get_element(0, 1).attract = 7.0;
+    field.get_element(1, 1).attract = 11.0;
+    field.get_element(2, 1).attract = 13.0;
+
+    field.get_element(0, 2).attract = 17.0;
+    field.get_element(1, 2).attract = 23.0;
+    field.get_element(2, 2).attract = 31.0;
+
+    field.calc_gradients(wg::Field::Property::ATTRACTIVENESS);
+
+    const double gradx_00 = field.elements.at(0).dattract_dx;
+    const double grady_00 = field.elements.at(0).dattract_dy;
+    const double gradx_10 = field.elements.at(1).dattract_dx;
+    const double grady_10 = field.elements.at(1).dattract_dy;
+    const double gradx_20 = field.elements.at(2).dattract_dx;
+    const double grady_20 = field.elements.at(2).dattract_dy;
+
+    const double gradx_01 = field.elements.at(3).dattract_dx;
+    const double grady_01 = field.elements.at(3).dattract_dy;
+    const double gradx_11 = field.elements.at(4).dattract_dx;
+    const double grady_11 = field.elements.at(4).dattract_dy;
+    const double gradx_21 = field.elements.at(5).dattract_dx;
+    const double grady_21 = field.elements.at(5).dattract_dy;
+
+    const double gradx_02 = field.elements.at(6).dattract_dx;
+    const double grady_02 = field.elements.at(6).dattract_dy;
+    const double gradx_12 = field.elements.at(7).dattract_dx;
+    const double grady_12 = field.elements.at(7).dattract_dy;
+    const double gradx_22 = field.elements.at(8).dattract_dx;
+    const double grady_22 = field.elements.at(8).dattract_dy;
+
+    const double grad_norm_00 = field.elements.at(0).grad_attract_norm;
+    const double grad_norm_10 = field.elements.at(1).grad_attract_norm;
+    const double grad_norm_20 = field.elements.at(2).grad_attract_norm;
+
+    const double grad_norm_01 = field.elements.at(3).grad_attract_norm;
+    const double grad_norm_11 = field.elements.at(4).grad_attract_norm;
+    const double grad_norm_21 = field.elements.at(5).grad_attract_norm;
+
+    const double grad_norm_02 = field.elements.at(6).grad_attract_norm;
+    const double grad_norm_12 = field.elements.at(7).grad_attract_norm;
+    const double grad_norm_22 = field.elements.at(8).grad_attract_norm;
+
+    CHECK(gradx_00 == 2.0);
+    CHECK(grady_00 == 6.0);
+    CHECK(gradx_10 == 2.0);
+    CHECK(grady_10 == 8.0);
+    CHECK(gradx_20 == 2.0);
+    CHECK(grady_20 == 8.0);
+
+    CHECK(gradx_01 == 4.0);
+    CHECK(grady_01 == 8.0);
+    CHECK(gradx_11 == 3.0);
+    CHECK(grady_11 == 10.0);
+    CHECK(gradx_21 == 2.0);
+    CHECK(grady_21 == 13.0);
+
+    CHECK(gradx_02 == 6.0);
+    CHECK(grady_02 == 10.0);
+    CHECK(gradx_12 == 7.0);
+    CHECK(grady_12 == 12.0);
+    CHECK(gradx_22 == 8.0);
+    CHECK(grady_22 == 18.0);
+
+    CHECK(grad_norm_00 == std::sqrt(std::pow(gradx_00, 2) + std::pow(grady_00, 2)));
+    CHECK(grad_norm_10 == std::sqrt(std::pow(gradx_10, 2) + std::pow(grady_10, 2)));
+    CHECK(grad_norm_20 == std::sqrt(std::pow(gradx_20, 2) + std::pow(grady_20, 2)));
+
+    CHECK(grad_norm_01 == std::sqrt(std::pow(gradx_01, 2) + std::pow(grady_01, 2)));
+    CHECK(grad_norm_11 == std::sqrt(std::pow(gradx_11, 2) + std::pow(grady_11, 2)));
+    CHECK(grad_norm_21 == std::sqrt(std::pow(gradx_21, 2) + std::pow(grady_21, 2)));
+
+    CHECK(grad_norm_02 == std::sqrt(std::pow(gradx_02, 2) + std::pow(grady_02, 2)));
     CHECK(grad_norm_12 == std::sqrt(std::pow(gradx_12, 2) + std::pow(grady_12, 2)));
+    CHECK(grad_norm_22 == std::sqrt(std::pow(gradx_22, 2) + std::pow(grady_22, 2)));
 }

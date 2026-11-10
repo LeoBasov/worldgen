@@ -4,20 +4,32 @@
 #include <stdexcept>
 #include <vector>
 
-namespace wg
-{
+namespace wg {
 
 struct Element {
     // attractiveness
-    double attractiveness_factor = 0.0;
+    double rho = 0.0;
+    double drho_dx = 0.0;
+    double drho_dy = 0.0;
+    double grad_rho_norm = 0.0;
 
-    // elevation
-    double elevation = 0.0;
-    double delevation_dx = 0.0;
-    double delevation_dy = 0.0;
-    double delevation_dx_norm = 0.0;
-    double delevation_dy_norm = 0.0;
-    double elevation_gradient_norm = 0.0;
+    // attractiveness
+    double attract = 0.0;
+    double dattract_dx = 0.0;
+    double dattract_dy = 0.0;
+    double dattract_dxdx = 0.0;
+    double dattract_dxdy = 0.0;
+    double dattract_dydx = 0.0;
+    double dattract_dydy = 0.0;
+    double grad_attract_norm = 0.0;
+
+    // height
+    double height = 0.0;
+    double dheight_dx = 0.0;
+    double dheight_dy = 0.0;
+    double dheight_dx_norm = 0.0;
+    double dheight_dy_norm = 0.0;
+    double grad_height_norm = 0.0;
 
     // state flags
     bool is_river = false;
@@ -27,19 +39,27 @@ struct Element {
 
 struct Field{
     enum NeighbourhoodType { NEUMANN, MOORE };
-    enum Property { ELEVATION, ATTRACTIVENESS };
+    enum Property { HEIGHT, ATTRACTIVENESS, ATTRACTIVENESS_GRAD_X, ATTRACTIVENESS_GRAD_Y, RHO };
 
     std::vector<Element> elements;
-    size_t size_x = 0, size_y = 0;
+    size_t size = 0, size_x = 0, size_y = 0;
 
     void resize(int x, int y);
     void calc_gradients(const Property property);
+    std::pair<double, double> calc_gradients_new(const int x, const int y, const double e_right, const double e_top,
+                                                 const double e_left, const double e_buttom,
+                                                 const double e_center) const;
 
     std::pair<int, int> get_id_coordinates(const int id) const;
     int get_element_id(int x, int y) const;
     Element& get_element(int x, int y);
-    Element get_element(int x, int y) const;
+    const Element& get_element(int x, int y) const;
     std::vector<int> get_neighbourhood(const int id, const int size, const NeighbourhoodType type) const;
+
+    Element& operator()(int x, int y);
+    const Element& operator()(int x, int y) const;
+    Element& operator()(const int id);
+    const Element& operator()(const int id) const;
 };
 
-} // namespace wg
+}  // namespace wg

@@ -5,7 +5,45 @@ namespace wg{
 void Field::resize(int x, int y) {
     size_x = x;
     size_y = y;
-    elements = std::vector<Element>(size_x * size_y);
+    size = size_x * size_y;
+    elements = std::vector<Element>(size);
+}
+
+std::pair<double, double> Field::calc_gradients_new(const int x, const int y, const double e_right, const double e_top,
+                                                    const double e_left, const double e_buttom,
+                                                    const double e_center) const {
+    std::pair<double, double> grad = {0.0, 0.0};
+
+    if (x == 0 && y == 0) {
+        grad.first = (e_right - e_center);
+        grad.second = (e_buttom - e_center);
+    } else if (x == (size_x - 1) && y == (size_y - 1)) {
+        grad.first = (e_center - e_left);
+        grad.second = (e_center - e_top);
+    } else if (x == (size_x - 1) && y == 0) {
+        grad.first = (e_center - e_left);
+        grad.second = (e_buttom - e_center);
+    } else if (x == 0 && y == (size_y - 1)) {
+        grad.first = (e_right - e_center);
+        grad.second = (e_center - e_top);
+    } else if (x == 0) {
+        grad.first = (e_right - e_center);
+        grad.second = (e_buttom - e_top) * 0.5;
+    } else if (y == 0) {
+        grad.first = (e_right - e_left) * 0.5;
+        grad.second = (e_buttom - e_center);
+    } else if (x == (size_x - 1)) {
+        grad.first = (e_center - e_left);
+        grad.second = (e_buttom - e_top) * 0.5;
+    } else if (y == (size_y - 1)) {
+        grad.first = (e_right - e_left) * 0.5;
+        grad.second = (e_center - e_top);
+    } else {
+        grad.first = (e_right - e_left) * 0.5;
+        grad.second = (e_buttom - e_top) * 0.5;
+    }
+
+    return grad;
 }
 
 void Field::calc_gradients(const Property property) {
@@ -13,51 +51,92 @@ void Field::calc_gradients(const Property property) {
     for (int y = 0; y < size_y; y++) {
         for (int x = 0; x < size_x; x++) {
             const int id = get_element_id(x, y);
+            Element& element = elements.at(id);
+            double& grad_x = element.dheight_dx;
+            double& grad_y = element.dheight_dx;
 
             switch (property) {
-                case ELEVATION: {
+                case HEIGHT: {
                     // direct von Neumann neighbour lookup (out of bounds -> 0.0)
-                    const double e_center = elements[id].elevation;
-                    const double e_right = x + 1 < size_x ? elements[id + 1].elevation : 0.0;
-                    const double e_top = y > 0 ? elements[id - size_x].elevation : 0.0;
-                    const double e_left = x > 0 ? elements[id - 1].elevation : 0.0;
-                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].elevation : 0.0;
+                    const double e_center = elements[id].height;
+                    const double e_right = x + 1 < size_x ? elements[id + 1].height : 0.0;
+                    const double e_top = y > 0 ? elements[id - size_x].height : 0.0;
+                    const double e_left = x > 0 ? elements[id - 1].height : 0.0;
+                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].height : 0.0;
 
-                    if (x == 0 && y == 0) {
-                        elements.at(id).delevation_dx = (e_right - e_center);
-                        elements.at(id).delevation_dy = (e_buttom - e_center);
-                    } else if (x == (size_x - 1) && y == (size_y - 1)) {
-                        elements.at(id).delevation_dx = (e_center - e_left);
-                        elements.at(id).delevation_dy = (e_center - e_top);
-                    } else if (x == (size_x - 1) && y == 0) {
-                        elements.at(id).delevation_dx = (e_center - e_left);
-                        elements.at(id).delevation_dy = (e_buttom - e_center);
-                    } else if (x == 0 && y == (size_y - 1)) {
-                        elements.at(id).delevation_dx = (e_right - e_center);
-                        elements.at(id).delevation_dy = (e_center - e_top);
-                    } else if (x == 0) {
-                        elements.at(id).delevation_dx = (e_right - e_center);
-                        elements.at(id).delevation_dy = (e_buttom - e_top) * 0.5;
-                    } else if (y == 0) {
-                        elements.at(id).delevation_dx = (e_right - e_left) * 0.5;
-                        elements.at(id).delevation_dy = (e_buttom - e_center);
-                    } else if (x == (size_x - 1)) {
-                        elements.at(id).delevation_dx = (e_center - e_left);
-                        elements.at(id).delevation_dy = (e_buttom - e_top) * 0.5;
-                    } else if (y == (size_y - 1)) {
-                        elements.at(id).delevation_dx = (e_right - e_left) * 0.5;
-                        elements.at(id).delevation_dy = (e_center - e_top);
-                    } else {
-                        elements.at(id).delevation_dx = (e_right - e_left) * 0.5;
-                        elements.at(id).delevation_dy = (e_buttom - e_top) * 0.5;
-                    }
+                    const std::pair<double, double> grad =
+                        calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
 
-                    elements.at(id).elevation_gradient_norm = std::sqrt(std::pow(elements.at(id).delevation_dx, 2) +
-                                                                        std::pow(elements.at(id).delevation_dy, 2));
-                    elements.at(id).delevation_dx_norm =
-                        elements.at(id).delevation_dx / elements.at(id).elevation_gradient_norm;
-                    elements.at(id).delevation_dy_norm =
-                        elements.at(id).delevation_dy / elements.at(id).elevation_gradient_norm;
+                    elements.at(id).dheight_dx = grad.first;
+                    elements.at(id).dheight_dy = grad.second;
+
+                    elements.at(id).grad_height_norm = std::sqrt(std::pow(grad.first, 2) + std::pow(grad.second, 2));
+                    elements.at(id).dheight_dx_norm = grad.first / elements.at(id).grad_height_norm;
+                    elements.at(id).dheight_dy_norm = grad.second / elements.at(id).grad_height_norm;
+                    break;
+                }
+                case ATTRACTIVENESS: {
+                    // direct von Neumann neighbour lookup (out of bounds -> 0.0)
+                    const double e_center = elements[id].attract;
+                    const double e_right = x + 1 < size_x ? elements[id + 1].attract : 0.0;
+                    const double e_top = y > 0 ? elements[id - size_x].attract : 0.0;
+                    const double e_left = x > 0 ? elements[id - 1].attract : 0.0;
+                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].attract : 0.0;
+
+                    const std::pair<double, double> grad =
+                        calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
+
+                    elements.at(id).dattract_dx = grad.first;
+                    elements.at(id).dattract_dy = grad.second;
+
+                    elements.at(id).grad_attract_norm = std::sqrt(std::pow(grad.first, 2) + std::pow(grad.second, 2));
+                    break;
+                }
+                case ATTRACTIVENESS_GRAD_X: {
+                    // direct von Neumann neighbour lookup (out of bounds -> 0.0)
+                    const double e_center = elements[id].dattract_dx;
+                    const double e_right = x + 1 < size_x ? elements[id + 1].dattract_dx : 0.0;
+                    const double e_top = y > 0 ? elements[id - size_x].dattract_dx : 0.0;
+                    const double e_left = x > 0 ? elements[id - 1].dattract_dx : 0.0;
+                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].dattract_dx : 0.0;
+
+                    const std::pair<double, double> grad =
+                        calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
+
+                    elements.at(id).dattract_dxdx = grad.first;
+                    elements.at(id).dattract_dxdy = grad.second;
+                    break;
+                }
+                case ATTRACTIVENESS_GRAD_Y: {
+                    // direct von Neumann neighbour lookup (out of bounds -> 0.0)
+                    const double e_center = elements[id].dattract_dy;
+                    const double e_right = x + 1 < size_x ? elements[id + 1].dattract_dy : 0.0;
+                    const double e_top = y > 0 ? elements[id - size_x].dattract_dy : 0.0;
+                    const double e_left = x > 0 ? elements[id - 1].dattract_dy : 0.0;
+                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].dattract_dy : 0.0;
+
+                    const std::pair<double, double> grad =
+                        calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
+
+                    elements.at(id).dattract_dydx = grad.first;
+                    elements.at(id).dattract_dydy = grad.second;
+                    break;
+                }
+                case RHO: {
+                    // direct von Neumann neighbour lookup (out of bounds -> 0.0)
+                    const double e_center = elements[id].rho;
+                    const double e_right = x + 1 < size_x ? elements[id + 1].rho : 0.0;
+                    const double e_top = y > 0 ? elements[id - size_x].rho : 0.0;
+                    const double e_left = x > 0 ? elements[id - 1].rho : 0.0;
+                    const double e_buttom = y + 1 < size_y ? elements[id + size_x].rho : 0.0;
+
+                    const std::pair<double, double> grad =
+                        calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
+
+                    elements.at(id).drho_dx = grad.first;
+                    elements.at(id).drho_dy = grad.second;
+
+                    elements.at(id).grad_rho_norm = std::sqrt(std::pow(grad.first, 2) + std::pow(grad.second, 2));
                     break;
                 }
                 default: {
@@ -90,7 +169,7 @@ Element& Field::get_element(int x, int y) {
     return elements.at(element_id);
 }
 
-Element Field::get_element(int x, int y) const {
+const Element& Field::get_element(int x, int y) const {
     const int element_id = get_element_id(x, y);
 
     return elements.at(element_id);
@@ -149,5 +228,13 @@ std::vector<int> Field::get_neighbourhood(const int id, const int size, const Ne
 
     return neighbourhood;
 }
+
+Element& Field::operator()(int x, int y) { return get_element(x, y); }
+
+const Element& Field::operator()(int x, int y) const { return get_element(x, y); }
+
+Element& Field::operator()(const int id) { return elements.at(id); }
+
+const Element& Field::operator()(const int id) const { return elements.at(id); }
 
 } // namespace wg

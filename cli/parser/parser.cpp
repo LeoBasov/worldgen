@@ -52,11 +52,11 @@ int Parser::parse_args(std::vector<std::string> args, Config& config, std::ostre
                 out << "setting N rivers to: " << params.at(0) << std::endl;
                 config.hydrography.n_rivers = std::stoi(params.at(0));
 
-                out << "setting min elevation to: " << params.at(1) << std::endl;
-                config.hydrography.min_elevation = std::stod(params.at(1));
+                out << "setting min height to: " << params.at(1) << std::endl;
+                config.hydrography.min_height = std::stod(params.at(1));
 
-                out << "setting max elevation to: " << params.at(2) << std::endl;
-                config.hydrography.max_elevation = std::stod(params.at(2));
+                out << "setting max height to: " << params.at(2) << std::endl;
+                config.hydrography.max_height = std::stod(params.at(2));
             } else {
                 throw std::runtime_error("wrong number of arguments");
             }
