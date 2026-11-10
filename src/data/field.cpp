@@ -168,7 +168,7 @@ Element& Field::get_element(int x, int y) {
     return elements.at(element_id);
 }
 
-Element Field::get_element(int x, int y) const {
+const Element& Field::get_element(int x, int y) const {
     const int element_id = get_element_id(x, y);
 
     return elements.at(element_id);
@@ -227,5 +227,13 @@ std::vector<int> Field::get_neighbourhood(const int id, const int size, const Ne
 
     return neighbourhood;
 }
+
+Element& Field::operator()(int x, int y) { return get_element(x, y); }
+
+const Element& Field::operator()(int x, int y) const { return get_element(x, y); }
+
+Element& Field::operator()(const int id) { return elements.at(id); }
+
+const Element& Field::operator()(const int id) const { return elements.at(id); }
 
 } // namespace wg

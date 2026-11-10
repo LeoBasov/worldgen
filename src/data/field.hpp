@@ -53,8 +53,13 @@ struct Field{
     std::pair<int, int> get_id_coordinates(const int id) const;
     int get_element_id(int x, int y) const;
     Element& get_element(int x, int y);
-    Element get_element(int x, int y) const;
+    const Element& get_element(int x, int y) const;
     std::vector<int> get_neighbourhood(const int id, const int size, const NeighbourhoodType type) const;
+
+    Element& operator()(int x, int y);
+    const Element& operator()(int x, int y) const;
+    Element& operator()(const int id);
+    const Element& operator()(const int id) const;
 };
 
 }  // namespace wg
