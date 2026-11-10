@@ -40,7 +40,7 @@ struct Element {
 
 struct Field{
     enum NeighbourhoodType { NEUMANN, MOORE };
-    enum Property { ELEVATION, ATTRACTIVENESS, ATTRACTIVENESS_GRAD_X, ATTRACTIVENESS_GRAD_Y, DENSITY };
+    enum Property { HEIGHT, ATTRACTIVENESS, ATTRACTIVENESS_GRAD_X, ATTRACTIVENESS_GRAD_Y, RHO };
 
     std::vector<Element> elements;
     size_t size_x = 0, size_y = 0;

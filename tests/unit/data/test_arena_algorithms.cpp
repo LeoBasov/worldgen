@@ -99,7 +99,7 @@ TEST_CASE("track_river") {
     field.elements.at(16).height = 3.0;
     field.elements.at(20).height = 1.0;
 
-    field.calc_gradients(wg::Field::Property::ELEVATION);
+    field.calc_gradients(wg::Field::Property::HEIGHT);
     track_river(start_id, sea_level, field);
 
     CHECK(field.elements.at(4).is_river);

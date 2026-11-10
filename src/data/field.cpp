@@ -55,7 +55,7 @@ void Field::calc_gradients(const Property property) {
             double& grad_y = element.dheight_dx;
 
             switch (property) {
-                case ELEVATION: {
+                case HEIGHT: {
                     // direct von Neumann neighbour lookup (out of bounds -> 0.0)
                     const double e_center = elements[id].height;
                     const double e_right = x + 1 < size_x ? elements[id + 1].height : 0.0;
@@ -122,7 +122,7 @@ void Field::calc_gradients(const Property property) {
                     elements.at(id).dattractiveness_factor_dyy = grad.second;
                     break;
                 }
-                case DENSITY: {
+                case RHO: {
                     // direct von Neumann neighbour lookup (out of bounds -> 0.0)
                     const double e_center = elements[id].rho;
                     const double e_right = x + 1 < size_x ? elements[id + 1].rho : 0.0;

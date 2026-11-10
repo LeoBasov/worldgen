@@ -268,7 +268,7 @@ TEST_CASE("calc_gradients_elevation") {
     field.get_element(1, 2).height = 23.0;
     field.get_element(2, 2).height = 31.0;
 
-    field.calc_gradients(wg::Field::Property::ELEVATION);
+    field.calc_gradients(wg::Field::Property::HEIGHT);
 
     const double gradx_00 = field.elements.at(0).dheight_dx;
     const double grady_00 = field.elements.at(0).dheight_dy;
