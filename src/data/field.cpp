@@ -51,8 +51,8 @@ void Field::calc_gradients(const Property property) {
         for (int x = 0; x < size_x; x++) {
             const int id = get_element_id(x, y);
             Element& element = elements.at(id);
-            double& grad_x = element.delevation_dx;
-            double& grad_y = element.delevation_dx;
+            double& grad_x = element.dheight_dx;
+            double& grad_y = element.dheight_dx;
 
             switch (property) {
                 case ELEVATION: {
@@ -66,13 +66,12 @@ void Field::calc_gradients(const Property property) {
                     const std::pair<double, double> grad =
                         calc_gradients_new(x, y, e_right, e_top, e_left, e_buttom, e_center);
 
-                    elements.at(id).delevation_dx = grad.first;
-                    elements.at(id).delevation_dy = grad.second;
+                    elements.at(id).dheight_dx = grad.first;
+                    elements.at(id).dheight_dy = grad.second;
 
-                    elements.at(id).elevation_gradient_norm =
-                        std::sqrt(std::pow(grad.first, 2) + std::pow(grad.second, 2));
-                    elements.at(id).delevation_dx_norm = grad.first / elements.at(id).elevation_gradient_norm;
-                    elements.at(id).delevation_dy_norm = grad.second / elements.at(id).elevation_gradient_norm;
+                    elements.at(id).grad_height_norm = std::sqrt(std::pow(grad.first, 2) + std::pow(grad.second, 2));
+                    elements.at(id).dheight_dx_norm = grad.first / elements.at(id).grad_height_norm;
+                    elements.at(id).dheight_dy_norm = grad.second / elements.at(id).grad_height_norm;
                     break;
                 }
                 case ATTRACTIVENESS: {

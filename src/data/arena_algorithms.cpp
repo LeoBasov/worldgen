@@ -30,8 +30,8 @@ void track_river(int idx, double sea_level, Field& field) {
     int idx_old = -1;
 
     while (true) {
-        const int dx = std::round(field.elements.at(idx).delevation_dx_norm);
-        const int dy = std::round(field.elements.at(idx).delevation_dy_norm);
+        const int dx = std::round(field.elements.at(idx).dheight_dx_norm);
+        const int dy = std::round(field.elements.at(idx).dheight_dy_norm);
         const auto [x, y] = field.get_id_coordinates(idx);
         const int idx_new = field.get_element_id(x - dx, y - dy);
 
@@ -44,7 +44,7 @@ void track_river(int idx, double sea_level, Field& field) {
         } else if (field.elements.at(idx_new).is_lake == true || field.elements.at(idx_new).is_river == true ||
                    field.elements.at(idx_new).height <= sea_level) {
             break;
-        } else if (field.elements.at(idx_new).elevation_gradient_norm < 1e-3) {
+        } else if (field.elements.at(idx_new).grad_height_norm < 1e-3) {
             field.elements.at(idx).is_river = false;
             field.elements.at(idx).is_lake = true;
             break;

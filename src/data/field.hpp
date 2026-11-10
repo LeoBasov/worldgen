@@ -26,11 +26,11 @@ struct Element {
 
     // height
     double height = 0.0;
-    double delevation_dx = 0.0;
-    double delevation_dy = 0.0;
-    double delevation_dx_norm = 0.0;
-    double delevation_dy_norm = 0.0;
-    double elevation_gradient_norm = 0.0;
+    double dheight_dx = 0.0;
+    double dheight_dy = 0.0;
+    double dheight_dx_norm = 0.0;
+    double dheight_dy_norm = 0.0;
+    double grad_height_norm = 0.0;
 
     // state flags
     bool is_river = false;

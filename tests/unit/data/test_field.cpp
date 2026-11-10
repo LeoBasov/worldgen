@@ -270,38 +270,38 @@ TEST_CASE("calc_gradients_elevation") {
 
     field.calc_gradients(wg::Field::Property::ELEVATION);
 
-    const double gradx_00 = field.elements.at(0).delevation_dx;
-    const double grady_00 = field.elements.at(0).delevation_dy;
-    const double gradx_10 = field.elements.at(1).delevation_dx;
-    const double grady_10 = field.elements.at(1).delevation_dy;
-    const double gradx_20 = field.elements.at(2).delevation_dx;
-    const double grady_20 = field.elements.at(2).delevation_dy;
+    const double gradx_00 = field.elements.at(0).dheight_dx;
+    const double grady_00 = field.elements.at(0).dheight_dy;
+    const double gradx_10 = field.elements.at(1).dheight_dx;
+    const double grady_10 = field.elements.at(1).dheight_dy;
+    const double gradx_20 = field.elements.at(2).dheight_dx;
+    const double grady_20 = field.elements.at(2).dheight_dy;
 
-    const double gradx_01 = field.elements.at(3).delevation_dx;
-    const double grady_01 = field.elements.at(3).delevation_dy;
-    const double gradx_11 = field.elements.at(4).delevation_dx;
-    const double grady_11 = field.elements.at(4).delevation_dy;
-    const double gradx_21 = field.elements.at(5).delevation_dx;
-    const double grady_21 = field.elements.at(5).delevation_dy;
+    const double gradx_01 = field.elements.at(3).dheight_dx;
+    const double grady_01 = field.elements.at(3).dheight_dy;
+    const double gradx_11 = field.elements.at(4).dheight_dx;
+    const double grady_11 = field.elements.at(4).dheight_dy;
+    const double gradx_21 = field.elements.at(5).dheight_dx;
+    const double grady_21 = field.elements.at(5).dheight_dy;
 
-    const double gradx_02 = field.elements.at(6).delevation_dx;
-    const double grady_02 = field.elements.at(6).delevation_dy;
-    const double gradx_12 = field.elements.at(7).delevation_dx;
-    const double grady_12 = field.elements.at(7).delevation_dy;
-    const double gradx_22 = field.elements.at(8).delevation_dx;
-    const double grady_22 = field.elements.at(8).delevation_dy;
+    const double gradx_02 = field.elements.at(6).dheight_dx;
+    const double grady_02 = field.elements.at(6).dheight_dy;
+    const double gradx_12 = field.elements.at(7).dheight_dx;
+    const double grady_12 = field.elements.at(7).dheight_dy;
+    const double gradx_22 = field.elements.at(8).dheight_dx;
+    const double grady_22 = field.elements.at(8).dheight_dy;
 
-    const double grad_norm_00 = field.elements.at(0).elevation_gradient_norm;
-    const double grad_norm_10 = field.elements.at(1).elevation_gradient_norm;
-    const double grad_norm_20 = field.elements.at(2).elevation_gradient_norm;
+    const double grad_norm_00 = field.elements.at(0).grad_height_norm;
+    const double grad_norm_10 = field.elements.at(1).grad_height_norm;
+    const double grad_norm_20 = field.elements.at(2).grad_height_norm;
 
-    const double grad_norm_01 = field.elements.at(3).elevation_gradient_norm;
-    const double grad_norm_11 = field.elements.at(4).elevation_gradient_norm;
-    const double grad_norm_21 = field.elements.at(5).elevation_gradient_norm;
+    const double grad_norm_01 = field.elements.at(3).grad_height_norm;
+    const double grad_norm_11 = field.elements.at(4).grad_height_norm;
+    const double grad_norm_21 = field.elements.at(5).grad_height_norm;
 
-    const double grad_norm_02 = field.elements.at(6).elevation_gradient_norm;
-    const double grad_norm_12 = field.elements.at(7).elevation_gradient_norm;
-    const double grad_norm_22 = field.elements.at(8).elevation_gradient_norm;
+    const double grad_norm_02 = field.elements.at(6).grad_height_norm;
+    const double grad_norm_12 = field.elements.at(7).grad_height_norm;
+    const double grad_norm_22 = field.elements.at(8).grad_height_norm;
 
     CHECK(gradx_00 == 2.0);
     CHECK(grady_00 == 6.0);
