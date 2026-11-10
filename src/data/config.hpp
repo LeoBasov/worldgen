@@ -17,8 +17,8 @@ struct Config {
 
     struct Hydrography {
         int n_rivers = 20;
-        double min_elevation = 0.7;
-        double max_elevation = 0.9;
+        double min_height = 0.7;
+        double max_height = 0.9;
         double sea_level = 0.3;
     };
 
