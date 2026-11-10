@@ -5,7 +5,8 @@ namespace wg{
 void Field::resize(int x, int y) {
     size_x = x;
     size_y = y;
-    elements = std::vector<Element>(size_x * size_y);
+    size = size_x * size_y;
+    elements = std::vector<Element>(size);
 }
 
 std::pair<double, double> Field::calc_gradients_new(const int x, const int y, const double e_right, const double e_top,

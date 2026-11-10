@@ -42,7 +42,7 @@ struct Field{
     enum Property { HEIGHT, ATTRACTIVENESS, ATTRACTIVENESS_GRAD_X, ATTRACTIVENESS_GRAD_Y, RHO };
 
     std::vector<Element> elements;
-    size_t size_x = 0, size_y = 0;
+    size_t size = 0, size_x = 0, size_y = 0;
 
     void resize(int x, int y);
     void calc_gradients(const Property property);

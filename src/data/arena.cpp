@@ -13,7 +13,7 @@ void Arena::add_noise(Config::Noise noise) {
     const siv::PerlinNoise::seed_type seed = noise.seed;
     const siv::PerlinNoise perlin{seed};
 
-    for (int i = 0; i < field.elements.size(); i++) {
+    for (int i = 0; i < field.size; i++) {
         const auto [x, y] = field.get_id_coordinates(i);
         const double fx = noise.frequency / field.size_x;
         const double fy = noise.frequency / field.size_y;
@@ -25,13 +25,13 @@ void Arena::add_noise(Config::Noise noise) {
 }
 
 void Arena::create_rivers(Config::Hydrography hydrography, Config::Noise noise) {
-    std::vector<size_t> ids(field.elements.size());
+    std::vector<size_t> ids(field.size);
     std::iota(ids.begin(), ids.end(), 0);  // 0, 1, 2, ..., n-1
     std::mt19937 rng(noise.seed);
     std::shuffle(ids.begin(), ids.end(), rng);
     int counter = 0;
 
-    for (int i = 0; i < field.elements.size(); i++) {
+    for (int i = 0; i < field.size; i++) {
         const size_t id = ids.at(i);
         const double height = field(id).height;
         const bool is_river = field(id).is_river;
