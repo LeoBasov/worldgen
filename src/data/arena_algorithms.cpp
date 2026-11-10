@@ -4,23 +4,23 @@ namespace wg {
 
 std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids, const Field& field) {
     std::vector<double> gradients(9);
-    const double id_elevation = field.elements.at(id).height;
+    const double id_height = field.elements.at(id).height;
 
     gradients.at(0) =
-        neighbour_ids.at(0) != -1 ? (field.elements.at(neighbour_ids.at(0)).height - id_elevation) / sqrt(2.0) : 0.0;
-    gradients.at(1) = neighbour_ids.at(1) != -1 ? (field.elements.at(neighbour_ids.at(1)).height - id_elevation) : 0.0;
+        neighbour_ids.at(0) != -1 ? (field.elements.at(neighbour_ids.at(0)).height - id_height) / sqrt(2.0) : 0.0;
+    gradients.at(1) = neighbour_ids.at(1) != -1 ? (field.elements.at(neighbour_ids.at(1)).height - id_height) : 0.0;
     gradients.at(2) =
-        neighbour_ids.at(2) != -1 ? (field.elements.at(neighbour_ids.at(2)).height - id_elevation) / sqrt(2.0) : 0.0;
+        neighbour_ids.at(2) != -1 ? (field.elements.at(neighbour_ids.at(2)).height - id_height) / sqrt(2.0) : 0.0;
 
-    gradients.at(3) = neighbour_ids.at(3) != -1 ? (field.elements.at(neighbour_ids.at(3)).height - id_elevation) : 0.0;
+    gradients.at(3) = neighbour_ids.at(3) != -1 ? (field.elements.at(neighbour_ids.at(3)).height - id_height) : 0.0;
     gradients.at(4) = 0.0;
-    gradients.at(5) = neighbour_ids.at(5) != -1 ? (field.elements.at(neighbour_ids.at(5)).height - id_elevation) : 0.0;
+    gradients.at(5) = neighbour_ids.at(5) != -1 ? (field.elements.at(neighbour_ids.at(5)).height - id_height) : 0.0;
 
     gradients.at(6) =
-        neighbour_ids.at(6) != -1 ? (field.elements.at(neighbour_ids.at(6)).height - id_elevation) / sqrt(2.0) : 0.0;
-    gradients.at(7) = neighbour_ids.at(7) != -1 ? (field.elements.at(neighbour_ids.at(7)).height - id_elevation) : 0.0;
+        neighbour_ids.at(6) != -1 ? (field.elements.at(neighbour_ids.at(6)).height - id_height) / sqrt(2.0) : 0.0;
+    gradients.at(7) = neighbour_ids.at(7) != -1 ? (field.elements.at(neighbour_ids.at(7)).height - id_height) : 0.0;
     gradients.at(8) =
-        neighbour_ids.at(8) != -1 ? (field.elements.at(neighbour_ids.at(8)).height - id_elevation) / sqrt(2.0) : 0.0;
+        neighbour_ids.at(8) != -1 ? (field.elements.at(neighbour_ids.at(8)).height - id_height) / sqrt(2.0) : 0.0;
 
     return gradients;
 }
