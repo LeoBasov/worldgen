@@ -1,3 +1,5 @@
+#include <cmath>
+#include <stdexcept>
 #include <vector>
 
 namespace wg {
@@ -17,6 +19,7 @@ struct Element {
 struct Field {
     enum Type { ELEVATION = 0, RHO = 1 };
     enum Operation { VALUE, GRAD_X, GRAD_Y, GRAD_XX, GRAD_XY, GRAD_YY, GRAD_NORM };
+    enum HoodType { NEUMANN, MOORE };
 
     vector<Element> elements;
     int size_x = 0, size_y = 0, size = 0;
@@ -36,7 +39,7 @@ struct Field {
         }
     }
 
-    std::pair<int, int> coords(int id) const {
+    pair<int, int> coords(int id) const {
         if (id < 0 || id > elements.size()) {
             return {-1, -1};
         } else {
@@ -75,7 +78,7 @@ struct Field {
                 break;
             }
             default: {
-                throw std::exception();
+                throw domain_error("unrecognized operation");
                 break;
             }
         }
@@ -83,6 +86,50 @@ struct Field {
 
     double& operator()(int x, int y, Type type, Operation operation = VALUE) {
         return operator()(elem_id(x, y), type, operation);
+    }
+
+    vector<int> neighbourhood(const int id, const int size, const HoodType type) const {
+        const int length = 2 * size + 1;
+        const auto [x, y] = coords(id);
+        vector<int> neighbourhood(length * length, -1);
+        int counter = 0;
+
+        if (size < 1) {
+            throw domain_error("zero or negative neighbourhood size");
+        }
+
+        switch (type) {
+            case HoodType::NEUMANN: {
+                for (int iy = 0; iy < length; iy++) {
+                    for (int ix = 0; ix < length; ix++) {
+                        const int neighbourhood_id = elem_id(x + ix - size, y + iy - size);
+
+                        if ((abs(ix - size) + abs(iy - size)) > size) {
+                            neighbourhood.at(counter++) = -1;
+                        } else {
+                            neighbourhood.at(counter++) = neighbourhood_id;
+                        }
+                    }
+                }
+                break;
+            }
+            case HoodType::MOORE: {
+                for (int iy = 0; iy < length; iy++) {
+                    for (int ix = 0; ix < length; ix++) {
+                        const int neighbourhood_id = elem_id(x + ix - size, y + iy - size);
+
+                        neighbourhood.at(counter++) = neighbourhood_id;
+                    }
+                }
+                break;
+            }
+            default: {
+                throw domain_error("unrecognized neighbourhood type");
+                break;
+            }
+        }
+
+        return neighbourhood;
     }
 };
 

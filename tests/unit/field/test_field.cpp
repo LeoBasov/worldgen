@@ -182,3 +182,129 @@ TEST_CASE("operator(x,y)") {
         CHECK(field.elements.at(i).grad_norm.at(1) == i + 13);
     }
 }
+
+TEST_CASE("neighbourhood_moore") {
+    Field field;
+    const int x = 5;
+    const int y = 5;
+
+    field.resize(x, y);
+
+    const int id1 = field.elem_id(2, 2);
+    const int id2 = field.elem_id(1, 0);
+    const int neighbourhood_size1 = 1;
+    const int neighbourhood_size2 = 2;
+    const std::vector<int> neighbourhood_ids1 = field.neighbourhood(id1, neighbourhood_size1, Field::MOORE);
+    const std::vector<int> neighbourhood_ids2 = field.neighbourhood(id2, neighbourhood_size2, Field::MOORE);
+
+    // check size
+    CHECK(neighbourhood_ids1.size() == 9);
+    CHECK(neighbourhood_ids2.size() == 25);
+
+    // check ids of set 1
+    CHECK(neighbourhood_ids1.at(0) == 6);
+    CHECK(neighbourhood_ids1.at(1) == 7);
+    CHECK(neighbourhood_ids1.at(2) == 8);
+
+    CHECK(neighbourhood_ids1.at(3) == 11);
+    CHECK(neighbourhood_ids1.at(4) == 12);
+    CHECK(neighbourhood_ids1.at(5) == 13);
+
+    CHECK(neighbourhood_ids1.at(6) == 16);
+    CHECK(neighbourhood_ids1.at(7) == 17);
+    CHECK(neighbourhood_ids1.at(8) == 18);
+
+    // check ids of set 2
+    CHECK(neighbourhood_ids2.at(0) == -1);
+    CHECK(neighbourhood_ids2.at(1) == -1);
+    CHECK(neighbourhood_ids2.at(2) == -1);
+    CHECK(neighbourhood_ids2.at(3) == -1);
+    CHECK(neighbourhood_ids2.at(4) == -1);
+
+    CHECK(neighbourhood_ids2.at(5) == -1);
+    CHECK(neighbourhood_ids2.at(6) == -1);
+    CHECK(neighbourhood_ids2.at(7) == -1);
+    CHECK(neighbourhood_ids2.at(8) == -1);
+    CHECK(neighbourhood_ids2.at(9) == -1);
+
+    CHECK(neighbourhood_ids2.at(10) == -1);
+    CHECK(neighbourhood_ids2.at(11) == 0);
+    CHECK(neighbourhood_ids2.at(12) == 1);
+    CHECK(neighbourhood_ids2.at(13) == 2);
+    CHECK(neighbourhood_ids2.at(14) == 3);
+
+    CHECK(neighbourhood_ids2.at(15) == -1);
+    CHECK(neighbourhood_ids2.at(16) == 5);
+    CHECK(neighbourhood_ids2.at(17) == 6);
+    CHECK(neighbourhood_ids2.at(18) == 7);
+    CHECK(neighbourhood_ids2.at(19) == 8);
+
+    CHECK(neighbourhood_ids2.at(20) == -1);
+    CHECK(neighbourhood_ids2.at(21) == 10);
+    CHECK(neighbourhood_ids2.at(22) == 11);
+    CHECK(neighbourhood_ids2.at(23) == 12);
+    CHECK(neighbourhood_ids2.at(24) == 13);
+}
+
+TEST_CASE("neighbourhood_neumann") {
+    Field field;
+    const int x = 5;
+    const int y = 5;
+
+    field.resize(x, y);
+
+    const int id1 = field.elem_id(2, 2);
+    const int id2 = field.elem_id(1, 0);
+    const int neighbourhood_size1 = 1;
+    const int neighbourhood_size2 = 2;
+    const std::vector<int> neighbourhood_ids1 = field.neighbourhood(id1, neighbourhood_size1, Field::NEUMANN);
+    const std::vector<int> neighbourhood_ids2 = field.neighbourhood(id2, neighbourhood_size2, Field::NEUMANN);
+
+    // check size
+    CHECK(neighbourhood_ids1.size() == 9);
+    CHECK(neighbourhood_ids2.size() == 25);
+
+    // check ids of set 1
+    CHECK(neighbourhood_ids1.at(0) == -1);
+    CHECK(neighbourhood_ids1.at(1) == 7);
+    CHECK(neighbourhood_ids1.at(2) == -1);
+
+    CHECK(neighbourhood_ids1.at(3) == 11);
+    CHECK(neighbourhood_ids1.at(4) == 12);
+    CHECK(neighbourhood_ids1.at(5) == 13);
+
+    CHECK(neighbourhood_ids1.at(6) == -1);
+    CHECK(neighbourhood_ids1.at(7) == 17);
+    CHECK(neighbourhood_ids1.at(8) == -1);
+
+    // check ids of set 2
+    CHECK(neighbourhood_ids2.at(0) == -1);
+    CHECK(neighbourhood_ids2.at(1) == -1);
+    CHECK(neighbourhood_ids2.at(2) == -1);
+    CHECK(neighbourhood_ids2.at(3) == -1);
+    CHECK(neighbourhood_ids2.at(4) == -1);
+
+    CHECK(neighbourhood_ids2.at(5) == -1);
+    CHECK(neighbourhood_ids2.at(6) == -1);
+    CHECK(neighbourhood_ids2.at(7) == -1);
+    CHECK(neighbourhood_ids2.at(8) == -1);
+    CHECK(neighbourhood_ids2.at(9) == -1);
+
+    CHECK(neighbourhood_ids2.at(10) == -1);
+    CHECK(neighbourhood_ids2.at(11) == 0);
+    CHECK(neighbourhood_ids2.at(12) == 1);
+    CHECK(neighbourhood_ids2.at(13) == 2);
+    CHECK(neighbourhood_ids2.at(14) == 3);
+
+    CHECK(neighbourhood_ids2.at(15) == -1);
+    CHECK(neighbourhood_ids2.at(16) == 5);
+    CHECK(neighbourhood_ids2.at(17) == 6);
+    CHECK(neighbourhood_ids2.at(18) == 7);
+    CHECK(neighbourhood_ids2.at(19) == -1);
+
+    CHECK(neighbourhood_ids2.at(20) == -1);
+    CHECK(neighbourhood_ids2.at(21) == -1);
+    CHECK(neighbourhood_ids2.at(22) == 11);
+    CHECK(neighbourhood_ids2.at(23) == -1);
+    CHECK(neighbourhood_ids2.at(24) == -1);
+}
