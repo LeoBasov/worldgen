@@ -8,6 +8,8 @@ namespace wg {
 
 using namespace std;
 
+int a = 0;
+
 struct Field {
     enum HoodType { NEUMANN, MOORE };
 
