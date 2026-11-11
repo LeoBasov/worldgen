@@ -5,7 +5,7 @@
 using namespace wg;
 
 TEST_CASE("resize") {
-    Field field;
+    Field<double> field;
     const int x = 7;
     const int y = 13;
 
@@ -18,7 +18,7 @@ TEST_CASE("resize") {
 }
 
 TEST_CASE("coords") {
-    Field field;
+    Field<double> field;
     const int x = 3;
     const int y = 4;
 
@@ -55,7 +55,7 @@ TEST_CASE("coords") {
 }
 
 TEST_CASE("elem_id") {
-    Field field;
+    Field<double> field;
     const int x = 3;
     const int y = 4;
 
@@ -90,7 +90,7 @@ TEST_CASE("elem_id") {
 }
 
 TEST_CASE("operator(x,y)") {
-    Field field;
+    Field<double> field;
     const int x = 3;
     const int y = 4;
 
@@ -110,7 +110,7 @@ TEST_CASE("operator(x,y)") {
 }
 
 TEST_CASE("neighbourhood_moore") {
-    Field field;
+    Field<double> field;
     const int x = 5;
     const int y = 5;
 
@@ -120,8 +120,8 @@ TEST_CASE("neighbourhood_moore") {
     const int id2 = field.elem_id(1, 0);
     const int neighbourhood_size1 = 1;
     const int neighbourhood_size2 = 2;
-    const std::vector<int> neighbourhood_ids1 = field.neighbourhood(id1, neighbourhood_size1, Field::MOORE);
-    const std::vector<int> neighbourhood_ids2 = field.neighbourhood(id2, neighbourhood_size2, Field::MOORE);
+    const std::vector<int> neighbourhood_ids1 = field.neighbourhood(id1, neighbourhood_size1, Field<double>::MOORE);
+    const std::vector<int> neighbourhood_ids2 = field.neighbourhood(id2, neighbourhood_size2, Field<double>::MOORE);
 
     // check size
     CHECK(neighbourhood_ids1.size() == 9);
@@ -173,7 +173,7 @@ TEST_CASE("neighbourhood_moore") {
 }
 
 TEST_CASE("neighbourhood_neumann") {
-    Field field;
+    Field<double> field;
     const int x = 5;
     const int y = 5;
 
@@ -183,8 +183,8 @@ TEST_CASE("neighbourhood_neumann") {
     const int id2 = field.elem_id(1, 0);
     const int neighbourhood_size1 = 1;
     const int neighbourhood_size2 = 2;
-    const std::vector<int> neighbourhood_ids1 = field.neighbourhood(id1, neighbourhood_size1, Field::NEUMANN);
-    const std::vector<int> neighbourhood_ids2 = field.neighbourhood(id2, neighbourhood_size2, Field::NEUMANN);
+    const std::vector<int> neighbourhood_ids1 = field.neighbourhood(id1, neighbourhood_size1, Field<double>::NEUMANN);
+    const std::vector<int> neighbourhood_ids2 = field.neighbourhood(id2, neighbourhood_size2, Field<double>::NEUMANN);
 
     // check size
     CHECK(neighbourhood_ids1.size() == 9);

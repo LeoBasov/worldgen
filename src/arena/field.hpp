@@ -8,12 +8,11 @@ namespace wg {
 
 using namespace std;
 
-int a = 0;
-
+template <typename T>
 struct Field {
     enum HoodType { NEUMANN, MOORE };
 
-    vector<double> elements;
+    vector<T> elements;
     int size_x = 0, size_y = 0, size = 0;
 
     void resize(int x, int y) {
@@ -39,13 +38,13 @@ struct Field {
         }
     }
 
-    double& operator()(int id) { return elements.at(id); }
+    T& operator()(int id) { return elements.at(id); }
 
-    const double& operator()(int id) const { return elements.at(id); }
+    const T& operator()(int id) const { return elements.at(id); }
 
-    double& operator()(int x, int y) { return operator()(elem_id(x, y)); }
+    T& operator()(int x, int y) { return operator()(elem_id(x, y)); }
 
-    const double& operator()(int x, int y) const { return operator()(elem_id(x, y)); }
+    const T& operator()(int x, int y) const { return operator()(elem_id(x, y)); }
 
     vector<int> neighbourhood(const int id, const int nsize, const HoodType type) const {
         const int length = 2 * nsize + 1;

@@ -4,13 +4,13 @@
 
 namespace wg {
 struct Value {
-    Field value;
-    Field grad_x;
-    Field grad_y;
-    Field grad_xx;
-    Field grad_xy;
-    Field grad_yy;
-    Field grad_norm;
+    Field<double> value;
+    Field<double> grad_x;
+    Field<double> grad_y;
+    Field<double> grad_xx;
+    Field<double> grad_xy;
+    Field<double> grad_yy;
+    Field<double> grad_norm;
 };
 
 struct Arena {

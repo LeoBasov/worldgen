@@ -3,8 +3,9 @@
 namespace wg {
 namespace field_alg {
 
-Field calc_grad_x(const Field& field) {
-    Field grad;
+template <typename T>
+Field<T> calc_grad_x(const Field<T>& field) {
+    Field<T> grad;
 
     grad.resize(field.size_x, field.size_y);
 
@@ -21,8 +22,9 @@ Field calc_grad_x(const Field& field) {
     return grad;
 }
 
-Field calc_grad_y(const Field& field) {
-    Field grad;
+template <typename T>
+Field<T> calc_grad_y(const Field<T>& field) {
+    Field<T> grad;
 
     grad.resize(field.size_x, field.size_y);
 
@@ -39,7 +41,8 @@ Field calc_grad_y(const Field& field) {
     return grad;
 }
 
-double calc_grad(const int id0, const int id1, const int id2, const Field& field) {
+template <typename T>
+T calc_grad(const int id0, const int id1, const int id2, const Field<T>& field) {
     if (id0 == -1) {
         return field(id2) - field(id1);
     } else if (id2 == -1) {
