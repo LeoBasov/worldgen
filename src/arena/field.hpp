@@ -39,7 +39,11 @@ struct Field {
 
     double& operator()(int id) { return elements.at(id); }
 
+    const double& operator()(int id) const { return elements.at(id); }
+
     double& operator()(int x, int y) { return operator()(elem_id(x, y)); }
+
+    const double& operator()(int x, int y) const { return operator()(elem_id(x, y)); }
 
     vector<int> neighbourhood(const int id, const int nsize, const HoodType type) const {
         const int length = 2 * nsize + 1;
