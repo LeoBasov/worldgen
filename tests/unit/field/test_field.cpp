@@ -53,3 +53,38 @@ TEST_CASE("coords") {
     CHECK(field.coords(11).first == 2);
     CHECK(field.coords(11).second == 3);
 }
+
+TEST_CASE("elem_id") {
+    Field field;
+    const int x = 3;
+    const int y = 4;
+
+    field.resize(x, y);
+
+    // center elements
+    CHECK(field.elem_id(0, 0) == 0);
+    CHECK(field.elem_id(1, 0) == 1);
+    CHECK(field.elem_id(2, 0) == 2);
+
+    CHECK(field.elem_id(0, 1) == 3);
+    CHECK(field.elem_id(1, 1) == 4);
+    CHECK(field.elem_id(2, 1) == 5);
+
+    CHECK(field.elem_id(0, 2) == 6);
+    CHECK(field.elem_id(1, 2) == 7);
+    CHECK(field.elem_id(2, 2) == 8);
+
+    CHECK(field.elem_id(0, 3) == 9);
+    CHECK(field.elem_id(1, 3) == 10);
+    CHECK(field.elem_id(2, 3) == 11);
+
+    CHECK(field.elem_id(-1, 0) == -1);
+    CHECK(field.elem_id(3, 0) == -1);
+    CHECK(field.elem_id(0, -1) == -1);
+    CHECK(field.elem_id(0, 4) == -1);
+
+    CHECK(field.elem_id(-1, -1) == -1);
+    CHECK(field.elem_id(3, 4) == -1);
+    CHECK(field.elem_id(-1, 4) == -1);
+    CHECK(field.elem_id(-3, -1) == -1);
+}
