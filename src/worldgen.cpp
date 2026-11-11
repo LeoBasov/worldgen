@@ -18,7 +18,7 @@ void WorldGen::create_map() {
     arena.calc_attractiveness_factor(config.hydrography);
 }
 
-Arena WorldGen::get_arena() const { return arena; }
+OldArena WorldGen::get_arena() const { return arena; }
 
 bool WorldGen::export2bmp() const { return exporter.export2bmp(arena, config.exports); }
 

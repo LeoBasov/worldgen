@@ -1,7 +1,7 @@
 #pragma once
 
-#include "./data/arena.hpp"
 #include "./data/config.hpp"
+#include "./data/old_arena.hpp"
 #include "./io/exporter.hpp"
 
 namespace wg {
@@ -13,12 +13,12 @@ class WorldGen {
 
     void set_config(Config _config);
     void create_map();
-    Arena get_arena() const;
+    OldArena get_arena() const;
     bool export2bmp() const;
 
    private:
     Config config;
-    Arena arena;
+    OldArena arena;
     Exporter exporter;
 };
 

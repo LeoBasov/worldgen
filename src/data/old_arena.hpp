@@ -11,10 +11,10 @@ namespace wg {
 
 using namespace std;
 
-class Arena {
+class OldArena {
    public:
-    Arena();
-    ~Arena() = default;
+    OldArena();
+    ~OldArena() = default;
 
     void resize(Config::Map map);
     void add_noise(Config::Noise noise);

@@ -59,7 +59,7 @@ std::vector<double> Exporter::calc_rgb(double height, bool is_river, bool is_lak
     return rgb;
 }
 
-bool Exporter::export2bmp(const Arena& arena, const Config::Export exports) const {
+bool Exporter::export2bmp(const OldArena& arena, const Config::Export exports) const {
     Image image{arena.get_size_x(), arena.get_size_y()};
 
     for (std::int32_t y = 0; y < image.height(); ++y) {

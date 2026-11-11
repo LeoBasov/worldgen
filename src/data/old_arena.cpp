@@ -1,15 +1,15 @@
-#include "arena.hpp"
+#include "old_arena.hpp"
 
 #include <algorithm>
 #include <iostream>
 
 namespace wg {
 
-Arena::Arena() {}
+OldArena::OldArena() {}
 
-void Arena::resize(Config::Map map) { field.resize(map.size_x, map.size_y); }
+void OldArena::resize(Config::Map map) { field.resize(map.size_x, map.size_y); }
 
-void Arena::add_noise(Config::Noise noise) {
+void OldArena::add_noise(Config::Noise noise) {
     const siv::PerlinNoise::seed_type seed = noise.seed;
     const siv::PerlinNoise perlin{seed};
 
@@ -24,7 +24,7 @@ void Arena::add_noise(Config::Noise noise) {
     field.calc_gradients(OldField::Property::HEIGHT);
 }
 
-void Arena::create_rivers(Config::Hydrography hydrography, Config::Noise noise) {
+void OldArena::create_rivers(Config::Hydrography hydrography, Config::Noise noise) {
     std::vector<size_t> ids(field.size);
     std::iota(ids.begin(), ids.end(), 0);  // 0, 1, 2, ..., n-1
     std::mt19937 rng(noise.seed);
@@ -47,7 +47,7 @@ void Arena::create_rivers(Config::Hydrography hydrography, Config::Noise noise) 
     }
 }
 
-void Arena::calc_attractiveness_factor(Config::Hydrography hydrography) {
+void OldArena::calc_attractiveness_factor(Config::Hydrography hydrography) {
     // relies on the elevation gradients computed in add_noise (rivers/lakes don't change height)
     for (int i = 0; i < field.size_x * field.size_y; i++) {
         OldElement& element = field(i);
@@ -66,12 +66,12 @@ void Arena::calc_attractiveness_factor(Config::Hydrography hydrography) {
     field.calc_gradients(OldField::Property::ATTRACTIVENESS);
 }
 
-OldElement& Arena::get_element(int x, int y) { return field(field.size_x * y + x); }
+OldElement& OldArena::get_element(int x, int y) { return field(field.size_x * y + x); }
 
-const OldElement& Arena::get_element(int x, int y) const { return field(field.size_x * y + x); }
+const OldElement& OldArena::get_element(int x, int y) const { return field(field.size_x * y + x); }
 
-size_t Arena::get_size_x() const { return field.size_x; }
+size_t OldArena::get_size_x() const { return field.size_x; }
 
-size_t Arena::get_size_y() const { return field.size_y; }
+size_t OldArena::get_size_y() const { return field.size_y; }
 
 }  // namespace wg

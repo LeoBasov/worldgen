@@ -1,10 +1,10 @@
 #include <doctest/doctest.h>
 
-#include "data/arena.hpp"
+#include "data/old_arena.hpp"
 
 TEST_CASE("resize") {
     wg::Config::Map map;
-    wg::Arena arena;
+    wg::OldArena arena;
     const int x = 7;
     const int y = 13;
 
