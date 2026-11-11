@@ -18,7 +18,7 @@ TEST_CASE("calc_gradients") {
     6---7---8
     */
 
-    wg::Field field;
+    wg::OldField field;
     const int size_x = 3;
     const int size_y = 3;
     const int id = 4;
@@ -37,7 +37,7 @@ TEST_CASE("calc_gradients") {
     field.elements.at(7).height = 8.0;
     field.elements.at(8).height = 9.0;
 
-    const std::vector<int> neighbour_ids = field.get_neighbourhood(id, 1, wg::Field::NeighbourhoodType::MOORE);
+    const std::vector<int> neighbour_ids = field.get_neighbourhood(id, 1, wg::OldField::NeighbourhoodType::MOORE);
     const std::vector<double> gradients = wg::calc_gradients(id, neighbour_ids, field);
 
     CHECK(gradients.size() == 9);
@@ -75,7 +75,7 @@ TEST_CASE("track_river") {
     20---21---22---23---24
     */
 
-    wg::Field field;
+    wg::OldField field;
     const int size_x = 5;
     const int size_y = 5;
     const int start_id = 4;
@@ -99,7 +99,7 @@ TEST_CASE("track_river") {
     field.elements.at(16).height = 3.0;
     field.elements.at(20).height = 1.0;
 
-    field.calc_gradients(wg::Field::Property::HEIGHT);
+    field.calc_gradients(wg::OldField::Property::HEIGHT);
     track_river(start_id, sea_level, field);
 
     CHECK(field.elements.at(4).is_river);

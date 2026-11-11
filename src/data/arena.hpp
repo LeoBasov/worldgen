@@ -4,7 +4,7 @@
 
 #include "arena_algorithms.hpp"
 #include "config.hpp"
-#include "field.hpp"
+#include "old_field.hpp"
 #include "perlin_noise.hpp"
 
 namespace wg {
@@ -20,13 +20,13 @@ class Arena {
     void add_noise(Config::Noise noise);
     void create_rivers(Config::Hydrography hydrography, Config::Noise noise);
     void calc_attractiveness_factor(Config::Hydrography hydrography);
-    Element& get_element(int x, int y);
-    const Element& get_element(int x, int y) const;
+    OldElement& get_element(int x, int y);
+    const OldElement& get_element(int x, int y) const;
     size_t get_size_x() const;
     size_t get_size_y() const;
 
    private:
-    Field field;
+    OldField field;
 };
 
 }  // namespace wg

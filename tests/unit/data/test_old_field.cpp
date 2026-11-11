@@ -1,9 +1,9 @@
 #include <doctest/doctest.h>
 
-#include "data/field.hpp"
+#include "data/old_field.hpp"
 
 TEST_CASE("resize") {
-    wg::Field field;
+    wg::OldField field;
     const int x = 12;
     const int y = 24;
 
@@ -15,7 +15,7 @@ TEST_CASE("resize") {
 }
 
 TEST_CASE("get_id_coordinates") {
-    wg::Field field;
+    wg::OldField field;
     const int x = 3;
     const int y = 4;
 
@@ -52,7 +52,7 @@ TEST_CASE("get_id_coordinates") {
 }
 
 TEST_CASE("get_element_id") {
-    wg::Field field;
+    wg::OldField field;
     const int x = 3;
     const int y = 4;
 
@@ -86,7 +86,7 @@ TEST_CASE("get_element_id") {
 }
 
 TEST_CASE("get_element") {
-    wg::Field field;
+    wg::OldField field;
     const int x = 3;
     const int y = 7;
     int counter = 0;
@@ -104,7 +104,7 @@ TEST_CASE("get_element") {
 }
 
 TEST_CASE("get_neighbourhood_moore") {
-    wg::Field field;
+    wg::OldField field;
     const int x = 5;
     const int y = 5;
 
@@ -115,9 +115,9 @@ TEST_CASE("get_neighbourhood_moore") {
     const int neighbourhood_size1 = 1;
     const int neighbourhood_size2 = 2;
     const std::vector<int> neighbourhood_ids1 =
-        field.get_neighbourhood(id1, neighbourhood_size1, wg::Field::NeighbourhoodType::MOORE);
+        field.get_neighbourhood(id1, neighbourhood_size1, wg::OldField::NeighbourhoodType::MOORE);
     const std::vector<int> neighbourhood_ids2 =
-        field.get_neighbourhood(id2, neighbourhood_size2, wg::Field::NeighbourhoodType::MOORE);
+        field.get_neighbourhood(id2, neighbourhood_size2, wg::OldField::NeighbourhoodType::MOORE);
 
     // check size
     CHECK(neighbourhood_ids1.size() == 9);
@@ -169,7 +169,7 @@ TEST_CASE("get_neighbourhood_moore") {
 }
 
 TEST_CASE("get_neighbourhood_neumann") {
-    wg::Field field;
+    wg::OldField field;
     const int x = 5;
     const int y = 5;
 
@@ -180,9 +180,9 @@ TEST_CASE("get_neighbourhood_neumann") {
     const int neighbourhood_size1 = 1;
     const int neighbourhood_size2 = 2;
     const std::vector<int> neighbourhood_ids1 =
-        field.get_neighbourhood(id1, neighbourhood_size1, wg::Field::NeighbourhoodType::NEUMANN);
+        field.get_neighbourhood(id1, neighbourhood_size1, wg::OldField::NeighbourhoodType::NEUMANN);
     const std::vector<int> neighbourhood_ids2 =
-        field.get_neighbourhood(id2, neighbourhood_size2, wg::Field::NeighbourhoodType::NEUMANN);
+        field.get_neighbourhood(id2, neighbourhood_size2, wg::OldField::NeighbourhoodType::NEUMANN);
 
     // check size
     CHECK(neighbourhood_ids1.size() == 9);
@@ -249,7 +249,7 @@ TEST_CASE("calc_gradients_elevation") {
     6----7----8
     */
 
-    wg::Field field;
+    wg::OldField field;
     const int size_x = 3;
     const int size_y = 3;
     const int tot = size_x * size_y;
@@ -268,7 +268,7 @@ TEST_CASE("calc_gradients_elevation") {
     field.get_element(1, 2).height = 23.0;
     field.get_element(2, 2).height = 31.0;
 
-    field.calc_gradients(wg::Field::Property::HEIGHT);
+    field.calc_gradients(wg::OldField::Property::HEIGHT);
 
     const double gradx_00 = field.elements.at(0).dheight_dx;
     const double grady_00 = field.elements.at(0).dheight_dy;
@@ -353,7 +353,7 @@ TEST_CASE("calc_gradients_attractiveness") {
     6----7----8
     */
 
-    wg::Field field;
+    wg::OldField field;
     const int size_x = 3;
     const int size_y = 3;
     const int tot = size_x * size_y;
@@ -372,7 +372,7 @@ TEST_CASE("calc_gradients_attractiveness") {
     field.get_element(1, 2).attract = 23.0;
     field.get_element(2, 2).attract = 31.0;
 
-    field.calc_gradients(wg::Field::Property::ATTRACTIVENESS);
+    field.calc_gradients(wg::OldField::Property::ATTRACTIVENESS);
 
     const double gradx_00 = field.elements.at(0).dattract_dx;
     const double grady_00 = field.elements.at(0).dattract_dy;

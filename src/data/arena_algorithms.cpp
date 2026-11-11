@@ -2,7 +2,7 @@
 
 namespace wg {
 
-std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids, const Field& field) {
+std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids, const OldField& field) {
     std::vector<double> gradients(9);
     const double id_height = field(id).height;
 
@@ -21,7 +21,7 @@ std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids
     return gradients;
 }
 
-void track_river(int idx, double sea_level, Field& field) {
+void track_river(int idx, double sea_level, OldField& field) {
     field(idx).is_river = true;
     int idx_old = -1;
 
@@ -56,7 +56,7 @@ void track_river(int idx, double sea_level, Field& field) {
     }
 }
 
-void fill_lake(int idx, double sea_level, Field& field) {
+void fill_lake(int idx, double sea_level, OldField& field) {
     // Priority flood: the lake boundary is kept incrementally in a min-heap ordered by
     // (elevation, id) instead of being rebuilt after every added cell. Nothing else
     // modifies is_lake while this lake fills, so heap entries never go stale.
@@ -73,7 +73,7 @@ void fill_lake(int idx, double sea_level, Field& field) {
         }
     };
 
-    push_boundary(field.get_neighbourhood(idx, 1, Field::NeighbourhoodType::MOORE));
+    push_boundary(field.get_neighbourhood(idx, 1, OldField::NeighbourhoodType::MOORE));
 
     while (true) {
         // ToDo: find why he gets stuck here
@@ -93,7 +93,8 @@ void fill_lake(int idx, double sea_level, Field& field) {
         field(min_elev_id).is_river = false;
         lake_ids.push_back(min_elev_id);
 
-        const std::vector<int> neighbour_ids = field.get_neighbourhood(min_elev_id, 1, Field::NeighbourhoodType::MOORE);
+        const std::vector<int> neighbour_ids =
+            field.get_neighbourhood(min_elev_id, 1, OldField::NeighbourhoodType::MOORE);
         push_boundary(neighbour_ids);
 
         // check if it has negative slope towards an non lake cell

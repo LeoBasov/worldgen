@@ -1,17 +1,17 @@
-#include "field.hpp"
+#include "old_field.hpp"
 
-namespace wg{
+namespace wg {
 
-void Field::resize(int x, int y) {
+void OldField::resize(int x, int y) {
     size_x = x;
     size_y = y;
     size = size_x * size_y;
-    elements = std::vector<Element>(size);
+    elements = std::vector<OldElement>(size);
 }
 
-std::pair<double, double> Field::calc_gradients_new(const int x, const int y, const double e_right, const double e_top,
-                                                    const double e_left, const double e_buttom,
-                                                    const double e_center) const {
+std::pair<double, double> OldField::calc_gradients_new(const int x, const int y, const double e_right,
+                                                       const double e_top, const double e_left, const double e_buttom,
+                                                       const double e_center) const {
     std::pair<double, double> grad = {0.0, 0.0};
 
     if (x == 0 && y == 0) {
@@ -46,12 +46,12 @@ std::pair<double, double> Field::calc_gradients_new(const int x, const int y, co
     return grad;
 }
 
-void Field::calc_gradients(const Property property) {
+void OldField::calc_gradients(const Property property) {
     // y outer / x inner to walk elements in memory order (id = size_x * y + x)
     for (int y = 0; y < size_y; y++) {
         for (int x = 0; x < size_x; x++) {
             const int id = get_element_id(x, y);
-            Element& element = elements.at(id);
+            OldElement& element = elements.at(id);
             double& grad_x = element.dheight_dx;
             double& grad_y = element.dheight_dx;
 
@@ -147,7 +147,7 @@ void Field::calc_gradients(const Property property) {
     }
 }
 
-std::pair<int, int> Field::get_id_coordinates(const int id) const {
+std::pair<int, int> OldField::get_id_coordinates(const int id) const {
     if (id < 0 || id > elements.size()) {
         throw std::domain_error("id out of bounds");
     }
@@ -155,7 +155,7 @@ std::pair<int, int> Field::get_id_coordinates(const int id) const {
     return {id % size_x, id / size_x};
 }
 
-int Field::get_element_id(int x, int y) const {
+int OldField::get_element_id(int x, int y) const {
     if (x < 0 || x >= size_x || y < 0 || y >= size_y) {
         return -1;
     } else {
@@ -163,19 +163,19 @@ int Field::get_element_id(int x, int y) const {
     }
 }
 
-Element& Field::get_element(int x, int y) {
+OldElement& OldField::get_element(int x, int y) {
     const int element_id = get_element_id(x, y);
 
     return elements.at(element_id);
 }
 
-const Element& Field::get_element(int x, int y) const {
+const OldElement& OldField::get_element(int x, int y) const {
     const int element_id = get_element_id(x, y);
 
     return elements.at(element_id);
 }
 
-std::vector<int> Field::get_neighbourhood(const int id, const int size, const NeighbourhoodType type) const {
+std::vector<int> OldField::get_neighbourhood(const int id, const int size, const NeighbourhoodType type) const {
     std::vector<int> neighbourhood;
     const auto [x, y] = get_id_coordinates(id);
 
@@ -229,12 +229,12 @@ std::vector<int> Field::get_neighbourhood(const int id, const int size, const Ne
     return neighbourhood;
 }
 
-Element& Field::operator()(int x, int y) { return get_element(x, y); }
+OldElement& OldField::operator()(int x, int y) { return get_element(x, y); }
 
-const Element& Field::operator()(int x, int y) const { return get_element(x, y); }
+const OldElement& OldField::operator()(int x, int y) const { return get_element(x, y); }
 
-Element& Field::operator()(const int id) { return elements.at(id); }
+OldElement& OldField::operator()(const int id) { return elements.at(id); }
 
-const Element& Field::operator()(const int id) const { return elements.at(id); }
+const OldElement& OldField::operator()(const int id) const { return elements.at(id); }
 
-} // namespace wg
+}  // namespace wg

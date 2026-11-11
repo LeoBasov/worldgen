@@ -64,7 +64,7 @@ bool Exporter::export2bmp(const Arena& arena, const Config::Export exports) cons
 
     for (std::int32_t y = 0; y < image.height(); ++y) {
         for (std::int32_t x = 0; x < image.width(); ++x) {
-            const Element& element = arena.get_element(x, y);
+            const OldElement& element = arena.get_element(x, y);
             const std::vector<double> rgb_val =
                 calc_rgb(element.height, element.is_river, element.is_lake, element.is_trapped);
             const RGB color(rgb_val.at(0), rgb_val.at(1), rgb_val.at(2));

@@ -8,12 +8,12 @@
 #include <unordered_set>
 #include <vector>
 
-#include "field.hpp"
+#include "old_field.hpp"
 
 namespace wg {
 
-std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids, const Field& field);
-void track_river(int idx, double sea_level, Field& field);
-void fill_lake(int idx, double sea_level, Field& field);
+std::vector<double> calc_gradients(int id, const std::vector<int>& neighbour_ids, const OldField& field);
+void track_river(int idx, double sea_level, OldField& field);
+void fill_lake(int idx, double sea_level, OldField& field);
 
 }  // namespace wg

@@ -6,7 +6,7 @@
 
 namespace wg {
 
-struct Element {
+struct OldElement {
     // attractiveness
     double rho = 0.0;
     double drho_dx = 0.0;
@@ -37,11 +37,11 @@ struct Element {
     bool is_trapped = false;
 };
 
-struct Field{
+struct OldField {
     enum NeighbourhoodType { NEUMANN, MOORE };
     enum Property { HEIGHT, ATTRACTIVENESS, ATTRACTIVENESS_GRAD_X, ATTRACTIVENESS_GRAD_Y, RHO };
 
-    std::vector<Element> elements;
+    std::vector<OldElement> elements;
     size_t size = 0, size_x = 0, size_y = 0;
 
     void resize(int x, int y);
@@ -52,14 +52,14 @@ struct Field{
 
     std::pair<int, int> get_id_coordinates(const int id) const;
     int get_element_id(int x, int y) const;
-    Element& get_element(int x, int y);
-    const Element& get_element(int x, int y) const;
+    OldElement& get_element(int x, int y);
+    const OldElement& get_element(int x, int y) const;
     std::vector<int> get_neighbourhood(const int id, const int size, const NeighbourhoodType type) const;
 
-    Element& operator()(int x, int y);
-    const Element& operator()(int x, int y) const;
-    Element& operator()(const int id);
-    const Element& operator()(const int id) const;
+    OldElement& operator()(int x, int y);
+    const OldElement& operator()(int x, int y) const;
+    OldElement& operator()(const int id);
+    const OldElement& operator()(const int id) const;
 };
 
 }  // namespace wg

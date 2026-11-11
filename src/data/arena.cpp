@@ -21,7 +21,7 @@ void Arena::add_noise(Config::Noise noise) {
         field(i).height = perlin.octave2D_01((x * fx), (y * fy), 4);
     }
 
-    field.calc_gradients(Field::Property::HEIGHT);
+    field.calc_gradients(OldField::Property::HEIGHT);
 }
 
 void Arena::create_rivers(Config::Hydrography hydrography, Config::Noise noise) {
@@ -50,7 +50,7 @@ void Arena::create_rivers(Config::Hydrography hydrography, Config::Noise noise) 
 void Arena::calc_attractiveness_factor(Config::Hydrography hydrography) {
     // relies on the elevation gradients computed in add_noise (rivers/lakes don't change height)
     for (int i = 0; i < field.size_x * field.size_y; i++) {
-        Element& element = field(i);
+        OldElement& element = field(i);
 
         if (element.height < hydrography.sea_level || element.is_river || element.is_lake) {
             element.attract = 0.0;
@@ -63,12 +63,12 @@ void Arena::calc_attractiveness_factor(Config::Hydrography hydrography) {
         }
     }
 
-    field.calc_gradients(Field::Property::ATTRACTIVENESS);
+    field.calc_gradients(OldField::Property::ATTRACTIVENESS);
 }
 
-Element& Arena::get_element(int x, int y) { return field(field.size_x * y + x); }
+OldElement& Arena::get_element(int x, int y) { return field(field.size_x * y + x); }
 
-const Element& Arena::get_element(int x, int y) const { return field(field.size_x * y + x); }
+const OldElement& Arena::get_element(int x, int y) const { return field(field.size_x * y + x); }
 
 size_t Arena::get_size_x() const { return field.size_x; }
 
