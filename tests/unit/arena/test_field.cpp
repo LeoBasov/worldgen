@@ -1,6 +1,6 @@
 #include <doctest/doctest.h>
 
-#include "field/field.hpp"
+#include "arena/field.hpp"
 
 using namespace wg;
 
