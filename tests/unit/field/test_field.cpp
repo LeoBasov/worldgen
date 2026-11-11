@@ -88,3 +88,48 @@ TEST_CASE("elem_id") {
     CHECK(field.elem_id(-1, 4) == -1);
     CHECK(field.elem_id(-3, -1) == -1);
 }
+
+TEST_CASE("operator(id)") {
+    Field field;
+    const Field::Type type = Field::Type::ELEVATION;
+    const int x = 3;
+    const int y = 4;
+
+    field.resize(x, y);
+
+    for (int i = 0; i < field.size; i++) {
+        field(i, Field::ELEVATION, Field::VALUE) = i;
+        field(i, Field::ELEVATION, Field::GRAD_X) = i + 1;
+        field(i, Field::ELEVATION, Field::GRAD_Y) = i + 2;
+        field(i, Field::ELEVATION, Field::GRAD_XX) = i + 3;
+        field(i, Field::ELEVATION, Field::GRAD_XY) = i + 4;
+        field(i, Field::ELEVATION, Field::GRAD_YY) = i + 5;
+        field(i, Field::ELEVATION, Field::GRAD_NORM) = i + 6;
+
+        field(i, Field::RHO, Field::VALUE) = i + 7;
+        field(i, Field::RHO, Field::GRAD_X) = i + 8;
+        field(i, Field::RHO, Field::GRAD_Y) = i + 9;
+        field(i, Field::RHO, Field::GRAD_XX) = i + 10;
+        field(i, Field::RHO, Field::GRAD_XY) = i + 11;
+        field(i, Field::RHO, Field::GRAD_YY) = i + 12;
+        field(i, Field::RHO, Field::GRAD_NORM) = i + 13;
+    }
+
+    for (int i = 0; i < field.size; i++) {
+        CHECK(field.elements.at(i).vals.at(0) == i);
+        CHECK(field.elements.at(i).grad_x.at(0) == i + 1);
+        CHECK(field.elements.at(i).grad_y.at(0) == i + 2);
+        CHECK(field.elements.at(i).grad_xx.at(0) == i + 3);
+        CHECK(field.elements.at(i).grad_xy.at(0) == i + 4);
+        CHECK(field.elements.at(i).grad_yy.at(0) == i + 5);
+        CHECK(field.elements.at(i).grad_norm.at(0) == i + 6);
+
+        CHECK(field.elements.at(i).vals.at(1) == i + 7);
+        CHECK(field.elements.at(i).grad_x.at(1) == i + 8);
+        CHECK(field.elements.at(i).grad_y.at(1) == i + 9);
+        CHECK(field.elements.at(i).grad_xx.at(1) == i + 10);
+        CHECK(field.elements.at(i).grad_xy.at(1) == i + 11);
+        CHECK(field.elements.at(i).grad_yy.at(1) == i + 12);
+        CHECK(field.elements.at(i).grad_norm.at(1) == i + 13);
+    }
+}

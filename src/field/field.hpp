@@ -5,13 +5,13 @@ namespace wg {
 using namespace std;
 
 struct Element {
-    vector<double> vals;
-    vector<double> grad_x;
-    vector<double> grad_y;
-    vector<double> grad_xx;
-    vector<double> grad_xy;
-    vector<double> grad_yy;
-    vector<double> grad_norm;
+    vector<double> vals = vector<double>(2, 0);
+    vector<double> grad_x = vector<double>(2, 0);
+    vector<double> grad_y = vector<double>(2, 0);
+    vector<double> grad_xx = vector<double>(2, 0);
+    vector<double> grad_xy = vector<double>(2, 0);
+    vector<double> grad_yy = vector<double>(2, 0);
+    vector<double> grad_norm = vector<double>(2, 0);
 };
 
 struct Field {
