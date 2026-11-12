@@ -32,6 +32,7 @@ struct Arena {
     Value elevation;
     Field<bool> rivers;
     Field<bool> lakes;
+    int size_x = 0, size_y = 0, size = 0;
 
     void resize(int x, int y);
     void add_noise(int seed, double frequency);
