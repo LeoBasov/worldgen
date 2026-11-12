@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../data/arena.hpp"
+#include "../arena/arena.hpp"
 #include "../data/config.hpp"
 #include "bmp_export.hpp"
 

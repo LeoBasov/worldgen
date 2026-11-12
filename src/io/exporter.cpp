@@ -60,13 +60,15 @@ std::vector<double> Exporter::calc_rgb(double height, bool is_river, bool is_lak
 }
 
 bool Exporter::export2bmp(const Arena& arena, const Config::Export exports) const {
-    Image image{arena.get_size_x(), arena.get_size_y()};
+    Image image{arena.size_x, arena.size_y};
+    const Field<double>& elevation = arena.elevation.value;
+    const Field<bool>& rivers = arena.rivers;
+    const Field<bool>& lakes = arena.lakes;
+    const Field<bool>& trapped = arena.trapped;
 
     for (std::int32_t y = 0; y < image.height(); ++y) {
         for (std::int32_t x = 0; x < image.width(); ++x) {
-            const Element& element = arena.get_element(x, y);
-            const std::vector<double> rgb_val =
-                calc_rgb(element.height, element.is_river, element.is_lake, element.is_trapped);
+            const std::vector<double> rgb_val = calc_rgb(elevation(x, y), rivers(x, y), lakes(x, y), trapped(x, y));
             const RGB color(rgb_val.at(0), rgb_val.at(1), rgb_val.at(2));
             image.set(x, y, color);
         }
