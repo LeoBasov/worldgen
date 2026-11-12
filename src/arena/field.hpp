@@ -19,7 +19,7 @@ struct Field {
         size_x = x;
         size_y = y;
         size = size_x * size_y;
-        elements.resize(x * y);
+        elements.resize(x * y, 0);
     }
 
     int elem_id(int x, int y) const {
