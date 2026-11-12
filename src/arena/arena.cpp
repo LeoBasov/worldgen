@@ -10,6 +10,7 @@ void Arena::resize(int x, int y) {
     elevation.resize(size_x, size_y);
     rivers.resize(size_x, size_y);
     lakes.resize(size_x, size_y);
+    trapped.resize(size_x, size_y);
 }
 
 void Arena::add_noise(double frequency) {

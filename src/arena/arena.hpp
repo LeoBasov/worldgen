@@ -39,6 +39,7 @@ struct Arena {
     Value elevation;
     Field<bool> rivers;
     Field<bool> lakes;
+    Field<bool> trapped;
     int size_x = 0, size_y = 0, size = 0;
     int seed = 0;
 
