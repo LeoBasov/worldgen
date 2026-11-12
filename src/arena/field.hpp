@@ -31,20 +31,20 @@ struct Field {
     }
 
     pair<int, int> coords(int id) const {
-        if (id < 0 || id > elements.size()) {
+        if (id < 0 || id >= elements.size()) {
             return {-1, -1};
         } else {
             return {id % size_x, id / size_x};
         }
     }
 
-    T& operator()(int id) { return elements.at(id); }
+    typename vector<T>::reference operator()(int id) { return elements.at(id); }
 
-    const T& operator()(int id) const { return elements.at(id); }
+    typename vector<T>::const_reference operator()(int id) const { return elements.at(id); }
 
-    T& operator()(int x, int y) { return operator()(elem_id(x, y)); }
+    typename vector<T>::reference operator()(int x, int y) { return operator()(elem_id(x, y)); }
 
-    const T& operator()(int x, int y) const { return operator()(elem_id(x, y)); }
+    typename vector<T>::const_reference operator()(int x, int y) const { return operator()(elem_id(x, y)); }
 
     vector<int> neighbourhood(const int id, const int nsize, const HoodType type) const {
         const int length = 2 * nsize + 1;
