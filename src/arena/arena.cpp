@@ -42,7 +42,7 @@ void Arena::create_rivers(int n_rivers, double min_height, double max_height, do
 
         if (!is_river && height > min_height && height < max_height) {
             arena_alg::track_river(id, sea_level, elevation.value, elevation.grad_x_norm, elevation.grad_y_norm,
-                                   elevation.grad_norm, rivers, lakes);
+                                   elevation.grad_norm, rivers, lakes, trapped);
             counter++;
         }
 
