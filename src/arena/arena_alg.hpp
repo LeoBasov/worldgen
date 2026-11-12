@@ -1,6 +1,6 @@
 #pragma once
 
-#include "arena/arena.hpp"
+#include "arena/field.hpp"
 
 namespace wg {
 namespace arena_alg {
