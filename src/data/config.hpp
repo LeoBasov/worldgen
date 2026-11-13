@@ -23,6 +23,9 @@ struct Config {
     };
 
     struct Export {
+        enum Type { ELEVATION, RHO };
+
+        std::vector<Type> types = {ELEVATION, RHO};
         std::string file_name = "elevation.bmp";
     };
 

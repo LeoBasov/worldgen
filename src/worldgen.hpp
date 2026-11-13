@@ -3,6 +3,7 @@
 #include "./arena/arena.hpp"
 #include "./data/config.hpp"
 #include "./io/exporter.hpp"
+#include "./solver/solver.hpp"
 
 namespace wg {
 
@@ -19,6 +20,7 @@ class WorldGen {
    private:
     Config config;
     Arena arena;
+    Solver solver;
     Exporter exporter;
 };
 

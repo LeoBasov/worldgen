@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../arena/arena.hpp"
+#include "../arena/field.hpp"
 #include "../data/config.hpp"
 #include "bmp_export.hpp"
 
@@ -11,7 +11,9 @@ class Exporter {
     Exporter(/* args */);
     ~Exporter() = default;
 
-    bool export2bmp(const Arena& arena, const Config::Export exports) const;
+    bool export_elevation(const Field<double>& elevation, const Field<bool>& rivers, const Field<bool>& lakes,
+                          const Field<bool>& trapped, const std::string file_name) const;
+    bool export_rho(const Field<double>& rho, const std::string file_name) const;
 
    private:
     std::vector<double> calc_rgb(double elevation, bool is_river, bool is_lake, bool is_trapped) const;

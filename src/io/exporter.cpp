@@ -59,12 +59,9 @@ std::vector<double> Exporter::calc_rgb(double height, bool is_river, bool is_lak
     return rgb;
 }
 
-bool Exporter::export2bmp(const Arena& arena, const Config::Export exports) const {
-    Image image{arena.size_x, arena.size_y};
-    const Field<double>& elevation = arena.elevation.value;
-    const Field<bool>& rivers = arena.rivers;
-    const Field<bool>& lakes = arena.lakes;
-    const Field<bool>& trapped = arena.trapped;
+bool Exporter::export_elevation(const Field<double>& elevation, const Field<bool>& rivers, const Field<bool>& lakes,
+                                const Field<bool>& trapped, const std::string file_name) const {
+    Image image{elevation.size_x, elevation.size_y};
 
     for (std::int32_t y = 0; y < image.height(); ++y) {
         for (std::int32_t x = 0; x < image.width(); ++x) {
@@ -74,7 +71,20 @@ bool Exporter::export2bmp(const Arena& arena, const Config::Export exports) cons
         }
     }
 
-    return image.saveBMP(exports.file_name);
+    return image.saveBMP(file_name);
+}
+
+bool Exporter::export_rho(const Field<double>& rho, const std::string file_name) const {
+    Image image{rho.size_x, rho.size_y};
+
+    for (std::int32_t y = 0; y < image.height(); ++y) {
+        for (std::int32_t x = 0; x < image.width(); ++x) {
+            const RGB color(rho(x, y));
+            image.set(x, y, color);
+        }
+    }
+
+    return image.saveBMP(file_name);
 }
 
 }  // namespace wg
